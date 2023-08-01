@@ -38,8 +38,6 @@ const baseConfig = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-      // favicon: path.resolve(__dirname, './src/favicon.ico'),
-      // filename: 'index.html',
       minify: {
         collapseWhitespace: true,
         removeComments: true,
