@@ -1,7 +1,6 @@
 const path = require("path");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const EslintPlugin = require("eslint-webpack-plugin");
 
 const baseConfig = {
   entry: path.resolve(__dirname, "./src/app"),
@@ -47,8 +46,7 @@ const baseConfig = {
         useShortDoctype: false,
       },
     }),
-    new EslintPlugin({ extensions: "ts" }),
-  ],
+  ]
 };
 
 module.exports = ({ mode }) => {
