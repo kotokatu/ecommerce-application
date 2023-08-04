@@ -13,6 +13,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "sass": "^1.64.2",
     "typescript": "^4.9.5"
   },
   "scripts": {
@@ -56,9 +57,17 @@
       "ecmaVersion": "latest",
       "sourceType": "module"
     },
-    "plugins": ["react", "prettier"],
+    "plugins": [
+      "react",
+      "prettier"
+    ],
     "rules": {
-      "prettier/prettier": ["error", { "endOfLine": "auto" }]
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
     }
   },
   "devDependencies": {
