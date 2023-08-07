@@ -69,9 +69,24 @@ Start the server
 
 ## How to make tests
 
+Tests
+
 ```bash
   npm run test
 ```
+
+Eslint
+
+```bash
+  npm run lint
+```
+
+Prettier
+
+```bash
+  npm run format
+```
+
 
 ## Authors
 
