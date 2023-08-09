@@ -30,13 +30,11 @@ class CtpClient {
   private getClient(): Client {
     return this.userAuthOptions
       ? userClientBuilder
-          .withProjectKey(this.projectKey)
           .withPasswordFlow(this.getUserAuthOptions())
           .withHttpMiddleware(this.getHttpMiddlewareOptions())
           .withLoggerMiddleware()
           .build()
       : anonymousClientBuilder
-          .withProjectKey(this.projectKey)
           .withAnonymousSessionFlow(this.getAnonymousAuthOptions())
           .withHttpMiddleware(this.getHttpMiddlewareOptions())
           .withLoggerMiddleware()

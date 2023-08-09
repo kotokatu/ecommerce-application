@@ -1,11 +1,10 @@
-import { UserAuthOptions } from '@commercetools/sdk-client-v2';
-import CtpClient from './BuildClient';
+import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 
 class UserService {
   apiRoot: ByProjectKeyRequestBuilder;
-  constructor(authOptions?: UserAuthOptions) {
-    this.apiRoot = authOptions ? new CtpClient(authOptions).getApiRoot() : new CtpClient().getApiRoot();
+  constructor() {
+    this.apiRoot = new CtpClient().getApiRoot();
   }
 
   async signup(email: string, password: string) {
@@ -20,6 +19,7 @@ class UserService {
           },
         })
         .execute();
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
     } catch {
       console.log('error');
     }
@@ -37,6 +37,19 @@ class UserService {
           },
         })
         .execute();
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
+    } catch {
+      console.log('error');
+    }
+  }
+
+  logout() {
+    this.apiRoot = new CtpClient().getApiRoot();
+  }
+
+  async smth() {
+    try {
+      await this.apiRoot.me().get().execute();
     } catch {
       console.log('error');
     }

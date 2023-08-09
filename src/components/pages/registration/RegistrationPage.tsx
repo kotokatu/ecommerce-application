@@ -2,29 +2,40 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 type RegistrationProps = {
-  onLogin: (username: string, password: string) => void;
   onSignup: (username: string, password: string) => void;
-  onLogout: () => void;
 };
 
-const RegistrationPage = ({ onLogin, onSignup, onLogout }: RegistrationProps) => {
-  const [username, setUsername] = useState('');
+const RegistrationPage = ({ onSignup }: RegistrationProps) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   return (
     <>
-      <form className="add-form">
-        <div className="form-control">
-          <label>Name</label>
-          <input type="text" placeholder="name" value={username} onChange={(e) => setUsername(e.target.value)} />
+      <form>
+        <div>
+          <label>E-mail</label>
+          <input type="text" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
-        <div className="form-control">
+        <div>
           <label>Password</label>
           <input type="text" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
-        <input className="btn btn-block" type="button" value="Login" onClick={() => onLogin(username, password)} />
-        <input className="btn btn-block" type="button" value="Sign up" onClick={() => onSignup(username, password)} />
-        <input className="btn btn-block" type="button" value="Logout" onClick={onLogout} />
+        <div>
+          <label>First Name</label>
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Last Name</label>
+          <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+        </div>
+        <input className="btn btn-block" type="button" value="Sign up" onClick={() => onSignup(email, password)} />
         <Link to="/login">To Login Page</Link>
       </form>
     </>
