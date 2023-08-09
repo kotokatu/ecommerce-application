@@ -1,5 +1,5 @@
 import { UserAuthOptions } from '@commercetools/sdk-client-v2';
-import CtpClient from './BuildClients';
+import CtpClient from './BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 
 class ApiRoot {
