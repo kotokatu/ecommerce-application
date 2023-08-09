@@ -1,0 +1,21 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin: 100px auto;
+
+  &__body {
+    margin: 0;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  // .not-found__link
+  &__link {
+    text-decoration: underline;
+    color: green;
+  }
+}
