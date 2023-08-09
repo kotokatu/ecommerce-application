@@ -9,6 +9,7 @@ class ApiRoot {
   }
 
   async signup(email: string, password: string) {
+    // try {
     await this.apiRoot
       .me()
       .signup()
@@ -19,6 +20,9 @@ class ApiRoot {
         },
       })
       .execute();
+    // } catch {
+    // console.log('error');
+    // }
   }
 
   async login(email: string, password: string) {

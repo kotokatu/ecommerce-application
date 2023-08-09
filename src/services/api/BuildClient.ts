@@ -15,7 +15,7 @@ const anonymousClientBuilder = new ClientBuilder();
 
 class CtpClient {
   private projectKey: string = process.env.REACT_APP_PROJECT_KEY as string;
-  private oauthURL: string = process.env.REACT_APP_AUTH_URL as string;
+  private authURL: string = process.env.REACT_APP_AUTH_URL as string;
   private apiURL: string = process.env.REACT_APP_API_URL as string;
   private credentials: Credentials = {
     clientId: process.env.REACT_APP_CLIENT_ID as string,
@@ -49,7 +49,7 @@ class CtpClient {
 
   private getUserAuthOptions(): PasswordAuthMiddlewareOptions {
     return {
-      host: this.oauthURL,
+      host: this.authURL,
       projectKey: this.projectKey,
       credentials: { ...this.credentials, user: this.userAuthOptions as UserAuthOptions },
       fetch,
@@ -58,7 +58,7 @@ class CtpClient {
 
   private getAnonymousAuthOptions(): AnonymousAuthMiddlewareOptions {
     return {
-      host: this.oauthURL,
+      host: this.authURL,
       projectKey: this.projectKey,
       credentials: this.credentials,
       fetch,
