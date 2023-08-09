@@ -1,7 +1,11 @@
-import './App.scss';
+import PublicRoute from '../services/Routing/PublicRoute';
 
 function App() {
-  return <div className="App">App</div>;
+  return (
+    <div className="wrapper">
+      <PublicRoute />
+    </div>
+  );
 }
 
 export default App;
