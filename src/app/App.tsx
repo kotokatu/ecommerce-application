@@ -1,45 +1,65 @@
 import './App.scss';
 import { useState } from 'react';
-import ApiRoot from '../services/api/ApiRoot';
-import Registration from '../components/pages/registration/Registration';
+import UserService from '../services/api/UserService';
+import { Route, Routes } from 'react-router-dom';
+import Layout from '../components/layout/Layout';
+import MainPage from '../components/pages/main/MainPage';
+import CatalogPage from '../components/pages/catalog/CatalogPage';
+import AboutPage from '../components/pages/about-us/AboutPage';
+import LoginPage from '../components/pages/login/LoginPage';
+import RegistrationPage from '../components/pages/registration/RegistrationPage';
+import BasketPage from '../components/pages/basket/BasketPage';
+import NotFoundPage from '../components/pages/not-found/NotFoundPage';
 
 export interface User {
-  apiRoot: ApiRoot;
+  userService: UserService;
   isLoggedIn: boolean;
 }
 
 function App() {
-  const [user, setUser] = useState<User>({ apiRoot: new ApiRoot(), isLoggedIn: false });
+  let userService = new UserService();
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
 
   async function loginUser(username: string, password: string) {
-    // try {
-    await user.apiRoot.login(username, password);
-    setUser({ apiRoot: new ApiRoot({ username, password }), isLoggedIn: true });
-    // } catch {
-    // console.log('error');
-    // }
+    try {
+      await userService.login(username, password);
+      setUserIsLoggedIn(true);
+    } catch {
+      console.log('error');
+    }
   }
 
   async function signupUser(username: string, password: string) {
-    user.apiRoot
-      .signup(username, password)
-      .then(() => {
-        setUser({ apiRoot: new ApiRoot({ username, password }), isLoggedIn: true });
-      })
-      .catch((err: Error) => console.log(err.message));
+    try {
+      await userService.signup(username, password);
+      userService = new UserService({ username, password });
+      setUserIsLoggedIn(true);
+    } catch {
+      console.log('error');
+    }
   }
 
   function logoutUser() {
-    setUser({ apiRoot: new ApiRoot(), isLoggedIn: false });
-  }
-
-  async function getUserInfo() {
-    user.apiRoot.apiRoot.me().get().execute();
+    userService = new UserService();
+    setUserIsLoggedIn(false);
   }
 
   return (
     <>
-      <Registration onLogin={loginUser} onSignup={signupUser} onLogout={logoutUser} onGetUserInfo={getUserInfo} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<MainPage />} />
+          <Route path="catalog" element={<CatalogPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route
+            path="registration"
+            element={<RegistrationPage onLogin={loginUser} onLogout={logoutUser} onSignup={signupUser} />}
+          />
+          <Route path="basket" element={<BasketPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
     </>
   );
 }

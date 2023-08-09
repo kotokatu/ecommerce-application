@@ -87,7 +87,6 @@ Prettier
   npm run format
 ```
 
-
 ## Authors
 
 - [@kotokatu](https://github.com/kotokatu)

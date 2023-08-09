@@ -1,17 +1,16 @@
-import { User } from '../../../app/App';
-import ApiRoot from '../../../services/api/ApiRoot';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 type RegistrationProps = {
   onLogin: (username: string, password: string) => void;
   onSignup: (username: string, password: string) => void;
   onLogout: () => void;
-  onGetUserInfo: () => void;
 };
 
-const Registration = ({ onLogin, onSignup, onLogout, onGetUserInfo }: RegistrationProps) => {
+const RegistrationPage = ({ onLogin, onSignup, onLogout }: RegistrationProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
   return (
     <>
       <form className="add-form">
@@ -26,9 +25,10 @@ const Registration = ({ onLogin, onSignup, onLogout, onGetUserInfo }: Registrati
         <input className="btn btn-block" type="button" value="Login" onClick={() => onLogin(username, password)} />
         <input className="btn btn-block" type="button" value="Sign up" onClick={() => onSignup(username, password)} />
         <input className="btn btn-block" type="button" value="Logout" onClick={onLogout} />
+        <Link to="/login">To Login Page</Link>
       </form>
     </>
   );
 };
 
-export default Registration;
+export default RegistrationPage;
