@@ -1,21 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
-import {
-  TextInput,
-  Checkbox,
-  Button,
-  Group,
-  Box,
-  PasswordInput,
-  Text,
-  Select,
-  Container,
-  Title,
-  Stack,
-} from '@mantine/core';
+import { TextInput, Checkbox, Button, PasswordInput, Text, Select, Container, Title, Stack } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import { getAge } from '../../../utils/helpers/getAge';
 
 type RegistrationPageProps = {
   onSignup: Dispatch<SetStateAction<boolean>>;
@@ -48,6 +37,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
       password: (value) => (value.length < 2 ? 'Password is too short' : null),
       firstName: (value) => (value.length < 2 ? 'First name is too short' : null),
       lastName: (value) => (value.length < 2 ? 'Last name is too short' : null),
+      dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal 13' : null),
     },
   });
 
@@ -84,6 +74,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
   return (
     <Container size={400}>
       <Title order={3}>Welcome to 30 Fingers Store</Title>
+
       <form onSubmit={form.onSubmit((values) => console.log(values))}>
         <TextInput
           pt={10}
@@ -95,19 +86,35 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
 
         <TextInput pt={10} withAsterisk label="Last Name" placeholder="Last Name" {...form.getInputProps('lastName')} />
 
-        <TextInput pt={10} withAsterisk label="Email" placeholder="your@email.com" {...form.getInputProps('email')} />
+        <TextInput
+          pt={10}
+          withAsterisk
+          autoComplete="email"
+          label="Email"
+          placeholder="your@email.com"
+          {...form.getInputProps('email')}
+        />
 
-        <PasswordInput pt={10} withAsterisk label="Password" {...form.getInputProps('password')} />
+        <PasswordInput
+          autoComplete="current-password"
+          pt={10}
+          withAsterisk
+          label="Password"
+          {...form.getInputProps('password')}
+        />
 
         <DatePickerInput
+          withAsterisk
           pt={10}
           valueFormat="DD.MM.YYYY"
           label="Date of Birth"
-          placeholder="Date of Birth"
+          placeholder="__.__.____"
           {...form.getInputProps('dateOfBirth')}
         />
 
-        <Text pt={10}>Shipping Address</Text>
+        <Text size={18} pt={20}>
+          Shipping Address
+        </Text>
 
         <Select
           withAsterisk
@@ -116,9 +123,17 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
           placeholder="Choose country"
           {...form.getInputProps('shippingAddress.country')}
         />
-        <TextInput pt={10} label="City" placeholder="City" {...form.getInputProps('shippingAddress.city')} />
 
         <TextInput
+          withAsterisk
+          pt={10}
+          label="City"
+          placeholder="City"
+          {...form.getInputProps('shippingAddress.city')}
+        />
+
+        <TextInput
+          withAsterisk
           pt={10}
           label="Address"
           placeholder="Address"
@@ -126,46 +141,65 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
         />
 
         <TextInput
+          withAsterisk
           pt={10}
           label="Postal Code"
           placeholder="Postal Code"
           {...form.getInputProps('shippingAddress.postalCode')}
         />
 
-        <Checkbox pt={7} label="Set as default shipping address"></Checkbox>
+        <Checkbox pt={7} label="Set as default shipping address" />
+
+        <Text size={18} pt={20}>
+          Billing Address
+        </Text>
 
         <Checkbox
           pt={7}
-          label="Billing address same as shipping"
+          label="Same as shipping"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBillingAddress(e.target.checked)}
-        ></Checkbox>
-
-        <Text pt={10}>Billing Address</Text>
+        />
 
         <Select
+          withAsterisk
           label="Country"
           data={countryData}
           placeholder="Choose country"
           {...form.getInputProps('billingAddress.country')}
         />
 
-        <TextInput pt={10} label="City" placeholder="City" {...form.getInputProps('billingAddress.city')} />
-
-        <TextInput pt={10} label="Address" placeholder="Address" {...form.getInputProps('billingAddress.streetName')} />
+        <TextInput
+          withAsterisk
+          pt={10}
+          label="City"
+          placeholder="City"
+          {...form.getInputProps('billingAddress.city')}
+        />
 
         <TextInput
+          withAsterisk
+          pt={10}
+          label="Address"
+          placeholder="Address"
+          {...form.getInputProps('billingAddress.streetName')}
+        />
+
+        <TextInput
+          withAsterisk
           pt={10}
           label="Postal Code"
           placeholder="Postal Code"
           {...form.getInputProps('billingAddress.postalCode')}
         />
 
-        <Checkbox pt={7} label="Set as default billing address"></Checkbox>
+        <Checkbox pt={7} label="Set as default billing address" />
 
         <Stack pt={15} align="center">
-          <Button type="submit">Submit</Button>
-          <Button variant="outline" component={Link} to="/login">
-            To Login Page
+          <Button fullWidth type="submit">
+            Sign up
+          </Button>
+          <Button variant="outline" fullWidth component={Link} to="/login">
+            To Login
           </Button>
         </Stack>
       </form>
