@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
 
-const RegistrationPage = () => {
+type RegistrationPageProps = {
+  onSignup: Dispatch<SetStateAction<boolean>>;
+};
+
+const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    userService.signup(email, password);
+    try {
+      await userService.signup(email, password);
+      onSignup(true);
+    } catch {
+      console.log('error');
+    }
   };
 
   return (
