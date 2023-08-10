@@ -4,7 +4,10 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(relativeTime);
 dayjs.extend(customParseFormat);
 
-export const getAge = (value: string) => {
-  const date = dayjs(Date.parse(value));
-  return dayjs().diff(date, 'year');
+export const getAge = (value: Date) => {
+  return dayjs().diff(formatDate(value), 'year');
+};
+
+export const formatDate = (value: Date) => {
+  return dayjs(value).format('YYYY-MM-DD');
 };

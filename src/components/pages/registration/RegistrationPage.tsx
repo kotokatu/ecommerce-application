@@ -4,11 +4,17 @@ import { userService } from '../../../services/UserService/UserService';
 import { TextInput, Checkbox, Button, PasswordInput, Text, Select, Container, Title, Stack } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { getAge } from '../../../utils/helpers/getAge';
+import { getAge } from '../../../utils/helpers/dateHelpers';
 
 type RegistrationPageProps = {
   onSignup: Dispatch<SetStateAction<boolean>>;
 };
+
+const countryData = [
+  { value: 'IT', label: 'Italy' },
+  { value: 'DE', label: 'Germany' },
+  { value: 'FR', label: 'France' },
+];
 
 const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
   const form = useForm({
@@ -30,6 +36,8 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
         streetName: '',
         postalCode: '',
       },
+      setDefaultShippingAddress: false,
+      setDefaultBillingAddress: false,
     },
 
     validate: {
@@ -40,22 +48,6 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
       dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal 13' : null),
     },
   });
-
-  const countryData = [
-    { value: 'IT', label: 'Italy' },
-    { value: 'DE', label: 'Germany' },
-    { value: 'FR', label: 'France' },
-  ];
-
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   userService
-  //     .signup(email, password)
-  //     .then(() => {
-  //       onSignup(true);
-  //     })
-  //     .catch((err: Error) => console.log(err.message));
-  // };
 
   const setBillingAddress = (isChecked: boolean) => {
     if (isChecked) {
@@ -75,7 +67,16 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
     <Container size={400}>
       <Title order={3}>Welcome to 30 Fingers Store</Title>
 
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form
+        onSubmit={form.onSubmit((values) =>
+          userService
+            .signup(values)
+            .then(() => {
+              onSignup(true);
+            })
+            .catch((err: Error) => console.log(err.message)),
+        )}
+      >
         <TextInput
           pt={10}
           withAsterisk
@@ -148,7 +149,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
           {...form.getInputProps('shippingAddress.postalCode')}
         />
 
-        <Checkbox pt={7} label="Set as default shipping address" />
+        <Checkbox pt={7} label="Set as default shipping address" {...form.getInputProps('setDefaultShippingAddress')} />
 
         <Text size={18} pt={20}>
           Billing Address
@@ -192,7 +193,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
           {...form.getInputProps('billingAddress.postalCode')}
         />
 
-        <Checkbox pt={7} label="Set as default billing address" />
+        <Checkbox pt={7} label="Set as default billing address" {...form.getInputProps('setDefaultBillingAddress')} />
 
         <Stack pt={15} align="center">
           <Button fullWidth type="submit">
