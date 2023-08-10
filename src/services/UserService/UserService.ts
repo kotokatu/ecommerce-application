@@ -18,7 +18,8 @@ class UserService {
         },
       })
       .execute()
-      .then(() => {
+      .then((data) => {
+        console.log(data);
         this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
       })
       .catch((err: Error) => {
