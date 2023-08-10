@@ -7,22 +7,23 @@ class UserService {
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
-  async signup(email: string, password: string) {
-    try {
-      await this.apiRoot
-        .me()
-        .signup()
-        .post({
-          body: {
-            email,
-            password,
-          },
-        })
-        .execute();
-      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
-    } catch {
-      console.log('error');
-    }
+  signup(email: string, password: string): Promise<string | void> {
+    return this.apiRoot
+      .me()
+      .signup()
+      .post({
+        body: {
+          email,
+          password,
+        },
+      })
+      .execute()
+      .then(() => {
+        this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
+      })
+      .catch((err: Error) => {
+        throw new Error(err.message);
+      });
   }
 
   async login(email: string, password: string) {

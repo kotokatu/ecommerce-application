@@ -12,14 +12,14 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await userService.signup(email, password);
-      onSignup(true);
-    } catch {
-      console.log('error');
-    }
+    userService
+      .signup(email, password)
+      .then(() => {
+        onSignup(true);
+      })
+      .catch((err: Error) => console.log(err.message));
   };
 
   return (
