@@ -46,14 +46,6 @@ class UserService {
   logout() {
     this.apiRoot = new CtpClient().getApiRoot();
   }
-
-  async smth() {
-    try {
-      await this.apiRoot.me().get().execute();
-    } catch {
-      console.log('error');
-    }
-  }
 }
 
 export const userService = new UserService();
