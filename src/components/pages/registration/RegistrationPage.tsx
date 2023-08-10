@@ -1,7 +1,19 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
-import { TextInput, Checkbox, Button, Group, Box, PasswordInput } from '@mantine/core';
+import {
+  TextInput,
+  Checkbox,
+  Button,
+  Group,
+  Box,
+  PasswordInput,
+  Text,
+  Select,
+  Container,
+  Title,
+  Stack,
+} from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 
@@ -16,16 +28,34 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
       password: '',
       firstName: '',
       lastName: '',
-      dateOfBirth: '',
+      dateOfBirth: null,
+      shippingAddress: {
+        country: '',
+        city: '',
+        streetName: '',
+        postalCode: '',
+      },
+      billingAddress: {
+        country: '',
+        city: '',
+        streetName: '',
+        postalCode: '',
+      },
     },
 
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid password'),
+      password: (value) => (value.length < 2 ? 'Password is too short' : null),
       firstName: (value) => (value.length < 2 ? 'First name is too short' : null),
       lastName: (value) => (value.length < 2 ? 'Last name is too short' : null),
     },
   });
+
+  const countryData = [
+    { value: 'IT', label: 'Italy' },
+    { value: 'DE', label: 'Germany' },
+    { value: 'FR', label: 'France' },
+  ];
 
   // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -37,41 +67,109 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
   //     .catch((err: Error) => console.log(err.message));
   // };
 
+  const setBillingAddress = (isChecked: boolean) => {
+    if (isChecked) {
+      form.setFieldValue('billingAddress.country', form.values.shippingAddress.country);
+      form.setFieldValue('billingAddress.city', form.values.shippingAddress.city);
+      form.setFieldValue('billingAddress.streetName', form.values.shippingAddress.streetName);
+      form.setFieldValue('billingAddress.postalCode', form.values.shippingAddress.postalCode);
+    } else {
+      form.setFieldValue('billingAddress.country', '');
+      form.setFieldValue('billingAddress.city', '');
+      form.setFieldValue('billingAddress.streetName', '');
+      form.setFieldValue('billingAddress.postalCode', '');
+    }
+  };
+
   return (
-    <form onSubmit={form.onSubmit((values) => console.log(values))}>
-      <TextInput withAsterisk label="First Name" placeholder="First Name" {...form.getInputProps('firstName')} />
-      <TextInput withAsterisk label="Last Name" placeholder="Last Name" {...form.getInputProps('lastName')} />
-      <TextInput withAsterisk label="Email" placeholder="your@email.com" {...form.getInputProps('email')} />
-      <PasswordInput withAsterisk label="Password" {...form.getInputProps('password')} />
-      <DatePickerInput valueFormat="DD.MM.YYYY" label="Date of Birth" placeholder="Date of Birth" />
-      {/* <div>
-        <label>Password</label>
-        <input
-          type="text"
-          placeholder="Password"
-          value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+    <Container size={400}>
+      <Title order={3}>Welcome to 30 Fingers Store</Title>
+      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+        <TextInput
+          pt={10}
+          withAsterisk
+          label="First Name"
+          placeholder="First Name"
+          {...form.getInputProps('firstName')}
         />
-      </div>
-      <div>
-        <label>First Name</label>
-        <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-      </div>
-      <div>
-        <label>Last Name</label>
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
+
+        <TextInput pt={10} withAsterisk label="Last Name" placeholder="Last Name" {...form.getInputProps('lastName')} />
+
+        <TextInput pt={10} withAsterisk label="Email" placeholder="your@email.com" {...form.getInputProps('email')} />
+
+        <PasswordInput pt={10} withAsterisk label="Password" {...form.getInputProps('password')} />
+
+        <DatePickerInput
+          pt={10}
+          valueFormat="DD.MM.YYYY"
+          label="Date of Birth"
+          placeholder="Date of Birth"
+          {...form.getInputProps('dateOfBirth')}
         />
-      </div>
-      <input className="btn btn-block" type="submit" value="Sign up" /> */}
-      <Group position="center" mt="md">
-        <Button type="submit">Submit</Button>
-      </Group>
-      <Link to="/login">To Login Page</Link>
-    </form>
+
+        <Text pt={10}>Shipping Address</Text>
+
+        <Select
+          withAsterisk
+          label="Country"
+          data={countryData}
+          placeholder="Choose country"
+          {...form.getInputProps('shippingAddress.country')}
+        />
+        <TextInput pt={10} label="City" placeholder="City" {...form.getInputProps('shippingAddress.city')} />
+
+        <TextInput
+          pt={10}
+          label="Address"
+          placeholder="Address"
+          {...form.getInputProps('shippingAddress.streetName')}
+        />
+
+        <TextInput
+          pt={10}
+          label="Postal Code"
+          placeholder="Postal Code"
+          {...form.getInputProps('shippingAddress.postalCode')}
+        />
+
+        <Checkbox pt={7} label="Set as default shipping address"></Checkbox>
+
+        <Checkbox
+          pt={7}
+          label="Billing address same as shipping"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBillingAddress(e.target.checked)}
+        ></Checkbox>
+
+        <Text pt={10}>Billing Address</Text>
+
+        <Select
+          label="Country"
+          data={countryData}
+          placeholder="Choose country"
+          {...form.getInputProps('billingAddress.country')}
+        />
+
+        <TextInput pt={10} label="City" placeholder="City" {...form.getInputProps('billingAddress.city')} />
+
+        <TextInput pt={10} label="Address" placeholder="Address" {...form.getInputProps('billingAddress.streetName')} />
+
+        <TextInput
+          pt={10}
+          label="Postal Code"
+          placeholder="Postal Code"
+          {...form.getInputProps('billingAddress.postalCode')}
+        />
+
+        <Checkbox pt={7} label="Set as default billing address"></Checkbox>
+
+        <Stack pt={15} align="center">
+          <Button type="submit">Submit</Button>
+          <Button variant="outline" component={Link} to="/login">
+            To Login Page
+          </Button>
+        </Stack>
+      </form>
+    </Container>
   );
 };
 
