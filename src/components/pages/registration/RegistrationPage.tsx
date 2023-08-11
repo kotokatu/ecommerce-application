@@ -43,7 +43,10 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
 
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length < 2 ? 'Password is too short' : null),
+      password: (value) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value)
+          ? null
+          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',
       firstName: (value) => (value.length < 2 ? 'First name is too short' : null),
       lastName: (value) => (value.length < 2 ? 'Last name is too short' : null),
       dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal 13' : null),
@@ -51,7 +54,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
   });
 
   return (
-    <Container size={400}>
+    <Container sx={{ width: '400px' }}>
       <Title order={3}>Welcome to 30 Fingers Store</Title>
 
       <form
@@ -196,7 +199,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
             Sign up
           </Button>
           <Button variant="outline" fullWidth component={Link} to="/login">
-            To Login
+            Sign in
           </Button>
         </Stack>
       </form>

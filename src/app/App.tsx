@@ -16,17 +16,19 @@ function App() {
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<MainPage />} />
-          <Route path="catalog" element={<CatalogPage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="registration" element={<RegistrationPage onSignup={setUserLoggedIn} />} />
-          <Route path="basket" element={<BasketPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+      <div className="wrapper">
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<MainPage />} />
+            <Route path="catalog" element={<CatalogPage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="registration" element={<RegistrationPage onSignup={setUserLoggedIn} />} />
+            <Route path="basket" element={<BasketPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </div>
     </MantineProvider>
   );
 }
