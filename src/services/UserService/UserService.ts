@@ -32,7 +32,7 @@ class UserService {
   }
 
   private createCustomerDraft(userData: UserData): MyCustomerDraft {
-    let customerDraft: MyCustomerDraft = {
+    const customerDraft: MyCustomerDraft = {
       email: userData.email,
       password: userData.password,
       firstName: userData.firstName,
@@ -46,9 +46,9 @@ class UserService {
           ...userData.billingAddress,
         },
       ],
+      defaultShippingAddress: userData.setDefaultShippingAddress ? 0 : undefined,
+      defaultBillingAddress: userData.setDefaultBillingAddress ? 1 : undefined,
     };
-    if (userData.setDefaultShippingAddress) customerDraft = { ...customerDraft, defaultShippingAddress: 0 };
-    if (userData.setDefaultBillingAddress) customerDraft = { ...customerDraft, defaultBillingAddress: 1 };
     return customerDraft;
   }
 
