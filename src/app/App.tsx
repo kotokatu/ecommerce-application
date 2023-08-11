@@ -1,6 +1,6 @@
 import './App.scss';
 import { Route, Routes } from 'react-router-dom';
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider, Container } from '@mantine/core';
 import Layout from '../components/layout/Layout';
 import MainPage from '../components/pages/main/MainPage';
 import CatalogPage from '../components/pages/catalog/CatalogPage';
@@ -16,7 +16,7 @@ function App() {
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
-      <div className="wrapper">
+      <Container className="wrapper">
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<MainPage />} />
@@ -28,7 +28,7 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-      </div>
+      </Container>
     </MantineProvider>
   );
 }

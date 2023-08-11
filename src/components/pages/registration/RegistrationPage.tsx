@@ -4,7 +4,7 @@ import { userService } from '../../../services/UserService/UserService';
 import { TextInput, Checkbox, Button, PasswordInput, Text, Select, Container, Title, Stack } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { getAge } from '../../../utils/helpers/dateHelpers';
+import { validation } from '../../../utils/helpers/validation';
 
 type RegistrationPageProps = {
   onSignup: Dispatch<SetStateAction<boolean>>;
@@ -42,14 +42,23 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
     },
 
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) =>
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value)
-          ? null
-          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',
-      firstName: (value) => (value.length < 2 ? 'First name is too short' : null),
-      lastName: (value) => (value.length < 2 ? 'Last name is too short' : null),
-      dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal 13' : null),
+      email: validation.email,
+      password: validation.password,
+      firstName: validation.firstName,
+      lastName: validation.lastName,
+      dateOfBirth: validation.dateOfBirth,
+      shippingAddress: {
+        country: validation.country,
+        city: validation.city,
+        streetName: validation.streetName,
+        postalCode: validation.postalCode,
+      },
+      billingAddress: {
+        country: validation.country,
+        city: validation.city,
+        streetName: validation.streetName,
+        postalCode: validation.postalCode,
+      },
     },
   });
 
@@ -87,9 +96,9 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
         />
 
         <PasswordInput
-          autoComplete="current-password"
           pt={10}
           withAsterisk
+          autoComplete="current-password"
           label="Password"
           placeholder="Password"
           {...form.getInputProps('password')}
