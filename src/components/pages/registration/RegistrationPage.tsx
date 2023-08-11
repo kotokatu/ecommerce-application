@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
 import {
@@ -30,6 +30,7 @@ const countryData = [
 ];
 
 const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     initialValues: {
       email: '',
@@ -93,9 +94,9 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
       <Title order={1} align="center" mb={20} sx={{ fontWeight: 800 }}>
         Join 30 Fingers Store
       </Title>
-
       <form
         onSubmit={form.onSubmit((values) => {
+          setIsLoading(true);
           userService
             .signup(values)
             .then(() => {
@@ -108,7 +109,8 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
                 style: { backgroundColor: 'pink', padding: '25px' },
                 message: err.message,
               }),
-            );
+            )
+            .finally(() => setIsLoading(false));
         })}
       >
         <Paper withBorder shadow="md" p={30} radius="md">
@@ -221,7 +223,7 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
         </Paper>
 
         <Stack spacing={5} pt={15} align="center">
-          <Button fullWidth type="submit">
+          <Button fullWidth type="submit" loading={isLoading}>
             Sign up
           </Button>
           <Text color="dimmed" size="sm" align="center" pt={5}>
