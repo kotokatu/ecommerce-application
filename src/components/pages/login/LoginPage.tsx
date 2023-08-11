@@ -1,5 +1,6 @@
-import { Paper, Anchor, Title, Text, Container } from '@mantine/core';
+import { Paper, Title, Text, Container } from '@mantine/core';
 import LoginForms from './loginforms';
+import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
   return (
@@ -13,13 +14,13 @@ export default function LoginPage() {
       >
         Welcome back!
       </Title>
-      <Text color="dimmed" size="sm" align="center" mt={5}>
-        Do not have an account yet?{' '}
-        <Anchor<'a'> href="#" size="sm" onClick={(event) => event.preventDefault()}>
+      <Text color="dimmed" size="sm" align="center" my={5}>
+        Do not have an account yet?
+        <Link to="/registration" style={{ color: 'red' }}>
           Create account
-        </Anchor>
+        </Link>
       </Text>
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+      <Paper withBorder shadow="md" p={30} radius="md">
         <LoginForms />
       </Paper>
     </Container>

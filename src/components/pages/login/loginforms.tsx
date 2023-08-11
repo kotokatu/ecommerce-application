@@ -6,7 +6,14 @@ export default function LoginForms() {
     initialValues: { email: '', password: '' },
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length < 4 ? 'Password must have at least 4 letters' : null),
+      password: (value) => {
+        if (value.length < 8) {
+          return 'Password must have at least 8 chars';
+        } else if (/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]$/.test(value)) {
+          return null;
+        }
+        return 'Invalid password';
+      },
     },
   });
 
