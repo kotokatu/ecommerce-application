@@ -88,6 +88,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
           pt={10}
           withAsterisk
           label="Password"
+          placeholder="Password"
           {...form.getInputProps('password')}
         />
 
