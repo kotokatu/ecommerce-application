@@ -1,4 +1,4 @@
-import { getAge } from './dateHelpers';
+import { getAge } from './date-helpers';
 
 export const validation = {
   email: (value: string) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),

@@ -1,6 +1,6 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { formatDate } from '../../utils/helpers/dateHelpers';
+import { formatDate } from '../../utils/helpers/date-helpers';
 import { MyCustomerDraft } from '@commercetools/platform-sdk';
 
 type UserData = {
@@ -26,12 +26,12 @@ type UserData = {
 };
 
 class UserService {
-  apiRoot: ByProjectKeyRequestBuilder;
+  private apiRoot: ByProjectKeyRequestBuilder;
   constructor() {
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
-  createCustomerDraft(userData: UserData): MyCustomerDraft {
+  private createCustomerDraft(userData: UserData): MyCustomerDraft {
     let customerDraft: MyCustomerDraft = {
       email: userData.email,
       password: userData.password,
@@ -52,7 +52,7 @@ class UserService {
     return customerDraft;
   }
 
-  signup(userData: UserData): Promise<string | void> {
+  public signup(userData: UserData): Promise<string | void> {
     return this.apiRoot
       .me()
       .signup()
@@ -71,25 +71,24 @@ class UserService {
       });
   }
 
-  async login(email: string, password: string) {
-    try {
-      await this.apiRoot
-        .me()
-        .login()
-        .post({
-          body: {
-            email,
-            password,
-          },
-        })
-        .execute();
-      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
-    } catch {
-      console.log('error');
-    }
+  public login(email: string, password: string) {
+    return this.apiRoot
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+        },
+      })
+      .execute()
+      .then(() => (this.apiRoot = new CtpClient({ username: email, password }).getApiRoot()))
+      .catch((err: Error) => {
+        throw new Error(err.message);
+      });
   }
 
-  logout() {
+  public logout() {
     this.apiRoot = new CtpClient().getApiRoot();
   }
 }
