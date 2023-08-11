@@ -3,7 +3,7 @@ import { getAge } from './date-helpers';
 export const validation = {
   email: (value: string) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
   password: (value: string) =>
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value)
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d#$@!%&*?]{8,}$/.test(value)
       ? null
       : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',
   firstName: (value: string) => (/^[a-zA-Z]+$/.test(value) ? null : 'First name is too short'),

@@ -7,7 +7,7 @@ import { useForm } from '@mantine/form';
 import { validation } from '../../../utils/helpers/validation';
 
 type RegistrationPageProps = {
-  onSignup: Dispatch<SetStateAction<boolean>>;
+  onSignin: Dispatch<SetStateAction<boolean>>;
 };
 
 const countryData = [
@@ -16,7 +16,7 @@ const countryData = [
   { value: 'FR', label: 'France' },
 ];
 
-const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
+const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
   const form = useForm({
     initialValues: {
       email: '',
@@ -83,7 +83,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
           userService
             .signup(values)
             .then(() => {
-              onSignup(true);
+              onSignin(true);
             })
             .catch((err: Error) => console.log(err.message));
         })}
