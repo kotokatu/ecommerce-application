@@ -21,8 +21,8 @@ type UserData = {
     streetName: string;
     postalCode: string;
   };
-  setDefaultShippingAddress?: boolean;
-  setDefaultBillingAddress?: boolean;
+  setDefaultShippingAddress: boolean;
+  setDefaultBillingAddress: boolean;
 };
 
 class UserService {

@@ -38,7 +38,6 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
       },
       setDefaultShippingAddress: false,
       setDefaultBillingAddress: false,
-      copyShippingAddressToBilling: false,
     },
 
     validate: {
@@ -62,19 +61,32 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
     },
   });
 
+  const setBillingAddress = (isChecked: boolean) => {
+    if (isChecked) {
+      form.setValues({
+        billingAddress: {
+          country: form.values.shippingAddress.country,
+          city: form.values.shippingAddress.city,
+          streetName: form.values.shippingAddress.streetName,
+          postalCode: form.values.shippingAddress.postalCode,
+        },
+      });
+    }
+  };
+
   return (
     <Container sx={{ width: '400px' }}>
       <Title order={3}>Welcome to 30 Fingers Store</Title>
 
       <form
-        onSubmit={form.onSubmit((values) =>
+        onSubmit={form.onSubmit((values) => {
           userService
             .signup(values)
             .then(() => {
               onSignup(true);
             })
-            .catch((err: Error) => console.log(err.message)),
-        )}
+            .catch((err: Error) => console.log(err.message));
+        })}
       >
         <TextInput
           pt={10}
@@ -155,50 +167,42 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
           Billing Address
         </Text>
 
-        <Checkbox pt={7} label="Same as shipping" {...form.getInputProps('copyShippingAddressToBilling')} />
+        <Checkbox
+          pt={7}
+          label="Same as shipping"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBillingAddress(e.target.checked)}
+        />
 
         <Select
-          disabled={form.values.copyShippingAddressToBilling}
           withAsterisk
           label="Country"
           data={countryData}
           placeholder="Choose country"
-          {...(form.values.copyShippingAddressToBilling
-            ? { ...form.getInputProps('shippingAddress.country') }
-            : { ...form.getInputProps('billingAddress.country') })}
+          {...form.getInputProps('billingAddress.country')}
         />
 
         <TextInput
-          disabled={form.values.copyShippingAddressToBilling}
           withAsterisk
           pt={10}
           label="City"
           placeholder="City"
-          {...(form.values.copyShippingAddressToBilling
-            ? { ...form.getInputProps('shippingAddress.city') }
-            : { ...form.getInputProps('billingAddress.city') })}
+          {...form.getInputProps('billingAddress.city')}
         />
 
         <TextInput
-          disabled={form.values.copyShippingAddressToBilling}
           withAsterisk
           pt={10}
           label="Address"
           placeholder="Address"
-          {...(form.values.copyShippingAddressToBilling
-            ? { ...form.getInputProps('shippingAddress.streetName') }
-            : { ...form.getInputProps('billingAddress.streetName') })}
+          {...form.getInputProps('billingAddress.streetName')}
         />
 
         <TextInput
-          disabled={form.values.copyShippingAddressToBilling}
           withAsterisk
           pt={10}
           label="Postal Code"
           placeholder="Postal Code"
-          {...(form.values.copyShippingAddressToBilling
-            ? { ...form.getInputProps('shippingAddress.postalCode') }
-            : { ...form.getInputProps('billingAddress.postalCode') })}
+          {...form.getInputProps('billingAddress.postalCode')}
         />
 
         <Checkbox pt={7} label="Set as default billing address" {...form.getInputProps('setDefaultBillingAddress')} />
