@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
 import {
   TextInput,
@@ -30,6 +30,7 @@ const countryData = [
 ];
 
 const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     initialValues: {
@@ -101,6 +102,7 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
             .signup(values)
             .then(() => {
               onSignin(true);
+              navigate('/');
             })
             .catch((err: Error) =>
               notifications.show({
