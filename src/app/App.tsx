@@ -15,7 +15,13 @@ function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider
+      theme={{
+        primaryColor: 'dark',
+      }}
+      withGlobalStyles
+      withNormalizeCSS
+    >
       <Container className="wrapper">
         <Routes>
           <Route path="/" element={<Layout />}>
