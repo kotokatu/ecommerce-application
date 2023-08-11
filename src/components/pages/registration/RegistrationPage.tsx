@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { validation } from '../../../utils/helpers/validation';
 
 type RegistrationPageProps = {
@@ -99,7 +100,13 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
             .then(() => {
               onSignin(true);
             })
-            .catch((err: Error) => console.log(err.message));
+            .catch((err: Error) =>
+              notifications.show({
+                color: 'red',
+                style: { backgroundColor: 'pink', padding: '25px' },
+                message: err.message,
+              }),
+            );
         })}
       >
         <Paper withBorder shadow="md" p={30} radius="md">

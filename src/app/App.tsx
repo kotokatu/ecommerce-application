@@ -1,6 +1,7 @@
 import './App.scss';
 import { Route, Routes } from 'react-router-dom';
 import { MantineProvider, Container } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import Layout from '../components/layout/Layout';
 import MainPage from '../components/pages/main/MainPage';
 import CatalogPage from '../components/pages/catalog/CatalogPage';
@@ -22,6 +23,7 @@ function App() {
       withGlobalStyles
       withNormalizeCSS
     >
+      <Notifications position="top-center" />
       <Container className="wrapper">
         <Routes>
           <Route path="/" element={<Layout />}>
