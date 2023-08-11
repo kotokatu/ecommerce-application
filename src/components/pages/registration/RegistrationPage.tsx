@@ -17,6 +17,7 @@ import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { validation } from '../../../utils/helpers/validation';
+import { TbX } from 'react-icons/tb';
 
 type RegistrationPageProps = {
   onSignin: Dispatch<SetStateAction<boolean>>;
@@ -102,6 +103,7 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
             })
             .catch((err: Error) =>
               notifications.show({
+                icon: <TbX />,
                 color: 'red',
                 style: { backgroundColor: 'pink', padding: '25px' },
                 message: err.message,
