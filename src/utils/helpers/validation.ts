@@ -18,6 +18,6 @@ export const validation = {
   dateOfBirth: (value: Date) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal 13' : null),
   country: (value: string) => (value ? null : 'Please choose a country'),
   city: (value: string) => (onlyLettersRegex.test(value) ? null : 'Should only contain letters'),
-  streetName: (value: string) => (value ? null : 'Address is too short'),
+  streetName: (value: string) => (value.trim() ? null : 'Address cannon be empty'),
   postalCode: (value: string) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
 };
