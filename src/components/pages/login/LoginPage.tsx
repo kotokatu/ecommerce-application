@@ -4,6 +4,7 @@ import { useForm } from '@mantine/form';
 import { Dispatch, SetStateAction } from 'react';
 import { userService } from '../../../services/UserService/UserService';
 import { notificationSuccessful, notificationError } from '../../ui/notification';
+import { successfullMessage } from './../../../utils/constants/messages';
 //import { validation } from '../../../utils/helpers/validation';
 
 type LoginPageProps = {
@@ -44,11 +45,11 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
           <form
             onSubmit={form.onSubmit((userData) => {
               userService
-                .login(userData)
+                .login(userData.email, userData.password)
                 .then(() => {
                   onSignIn(true);
                   navigate('/');
-                  notificationSuccessful('message');
+                  notificationSuccessful(successfullMessage);
                 })
                 .catch((err: Error) => notificationError(err.message));
             })}

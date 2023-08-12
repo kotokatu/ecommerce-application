@@ -2,7 +2,6 @@ import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/dateHelpers';
 import { MyCustomerDraft } from '@commercetools/platform-sdk';
-import { successfullMessage, unknownErrMessage } from '../../utils/constants/messages';
 
 type UserData = {
   email: string;
@@ -24,11 +23,6 @@ type UserData = {
   };
   setDefaultShippingAddress: boolean;
   setDefaultBillingAddress: boolean;
-};
-
-type UserLogIn = {
-  email: string;
-  password: string;
 };
 
 class UserService {
@@ -77,20 +71,18 @@ class UserService {
       });
   }
 
-  public login(userLogin: UserLogIn) {
+  public login(email: string, password: string) {
     return this.apiRoot
       .me()
       .login()
       .post({
         body: {
-          email: userLogin.email,
-          password: userLogin.password,
+          email,
+          password,
         },
       })
       .execute()
-      .then(
-        () => (this.apiRoot = new CtpClient({ username: userLogin.email, password: userLogin.password }).getApiRoot()),
-      )
+      .then(() => (this.apiRoot = new CtpClient({ username: email, password }).getApiRoot()))
       .catch((err: Error) => {
         throw new Error(err.message);
       });
