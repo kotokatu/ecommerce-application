@@ -43,15 +43,14 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
         <Box maw={320} mx="auto">
           <form
             onSubmit={form.onSubmit((userData) => {
-              userService.login(userData).then(([isUserLogged, message]) => {
-                onSignIn(isUserLogged);
-                if (isUserLogged) {
+              userService
+                .login(userData)
+                .then(() => {
+                  onSignIn(true);
                   navigate('/');
-                  notificationSuccessful(message);
-                } else {
-                  notificationError(message);
-                }
-              });
+                  notificationSuccessful('message');
+                })
+                .catch((err: Error) => notificationError(err.message));
             })}
           >
             <TextInput label="Email" placeholder="example@gmail.com" required {...form.getInputProps('email')} />

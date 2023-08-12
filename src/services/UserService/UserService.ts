@@ -77,27 +77,23 @@ class UserService {
       });
   }
 
-  async login(userLogin: UserLogIn): Promise<[boolean, string]> {
-    try {
-      await this.apiRoot
-        .me()
-        .login()
-        .post({
-          body: {
-            email: userLogin.email,
-            password: userLogin.password,
-          },
-        })
-        .execute();
-      this.apiRoot = new CtpClient({ username: userLogin.email, password: userLogin.password }).getApiRoot();
-      return [true, successfullMessage];
-    } catch (error) {
-      if (error instanceof Error) {
-        return [false, error.message];
-      } else {
-        return [false, unknownErrMessage];
-      }
-    }
+  public login(userLogin: UserLogIn) {
+    return this.apiRoot
+      .me()
+      .login()
+      .post({
+        body: {
+          email: userLogin.email,
+          password: userLogin.password,
+        },
+      })
+      .execute()
+      .then(
+        () => (this.apiRoot = new CtpClient({ username: userLogin.email, password: userLogin.password }).getApiRoot()),
+      )
+      .catch((err: Error) => {
+        throw new Error(err.message);
+      });
   }
 
   logout() {
