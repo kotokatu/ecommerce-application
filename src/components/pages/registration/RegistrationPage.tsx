@@ -59,6 +59,7 @@ const RegistrationPage = ({ onSignup }: RegistrationPageProps) => {
         postalCode: validation.postalCode,
       },
     },
+    validateInputOnChange: true,
   });
 
   const setBillingAddress = (isChecked: boolean) => {
