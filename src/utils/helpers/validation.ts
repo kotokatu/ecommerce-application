@@ -17,8 +17,7 @@ export const validation = {
     onlyLettersRegex.test(value) ? null : 'Last name should only contain Latin letters and cannot be empty',
   dateOfBirth: (value: Date) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal 13' : null),
   country: (value: string) => (value ? null : 'Please choose a country'),
-  city: (value: string) =>
-    onlyLettersRegex.test(value) ? null : 'City should only contain Latin letters and cannot be empty',
-  streetName: (value: string) => (value.trim() ? null : 'Address cannot be empty'),
+  city: (value: string) => (onlyLettersRegex.test(value) ? null : 'Should only contain letters'),
+  streetName: (value: string) => (value ? null : 'Address is too short'),
   postalCode: (value: string) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
 };
