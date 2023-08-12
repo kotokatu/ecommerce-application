@@ -60,31 +60,17 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
       firstName: validation.firstName,
       lastName: validation.lastName,
       dateOfBirth: validation.dateOfBirth,
-      shippingAddress: {
-        country: validation.country,
-        city: validation.city,
-        streetName: validation.streetName,
-        postalCode: validation.postalCode,
-      },
-      billingAddress: {
-        country: validation.country,
-        city: validation.city,
-        streetName: validation.streetName,
-        postalCode: validation.postalCode,
-      },
+      shippingAddress: { ...validation.address },
+      billingAddress: { ...validation.address },
     },
     validateInputOnChange: true,
   });
 
   const setBillingAddress = (isChecked: boolean) => {
+    const { shippingAddress } = form.values;
     if (isChecked) {
       form.setValues({
-        billingAddress: {
-          country: form.values.shippingAddress.country,
-          city: form.values.shippingAddress.city,
-          streetName: form.values.shippingAddress.streetName,
-          postalCode: form.values.shippingAddress.postalCode,
-        },
+        billingAddress: { ...shippingAddress },
       });
     }
   };
