@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { Dispatch, SetStateAction } from 'react';
 import { userService } from '../../../services/UserService/UserService';
-import { notificationSuccessful, notificationError } from '../../ui/notification';
-import { successfullMessage } from './../../../utils/constants/messages';
+import { notificationSuccess, notificationError } from '../../ui/notification';
+import { successfullLoginMessage } from './../../../utils/constants/messages';
 //import { validation } from '../../../utils/helpers/validation';
 
 type LoginPageProps = {
@@ -49,7 +49,7 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
                 .then(() => {
                   onSignIn(true);
                   navigate('/');
-                  notificationSuccessful(successfullMessage);
+                  notificationSuccess(successfullLoginMessage);
                 })
                 .catch((err: Error) => notificationError(err.message));
             })}

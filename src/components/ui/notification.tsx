@@ -2,7 +2,7 @@ import { notifications } from '@mantine/notifications';
 import { TbX } from 'react-icons/tb';
 import { FcApproval } from 'react-icons/fc';
 
-export const notificationSuccessful = (message: string) => {
+export const notificationSuccess = (message: string) => {
   notifications.show({
     icon: <FcApproval />,
     withCloseButton: false,
