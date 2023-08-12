@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
 import {
@@ -66,14 +66,17 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
     validateInputOnChange: true,
   });
 
-  const setBillingAddress = (isChecked: boolean) => {
-    const { shippingAddress } = form.values;
-    if (isChecked) {
-      form.setValues({
-        billingAddress: { ...shippingAddress },
-      });
-    }
-  };
+  const setBillingAddress = useCallback(
+    (isChecked: boolean) => {
+      const { shippingAddress } = form.values;
+      if (isChecked) {
+        form.setValues({
+          billingAddress: { ...shippingAddress },
+        });
+      }
+    },
+    [form],
+  );
 
   return (
     <Container sx={{ width: 450 }}>

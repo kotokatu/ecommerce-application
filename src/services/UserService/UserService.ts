@@ -55,9 +55,7 @@ class UserService {
       .me()
       .signup()
       .post({
-        body: {
-          ...this.createCustomerDraft(userData),
-        },
+        body: { ...this.createCustomerDraft(userData) },
       })
       .execute()
       .then(() => {
