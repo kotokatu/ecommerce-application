@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
 import {
   TextInput,
@@ -15,9 +15,8 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { validation } from '../../../utils/helpers/validation';
-import { TbX } from 'react-icons/tb';
+import { notificationError, notificationSuccess } from '../../ui/notification';
 
 type RegistrationPageProps = {
   onSignIn: Dispatch<SetStateAction<boolean>>;
@@ -30,6 +29,7 @@ const countryData = [
 ];
 
 const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     initialValues: {
@@ -90,15 +90,10 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             .signup(values)
             .then(() => {
               onSignIn(true);
+              notificationSuccess('Account was succesfully created');
+              navigate('/');
             })
-            .catch((err: Error) =>
-              notifications.show({
-                icon: <TbX />,
-                color: 'red',
-                style: { backgroundColor: 'pink', padding: '25px' },
-                message: err.message,
-              }),
-            )
+            .catch((err: Error) => notificationError(err.message))
             .finally(() => setIsLoading(false));
         })}
       >
