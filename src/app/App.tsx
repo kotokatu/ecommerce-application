@@ -10,19 +10,21 @@ import RegistrationPage from '../components/pages/registration/RegistrationPage'
 import BasketPage from '../components/pages/basket/BasketPage';
 import NotFoundPage from '../components/pages/not-found/NotFoundPage';
 import { useState } from 'react';
+import { Notifications } from '@mantine/notifications';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
+      <Notifications position="top-center" />
       <Container className="wrapper">
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<MainPage />} />
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="about" element={<AboutPage />} />
-            <Route path="login" element={<LoginPage />} />
+            <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
             <Route path="registration" element={<RegistrationPage onSignup={setUserLoggedIn} />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
