@@ -1,8 +1,27 @@
-import { Paper, Title, Text, Container } from '@mantine/core';
-import LoginForms from './loginforms';
-import { Link } from 'react-router-dom';
+import { Paper, Title, Text, Container, TextInput, PasswordInput, Button, Box } from '@mantine/core';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from '@mantine/form';
+import { Dispatch, SetStateAction } from 'react';
+import { userService } from '../../../services/UserService/UserService';
+import { notificationSuccessful, notificationError } from '../../ui/notification';
+//import { validation } from '../../../utils/helpers/validation';
 
-export default function LoginPage() {
+type LoginPageProps = {
+  onSignIn: Dispatch<SetStateAction<boolean>>;
+};
+
+const LoginPage = ({ onSignIn }: LoginPageProps) => {
+  const navigate = useNavigate();
+
+  const form = useForm({
+    initialValues: { email: '', password: '' },
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: (value) => (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value) ? null : 'Invalid password'),
+    },
+    validateInputOnChange: ['email', 'password'],
+  });
+
   return (
     <Container size={420}>
       <Title
@@ -14,15 +33,43 @@ export default function LoginPage() {
       >
         Welcome back!
       </Title>
-      <Text color="dimmed" size="sm" align="center" my={5}>
+      <Text color="dimmed" size="sm" align="center" mt={5} mb={10}>
         Do not have an account yet?
         <Link to="/registration" style={{ color: 'red' }}>
           Create account
         </Link>
       </Text>
       <Paper withBorder shadow="md" p={30} radius="md">
-        <LoginForms />
+        <Box maw={320} mx="auto">
+          <form
+            onSubmit={form.onSubmit((userData) => {
+              userService.login(userData).then(([isUserLogged, message]) => {
+                onSignIn(isUserLogged);
+                if (isUserLogged) {
+                  navigate('/');
+                  notificationSuccessful(message);
+                } else {
+                  notificationError(message);
+                }
+              });
+            })}
+          >
+            <TextInput label="Email" placeholder="example@gmail.com" required {...form.getInputProps('email')} />
+            <PasswordInput
+              mt="md"
+              label="Password"
+              placeholder="Password"
+              required
+              {...form.getInputProps('password')}
+            />
+            <Button type="submit" fullWidth mt="xl">
+              Sign in
+            </Button>
+          </form>
+        </Box>
       </Paper>
     </Container>
   );
-}
+};
+
+export default LoginPage;
