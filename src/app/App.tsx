@@ -30,7 +30,7 @@ function App() {
             <Route index element={<MainPage />} />
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="about" element={<AboutPage />} />
-            <Route path="login" element={<LoginPage />} />
+            <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
             <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
