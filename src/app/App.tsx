@@ -31,7 +31,7 @@ function App() {
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="login" element={<LoginPage />} />
-            <Route path="registration" element={<RegistrationPage onSignin={setUserLoggedIn} />} />
+            <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

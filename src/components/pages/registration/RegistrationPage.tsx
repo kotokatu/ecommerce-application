@@ -20,7 +20,7 @@ import { validation } from '../../../utils/helpers/validation';
 import { TbX } from 'react-icons/tb';
 
 type RegistrationPageProps = {
-  onSignin: Dispatch<SetStateAction<boolean>>;
+  onSignIn: Dispatch<SetStateAction<boolean>>;
 };
 
 const countryData = [
@@ -29,7 +29,7 @@ const countryData = [
   { value: 'FR', label: 'France' },
 ];
 
-const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
+const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     initialValues: {
@@ -86,7 +86,7 @@ const RegistrationPage = ({ onSignin }: RegistrationPageProps) => {
           userService
             .signup(values)
             .then(() => {
-              onSignin(true);
+              onSignIn(true);
             })
             .catch((err: Error) =>
               notifications.show({
