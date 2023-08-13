@@ -3,13 +3,14 @@ import { useDisclosure } from '@mantine/hooks';
 import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
+import { userService } from '../../../services/UserService/UserService';
 
 type HeaderProps = {
-  onSignIn: Dispatch<SetStateAction<boolean>>;
+  setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
   userLoggedIn: boolean;
 };
 
-export function AppHeader({ onSignIn, userLoggedIn }: HeaderProps) {
+export function AppHeader({ setUserLoggedIn, userLoggedIn }: HeaderProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = headerStyle();
 
@@ -70,7 +71,8 @@ export function AppHeader({ onSignIn, userLoggedIn }: HeaderProps) {
         className={setActiveLink}
         onClick={() => {
           if (link.name === 'Logout') {
-            onSignIn(false);
+            setUserLoggedIn(false);
+            userService.logout();
           }
         }}
       >

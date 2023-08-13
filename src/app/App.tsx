@@ -26,7 +26,7 @@ function App() {
     >
       <Notifications position="top-center" />
       <Routes>
-        <Route path="/" element={<Layout onSignIn={setUserLoggedIn} userLoggedIn={userLoggedIn} />}>
+        <Route path="/" element={<Layout setUserLoggedIn={setUserLoggedIn} userLoggedIn={userLoggedIn} />}>
           <Route index element={<MainPage />} />
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="about" element={<AboutPage />} />

@@ -5,14 +5,14 @@ import { AppHeader } from './header/Header';
 import Footer from './footer/Footer';
 
 type LayoutProps = {
-  onSignIn: Dispatch<SetStateAction<boolean>>;
+  setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
   userLoggedIn: boolean;
 };
 
-const Layout = ({ onSignIn, userLoggedIn }: LayoutProps) => {
+const Layout = ({ setUserLoggedIn, userLoggedIn }: LayoutProps) => {
   return (
     <Container className="wrapper">
-      <AppHeader onSignIn={onSignIn} userLoggedIn={userLoggedIn} />
+      <AppHeader setUserLoggedIn={setUserLoggedIn} userLoggedIn={userLoggedIn} />
       <main className="main">
         <Outlet />
       </main>
