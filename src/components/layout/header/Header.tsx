@@ -1,49 +1,106 @@
-import setActiveLink from '../../../utils/helpers/set-active-link';
+import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
+import { headerStyle } from './header-style';
 
-const Header = () => {
-  return (
-    <header className="header">
-      <div className="header__logo logo">
-        <NavLink className="logo__link" to="/">
-          <h1 className="logo__title">30 Fingers Store</h1>
-        </NavLink>
-      </div>
-      <nav className="header__menu menu">
-        <ul className="menu__body">
-          <li className="menu__item">
-            <NavLink className={setActiveLink} to="/catalog">
-              Catalog
-            </NavLink>
-          </li>
-          <li className="menu__item">
-            <NavLink className={setActiveLink} to="/about">
-              About
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
-      <div className="header__user user">
-        <ul className="user__body">
-          <li className="user__item">
-            <NavLink className={setActiveLink} to="/login">
-              Login
-            </NavLink>
-          </li>
-          <li className="user__item">
-            <NavLink className={setActiveLink} to="/registration">
-              Registration
-            </NavLink>
-          </li>
-          <li className="user__item">
-            <NavLink className={setActiveLink} to="/basket">
-              Basket
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-    </header>
-  );
+type HeaderProps = {
+  onSignIn: Dispatch<SetStateAction<boolean>>;
+  userLoggedIn: boolean;
 };
 
-export default Header;
+export function AppHeader({ onSignIn, userLoggedIn }: HeaderProps) {
+  const [opened, { toggle }] = useDisclosure(false);
+  const { classes } = headerStyle();
+
+  const menuLinks = [
+    {
+      name: 'Catalog',
+      routePath: '/catalog',
+    },
+    {
+      name: 'About',
+      routePath: '/about',
+    },
+  ];
+
+  const userLinks = [
+    {
+      name: 'Login',
+      routePath: '/login',
+      isActive: !userLoggedIn,
+    },
+    {
+      name: 'Logout',
+      routePath: '/login',
+      isActive: userLoggedIn,
+    },
+    {
+      name: 'Registration',
+      routePath: '/registration',
+      isActive: !userLoggedIn,
+    },
+    {
+      name: 'Profile',
+      routePath: '/profile',
+      isActive: userLoggedIn,
+    },
+    {
+      name: 'Basket',
+      routePath: '/basket',
+      isActive: true,
+    },
+  ];
+
+  function setActiveLink({ isActive }: { isActive: boolean }) {
+    return isActive ? `${classes.link} ${classes.linkActive}` : classes.link;
+  }
+
+  const menuItems = menuLinks.map((link) => (
+    <NavLink key={link.name} to={link.routePath} className={setActiveLink}>
+      {link.name}
+    </NavLink>
+  ));
+
+  const userItems = userLinks.map((link) =>
+    link.isActive ? (
+      <NavLink
+        key={link.name}
+        to={link.routePath}
+        className={setActiveLink}
+        onClick={() => {
+          if (link.name === 'Logout') {
+            onSignIn(false);
+          }
+        }}
+      >
+        {link.name}
+      </NavLink>
+    ) : undefined,
+  );
+
+  return (
+    <Header height={80} className={classes.root}>
+      <Container className={classes.header}>
+        <Group className={classes.title}>
+          <NavLink to="/">30 Fingers Store</NavLink>
+        </Group>
+
+        <Group className={classes.menuLinks}>{menuItems}</Group>
+
+        <Group className={classes.userLinks}>{userItems}</Group>
+
+        <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+
+        <Transition transition="pop-top-right" duration={200} mounted={opened}>
+          {(styles) => (
+            <Paper className={classes.dropdown} withBorder style={styles}>
+              {menuItems}
+              {userItems}
+            </Paper>
+          )}
+        </Transition>
+      </Container>
+    </Header>
+  );
+}
