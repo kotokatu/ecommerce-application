@@ -1,6 +1,6 @@
 import { getAge } from './date-helpers';
 
-const emailRegex = /^\S+@\S+$/;
+const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const onlyLettersRegex = /^[a-zA-Z]+$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const postalCodeRegex = /\b\d{5}\b$/;
