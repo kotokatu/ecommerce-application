@@ -55,25 +55,27 @@ class UserService {
         .execute();
       this.apiRoot = new CtpClient({ username: userData.email, password: userData.password }).getApiRoot();
     } catch (err) {
-      handleResponseError(err as ClientResponse);
+      return handleResponseError(err as ClientResponse<ErrorResponse> | Error);
     }
   }
 
-  public login(email: string, password: string) {
-    return this.apiRoot
-      .me()
-      .login()
-      .post({
-        body: {
-          email,
-          password,
-        },
-      })
-      .execute()
-      .then(() => (this.apiRoot = new CtpClient({ username: email, password }).getApiRoot()))
-      .catch((err: ErrorResponse) => {
-        throw new Error(err.message);
-      });
+  public async login(email: string, password: string) {
+    try {
+      const client = new CtpClient({ username: email, password }).getApiRoot();
+      await this.apiRoot
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+          },
+        })
+        .execute();
+      this.apiRoot = client;
+    } catch (err) {
+      handleResponseError(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 
   public logout() {

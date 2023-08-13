@@ -9,7 +9,10 @@ enum ErrorCodes {
   ServiceUnavailable = 503,
 }
 
-export const handleResponseError = (res: ClientResponse) => {
+export const handleResponseError = (res: ClientResponse | Error) => {
+  if (res instanceof Error) {
+    throw new Error(res.message);
+  }
   const err = res.error;
   if (err) {
     switch (err.statusCode) {
