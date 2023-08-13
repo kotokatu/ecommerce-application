@@ -1,6 +1,7 @@
 import './App.scss';
 import { Route, Routes } from 'react-router-dom';
 import { MantineProvider, Container } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import Layout from '../components/layout/Layout';
 import MainPage from '../components/pages/main/MainPage';
 import CatalogPage from '../components/pages/catalog/CatalogPage';
@@ -10,13 +11,18 @@ import RegistrationPage from '../components/pages/registration/RegistrationPage'
 import BasketPage from '../components/pages/basket/BasketPage';
 import NotFoundPage from '../components/pages/not-found/NotFoundPage';
 import { useState } from 'react';
-import { Notifications } from '@mantine/notifications';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider
+      theme={{
+        primaryColor: 'dark',
+      }}
+      withGlobalStyles
+      withNormalizeCSS
+    >
       <Notifications position="top-center" />
       <Container className="wrapper">
         <Routes>
@@ -25,7 +31,7 @@ function App() {
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
-            <Route path="registration" element={<RegistrationPage onSignup={setUserLoggedIn} />} />
+            <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
