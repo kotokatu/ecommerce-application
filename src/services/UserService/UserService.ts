@@ -2,7 +2,7 @@ import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
 import { ErrorResponse, MyCustomerDraft } from '@commercetools/platform-sdk';
-import { handleResponseError } from '../api/ResponseErrorHandler';
+import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 
 type Address = {
@@ -55,13 +55,12 @@ class UserService {
         .execute();
       this.apiRoot = new CtpClient({ username: userData.email, password: userData.password }).getApiRoot();
     } catch (err) {
-      return handleResponseError(err as ClientResponse<ErrorResponse> | Error);
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
 
   public async login(email: string, password: string) {
     try {
-      const client = new CtpClient({ username: email, password }).getApiRoot();
       await this.apiRoot
         .me()
         .login()
@@ -72,9 +71,9 @@ class UserService {
           },
         })
         .execute();
-      this.apiRoot = client;
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
     } catch (err) {
-      handleResponseError(err as ClientResponse<ErrorResponse> | Error);
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
 
