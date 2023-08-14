@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, useCallback } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { userService } from '../../../services/UserService/UserService';
 import {
@@ -15,8 +15,9 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { validation } from '../../../utils/helpers/validation';
+import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 import { notificationError, notificationSuccess } from '../../ui/notification';
+import { getAge } from '../../../utils/helpers/date-helpers';
 
 type RegistrationPageProps = {
   onSignIn: Dispatch<SetStateAction<boolean>>;
@@ -52,31 +53,46 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
       },
       setDefaultShippingAddress: false,
       setDefaultBillingAddress: false,
+      copyShippingToBilling: false,
     },
 
     validate: {
-      email: validation.email,
-      password: validation.password,
-      firstName: validation.firstName,
-      lastName: validation.lastName,
-      dateOfBirth: validation.dateOfBirth,
-      shippingAddress: { ...validation.address },
-      billingAddress: { ...validation.address },
+      email: (value) => (emailRegex.test(value) ? null : 'Should be a valid email'),
+      password: (value) =>
+        passwordRegex.test(value)
+          ? null
+          : 'Minimum 8 characters, at least 1 uppercase Latin letter, 1 lowercase Latin letter, and 1 number',
+      firstName: (value) =>
+        onlyLettersRegex.test(value) ? null : 'First name should only contain Latin letters and cannot be empty',
+      lastName: (value) =>
+        onlyLettersRegex.test(value) ? null : 'Last name should only contain Latin letters and cannot be empty',
+      dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal to 13' : null),
+      shippingAddress: {
+        country: (value) => (value ? null : 'Please choose a country'),
+        city: (value) => (onlyLettersRegex.test(value) ? null : 'Should only contain Latin letters'),
+        streetName: (value) => (value.trim() ? null : 'Address cannot be empty'),
+        postalCode: (value) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
+      },
+      billingAddress: {
+        country: (value, values) => (values.copyShippingToBilling ? null : value ? 'Please choose a country' : null),
+        city: (value, values) =>
+          values.copyShippingToBilling
+            ? null
+            : onlyLettersRegex.test(value)
+            ? null
+            : 'Should only contain Latin letters',
+        streetName: (value, values) =>
+          values.copyShippingToBilling ? null : value.trim() ? null : 'Address cannot be empty',
+        postalCode: (value, values) =>
+          values.copyShippingToBilling
+            ? null
+            : postalCodeRegex.test(value)
+            ? null
+            : 'Should be a valid postal code (5 digits)',
+      },
     },
     validateInputOnChange: true,
   });
-
-  const setBillingAddress = useCallback(
-    (isChecked: boolean) => {
-      const { shippingAddress } = form.values;
-      if (isChecked) {
-        form.setValues({
-          billingAddress: { ...shippingAddress },
-        });
-      }
-    },
-    [form],
-  );
 
   return (
     <Container sx={{ width: 450 }}>
@@ -170,38 +186,46 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
           <Text size={18} mt={20}>
             Billing Address
           </Text>
-          <Checkbox
-            pt={7}
-            label="Same as shipping"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBillingAddress(e.target.checked)}
-          />
+          <Checkbox pt={7} label="Same as shipping" {...form.getInputProps('copyShippingToBilling')} />
           <Select
             withAsterisk
             label="Country"
             data={countryData}
             placeholder="Choose country"
-            {...form.getInputProps('billingAddress.country')}
+            disabled={form.values.copyShippingToBilling}
+            {...(form.values.copyShippingToBilling
+              ? { ...form.getInputProps('shippingAddress.country') }
+              : { ...form.getInputProps('billingAddress.country') })}
           />
           <TextInput
             withAsterisk
             pt={10}
             label="City"
             placeholder="City"
-            {...form.getInputProps('billingAddress.city')}
+            disabled={form.values.copyShippingToBilling}
+            {...(form.values.copyShippingToBilling
+              ? { ...form.getInputProps('shippingAddress.city') }
+              : { ...form.getInputProps('billingAddress.city') })}
           />
           <TextInput
             withAsterisk
             pt={10}
             label="Address"
             placeholder="Address"
-            {...form.getInputProps('billingAddress.streetName')}
+            disabled={form.values.copyShippingToBilling}
+            {...(form.values.copyShippingToBilling
+              ? { ...form.getInputProps('shippingAddress.streetName') }
+              : { ...form.getInputProps('billingAddress.streetName') })}
           />
           <TextInput
             withAsterisk
             pt={10}
             label="Postal Code"
             placeholder="Postal Code"
-            {...form.getInputProps('billingAddress.postalCode')}
+            disabled={form.values.copyShippingToBilling}
+            {...(form.values.copyShippingToBilling
+              ? { ...form.getInputProps('shippingAddress.postalCode') }
+              : { ...form.getInputProps('billingAddress.postalCode') })}
           />
           <Checkbox pt={7} label="Set as default billing address" {...form.getInputProps('setDefaultBillingAddress')} />
         </Paper>
