@@ -22,6 +22,7 @@ type UserData = {
   billingAddress: Address;
   setDefaultShippingAddress: boolean;
   setDefaultBillingAddress: boolean;
+  copyShippingToBilling: boolean;
 };
 
 class UserService {
@@ -37,7 +38,10 @@ class UserService {
       firstName: userData.firstName,
       lastName: userData.lastName,
       dateOfBirth: formatDate(userData.dateOfBirth as Date),
-      addresses: [{ ...userData.shippingAddress }, { ...userData.billingAddress }],
+      addresses: [
+        { ...userData.shippingAddress },
+        userData.copyShippingToBilling ? { ...userData.shippingAddress } : { ...userData.billingAddress },
+      ],
       defaultShippingAddress: userData.setDefaultShippingAddress ? 0 : undefined,
       defaultBillingAddress: userData.setDefaultBillingAddress ? 1 : undefined,
     };
