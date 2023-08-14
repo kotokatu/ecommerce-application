@@ -69,7 +69,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
       dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal to 13' : null),
       shippingAddress: {
         country: (value) => (value ? null : 'Please choose a country'),
-        city: (value) => (onlyLettersRegex.test(value) ? null : 'Should only contain Latin letters'),
+        city: (value) => (onlyLettersRegex.test(value) ? null : 'City should only contain Latin letters'),
         streetName: (value) => (value.trim() ? null : 'Address cannot be empty'),
         postalCode: (value) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
       },
@@ -80,7 +80,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             ? null
             : onlyLettersRegex.test(value)
             ? null
-            : 'Should only contain Latin letters',
+            : 'City should only contain Latin letters',
         streetName: (value, values) =>
           values.copyShippingToBilling ? null : value.trim() ? null : 'Address cannot be empty',
         postalCode: (value, values) =>
