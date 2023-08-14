@@ -91,7 +91,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             .then(() => {
               onSignIn(true);
               notificationSuccess('Account was succesfully created');
-              navigate('/');
+              navigate('/', { replace: true });
             })
             .catch((err: Error) => notificationError(err.message))
             .finally(() => setIsLoading(false));

@@ -2,14 +2,8 @@ import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
 import { ErrorResponse, MyCustomerDraft } from '@commercetools/platform-sdk';
-
-enum ErrorCodes {
-  BadRequest = 400,
-  NotFound = 404,
-  InternalServerError = 500,
-  BadGateway = 502,
-  ServiceUnavailable = 503,
-}
+import { handleErrorResponse } from '../api/handleErrorResponse';
+import { ClientResponse } from '@commercetools/sdk-client-v2';
 
 type Address = {
   country: string;
@@ -50,46 +44,37 @@ class UserService {
     return customerDraft;
   }
 
-  public signup(userData: UserData): Promise<string | void> {
-    return this.apiRoot
-      .me()
-      .signup()
-      .post({
-        body: { ...this.createCustomerDraft(userData) },
-      })
-      .execute()
-      .then(() => {
-        this.apiRoot = new CtpClient({ username: userData.email, password: userData.password }).getApiRoot();
-      })
-      .catch((err: ErrorResponse) => {
-        switch (err.statusCode) {
-          case ErrorCodes.BadRequest:
-            throw new Error(err.message);
-          case ErrorCodes.BadGateway:
-          case ErrorCodes.InternalServerError:
-          case ErrorCodes.ServiceUnavailable:
-            throw new Error('Something went wrong on our side. Please try again later');
-          default:
-            throw new Error('An unexpected error occurred');
-        }
-      });
+  public async signup(userData: UserData): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .signup()
+        .post({
+          body: { ...this.createCustomerDraft(userData) },
+        })
+        .execute();
+      this.apiRoot = new CtpClient({ username: userData.email, password: userData.password }).getApiRoot();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 
-  public login(email: string, password: string) {
-    return this.apiRoot
-      .me()
-      .login()
-      .post({
-        body: {
-          email,
-          password,
-        },
-      })
-      .execute()
-      .then(() => (this.apiRoot = new CtpClient({ username: email, password }).getApiRoot()))
-      .catch((err: ErrorResponse) => {
-        throw new Error(err.message);
-      });
+  public async login(email: string, password: string) {
+    try {
+      await this.apiRoot
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+          },
+        })
+        .execute();
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 
   public logout() {

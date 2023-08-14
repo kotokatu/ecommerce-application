@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 
@@ -32,7 +32,10 @@ function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
-          <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
+          <Route
+            path="registration"
+            element={userLoggedIn ? <Navigate to="/" /> : <RegistrationPage onSignIn={setUserLoggedIn} />}
+          />
           <Route path="basket" element={<BasketPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
