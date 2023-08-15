@@ -74,7 +74,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
         postalCode: (value) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
       },
       billingAddress: {
-        country: (value, values) => (values.copyShippingToBilling ? null : value ? 'Please choose a country' : null),
+        country: (value, values) => (values.copyShippingToBilling ? null : value ? null : 'Please choose a country'),
         city: (value, values) =>
           values.copyShippingToBilling
             ? null
@@ -100,17 +100,18 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
         Join 30 Fingers Store
       </Title>
       <form
-        onSubmit={form.onSubmit((values) => {
+        onSubmit={form.onSubmit(async (values) => {
           setIsLoading(true);
-          userService
-            .signup(values)
-            .then(() => {
-              onSignIn(true);
-              notificationSuccess('Account was succesfully created');
-              navigate('/', { replace: true });
-            })
-            .catch((err: Error) => notificationError(err.message))
-            .finally(() => setIsLoading(false));
+          try {
+            await userService.signup(values);
+            onSignIn(true);
+            notificationSuccess('Account was succesfully created');
+            navigate('/', { replace: true });
+          } catch (err) {
+            if (err instanceof Error) notificationError(err.message);
+          } finally {
+            setIsLoading(false);
+          }
         })}
       >
         <Paper withBorder shadow="md" p={30} radius="md">
