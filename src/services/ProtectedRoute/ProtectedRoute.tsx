@@ -1,7 +1,7 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 type ProtectedRouteProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   userLoggedIn: boolean;
   redirectPath?: string;
 };
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, userLoggedIn, redirectPath = '/' }: Protecte
     return <Navigate to={redirectPath} replace state={{ from: location }} />;
   }
 
-  return <>{children}</>;
+  return <>{children ? children : <Outlet />}</>;
 };
 
 export default ProtectedRoute;

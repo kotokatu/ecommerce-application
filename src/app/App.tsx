@@ -31,30 +31,16 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="about" element={<AboutPage />} />
-          <Route
-            path="profile"
-            element={
-              <ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login">
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="login"
-            element={
-              <ProtectedRoute userLoggedIn={userLoggedIn}>
-                <LoginPage onSignIn={setUserLoggedIn} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="registration"
-            element={
-              <ProtectedRoute userLoggedIn={userLoggedIn}>
-                <RegistrationPage onSignIn={setUserLoggedIn} />
-              </ProtectedRoute>
-            }
-          />
+
+          <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
+            <Route path="profile" element={<ProfilePage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
+            <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
+            <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
+          </Route>
+
           <Route path="basket" element={<BasketPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
