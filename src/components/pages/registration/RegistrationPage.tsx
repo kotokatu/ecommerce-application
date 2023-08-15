@@ -74,7 +74,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
         postalCode: (value) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
       },
       billingAddress: {
-        country: (value, values) => (values.copyShippingToBilling ? null : value ? 'Please choose a country' : null),
+        country: (value, values) => (values.copyShippingToBilling ? null : value ? null : 'Please choose a country'),
         city: (value, values) =>
           values.copyShippingToBilling
             ? null
@@ -100,27 +100,35 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
         Join 30 Fingers Store
       </Title>
       <form
-        onSubmit={form.onSubmit((values) => {
+        onSubmit={form.onSubmit(async (values) => {
           setIsLoading(true);
-          userService
-            .signup(values)
-            .then(() => {
-              onSignIn(true);
-              notificationSuccess('Account was succesfully created');
-              navigate('/', { replace: true });
-            })
-            .catch((err: Error) => notificationError(err.message))
-            .finally(() => setIsLoading(false));
+          try {
+            await userService.signup(values);
+            onSignIn(true);
+            notificationSuccess('Account was succesfully created');
+            navigate('/', { replace: true });
+          } catch (err) {
+            if (err instanceof Error) notificationError(err.message);
+          } finally {
+            setIsLoading(false);
+          }
         })}
       >
         <Paper withBorder shadow="md" p={30} radius="md">
-          <TextInput withAsterisk label="First Name" placeholder="First Name" {...form.getInputProps('firstName')} />
+          <TextInput
+            withAsterisk
+            label="First Name"
+            placeholder="First Name"
+            data-testid="first-name"
+            {...form.getInputProps('firstName')}
+          />
 
           <TextInput
             pt={10}
             withAsterisk
             label="Last Name"
             placeholder="Last Name"
+            data-testid="last-name"
             {...form.getInputProps('lastName')}
           />
           <TextInput
@@ -129,6 +137,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             autoComplete="email"
             label="Email"
             placeholder="your@email.com"
+            data-testid="email"
             {...form.getInputProps('email')}
           />
           <PasswordInput
@@ -137,6 +146,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             autoComplete="current-password"
             label="Password"
             placeholder="Password"
+            data-testid="password"
             {...form.getInputProps('password')}
           />
           <DatePickerInput
@@ -145,6 +155,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             valueFormat="DD.MM.YYYY"
             label="Date of Birth"
             placeholder="__.__.____"
+            data-testid="date"
             {...form.getInputProps('dateOfBirth')}
           />
           <Text size={18} mt={20}>
@@ -155,6 +166,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             label="Country"
             data={countryData}
             placeholder="Choose country"
+            data-testid="shipping-country"
             {...form.getInputProps('shippingAddress.country')}
           />
           <TextInput
@@ -162,6 +174,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             pt={10}
             label="City"
             placeholder="City"
+            data-testid="shipping-city"
             {...form.getInputProps('shippingAddress.city')}
           />
           <TextInput
@@ -169,6 +182,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             pt={10}
             label="Address"
             placeholder="Address"
+            data-testid="shipping-address"
             {...form.getInputProps('shippingAddress.streetName')}
           />
           <TextInput
@@ -176,6 +190,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             pt={10}
             label="Postal Code"
             placeholder="Postal Code"
+            data-testid="shipping-postal-code"
             {...form.getInputProps('shippingAddress.postalCode')}
           />
           <Checkbox
@@ -192,6 +207,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             label="Country"
             data={countryData}
             placeholder="Choose country"
+            data-testid="billing-country"
             disabled={form.values.copyShippingToBilling}
             {...(form.values.copyShippingToBilling
               ? { ...form.getInputProps('shippingAddress.country') }
@@ -202,6 +218,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             pt={10}
             label="City"
             placeholder="City"
+            data-testid="billing-city"
             disabled={form.values.copyShippingToBilling}
             {...(form.values.copyShippingToBilling
               ? { ...form.getInputProps('shippingAddress.city') }
@@ -212,6 +229,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             pt={10}
             label="Address"
             placeholder="Address"
+            data-testid="billing-address"
             disabled={form.values.copyShippingToBilling}
             {...(form.values.copyShippingToBilling
               ? { ...form.getInputProps('shippingAddress.streetName') }
@@ -223,6 +241,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             label="Postal Code"
             placeholder="Postal Code"
             disabled={form.values.copyShippingToBilling}
+            data-testid="billing-postal-code"
             {...(form.values.copyShippingToBilling
               ? { ...form.getInputProps('shippingAddress.postalCode') }
               : { ...form.getInputProps('billingAddress.postalCode') })}
