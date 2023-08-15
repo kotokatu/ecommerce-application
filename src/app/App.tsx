@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 
@@ -12,6 +12,7 @@ import RegistrationPage from '../components/pages/registration/RegistrationPage'
 import BasketPage from '../components/pages/basket/BasketPage';
 import ProfilePage from '../components/pages/profile/ProfilePage';
 import NotFoundPage from '../components/pages/not-found/NotFoundPage';
+import ProtectedRoute from '../services/ProtectedRoute/ProtectedRoute';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -30,12 +31,16 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="about" element={<AboutPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
-          <Route
-            path="registration"
-            element={userLoggedIn ? <Navigate to="/" /> : <RegistrationPage onSignIn={setUserLoggedIn} />}
-          />
+
+          <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
+            <Route path="profile" element={<ProfilePage />} />
+          </Route>
+
+          <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
+            <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
+            <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
+          </Route>
+
           <Route path="basket" element={<BasketPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
