@@ -4,6 +4,7 @@ import {
   type Credentials,
   type HttpMiddlewareOptions,
   type AnonymousAuthMiddlewareOptions,
+  type AuthMiddlewareOptions,
   type UserAuthOptions,
   type PasswordAuthMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
@@ -55,6 +56,15 @@ class CtpClient {
   }
 
   private getAnonymousAuthOptions(): AnonymousAuthMiddlewareOptions {
+    return {
+      host: this.authURL,
+      projectKey: this.projectKey,
+      credentials: this.credentials,
+      fetch,
+    };
+  }
+
+  private getAuthOptions(): AuthMiddlewareOptions {
     return {
       host: this.authURL,
       projectKey: this.projectKey,

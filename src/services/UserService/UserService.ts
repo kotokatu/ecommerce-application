@@ -57,7 +57,7 @@ class UserService {
           body: { ...this.createCustomerDraft(userData) },
         })
         .execute();
-      this.apiRoot = new CtpClient({ username: userData.email, password: userData.password }).getApiRoot();
+      await this.login(userData.email, userData.password);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
@@ -65,6 +65,7 @@ class UserService {
 
   public async login(email: string, password: string) {
     try {
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
       await this.apiRoot
         .me()
         .login()
@@ -75,7 +76,6 @@ class UserService {
           },
         })
         .execute();
-      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
