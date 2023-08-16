@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { userService } from '../../../services/UserService/UserService';
 import { notificationSuccess, notificationError } from '../../ui/notification';
 import { successfullLoginMessage } from './../../../utils/constants/messages';
-//import { validation } from '../../../utils/helpers/validation';
+import { emailRegex, passwordRegex } from '../../../utils/constants/validationRegex';
 
 type LoginPageProps = {
   onSignIn: Dispatch<SetStateAction<boolean>>;
@@ -17,8 +17,8 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
   const form = useForm({
     initialValues: { email: '', password: '' },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value) ? null : 'Invalid password'),
+      email: (value) => (emailRegex.test(value) ? null : 'Invalid email'),
+      password: (value) => (passwordRegex.test(value) ? null : 'Invalid password'),
     },
     validateInputOnChange: ['email', 'password'],
   });
