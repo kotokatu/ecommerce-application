@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import { createStyles } from '@mantine/core';
 import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 import { notificationError, notificationSuccess } from '../../ui/notification';
 import { getAge } from '../../../utils/helpers/date-helpers';
@@ -29,7 +30,27 @@ const countryData = [
   { value: 'FR', label: 'France' },
 ];
 
+const useStyles = createStyles((theme) => ({
+  container: {
+    width: '450px',
+  },
+  title: {
+    fontWeight: 800,
+    fontSize: '30px',
+    [theme.fn.smallerThan('xs')]: {
+      fontSize: '20px',
+    },
+  },
+  formWrapper: {
+    padding: '1.5rem',
+    [theme.fn.smallerThan('xs')]: {
+      padding: '1rem',
+    },
+  },
+}));
+
 const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
+  const { classes } = useStyles();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
@@ -95,8 +116,8 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
   });
 
   return (
-    <Container sx={{ width: 450 }}>
-      <Title order={1} align="center" mb={20} sx={{ fontWeight: 800 }}>
+    <Container className={classes.container}>
+      <Title className={classes.title} order={1} align="center" mb={20}>
         Join 30 Fingers Store
       </Title>
       <form
@@ -114,7 +135,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
           }
         })}
       >
-        <Paper withBorder shadow="md" p={30} radius="md">
+        <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
           <TextInput withAsterisk label="First Name" placeholder="First Name" {...form.getInputProps('firstName')} />
 
           <TextInput
