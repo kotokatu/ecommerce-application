@@ -2,6 +2,7 @@ import { ErrorResponse } from '@commercetools/platform-sdk';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 
 enum ErrorCodes {
+  FailedToFetch = 0,
   Unauthorized = 401,
   BadRequest = 400,
   NotFound = 404,
@@ -23,6 +24,7 @@ const getErrorMessage = (error: ClientResponse<ErrorResponse> | Error) => {
         return 'Authorization failed. Please try again';
       case ErrorCodes.BadRequest:
         return err.message;
+      case ErrorCodes.FailedToFetch:
       case ErrorCodes.BadGateway:
       case ErrorCodes.InternalServerError:
       case ErrorCodes.ServiceUnavailable:
