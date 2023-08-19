@@ -18,13 +18,16 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
     initialValues: { email: '', password: '' },
     validate: {
       email: (value) => (emailRegex.test(value) ? null : 'Invalid email'),
-      password: (value) => (passwordRegex.test(value) ? null : 'Invalid password'),
+      password: (value) =>
+        passwordRegex.test(value)
+          ? null
+          : 'Minimum 8 characters, at least 1 uppercase Latin letter, 1 lowercase Latin letter, and 1 number',
     },
     validateInputOnChange: ['email', 'password'],
   });
 
   return (
-    <Container size={420}>
+    <Container sx={{ width: 450 }}>
       <Title
         align="center"
         sx={(theme) => ({
