@@ -3,7 +3,6 @@ import {
   type Client,
   type Credentials,
   type HttpMiddlewareOptions,
-  type AnonymousAuthMiddlewareOptions,
   type AuthMiddlewareOptions,
   type UserAuthOptions,
   type PasswordAuthMiddlewareOptions,
@@ -12,7 +11,7 @@ import {
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
 const userClientBuilder = new ClientBuilder();
-const anonymousClientBuilder = new ClientBuilder();
+const defaultClientBuilder = new ClientBuilder();
 
 class CtpClient {
   private projectKey: string = process.env.REACT_APP_PROJECT_KEY as string;
@@ -35,15 +34,10 @@ class CtpClient {
           .withHttpMiddleware(this.getHttpMiddlewareOptions())
           .withLoggerMiddleware()
           .build()
-      : anonymousClientBuilder
-          .withAnonymousSessionFlow(this.getAnonymousAuthOptions())
+      : defaultClientBuilder
+          .withClientCredentialsFlow(this.getAuthOptions())
           .withHttpMiddleware(this.getHttpMiddlewareOptions())
-          .withLoggerMiddleware()
           .build();
-  }
-
-  public getProjectKey(): string {
-    return this.projectKey;
   }
 
   private getUserAuthOptions(): PasswordAuthMiddlewareOptions {
@@ -52,15 +46,9 @@ class CtpClient {
       projectKey: this.projectKey,
       credentials: { ...this.credentials, user: this.userAuthOptions as UserAuthOptions },
       fetch,
-    };
-  }
-
-  private getAnonymousAuthOptions(): AnonymousAuthMiddlewareOptions {
-    return {
-      host: this.authURL,
-      projectKey: this.projectKey,
-      credentials: this.credentials,
-      fetch,
+      scopes: [
+        'manage_my_orders:30fingers-project manage_my_business_units:30fingers-project manage_my_payments:30fingers-project create_anonymous_token:30fingers-project manage_my_profile:30fingers-project manage_my_quote_requests:30fingers-project manage_my_quotes:30fingers-project view_published_products:30fingers-project manage_my_shopping_lists:30fingers-project view_categories:30fingers-project',
+      ],
     };
   }
 

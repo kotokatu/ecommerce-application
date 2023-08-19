@@ -82,15 +82,15 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
       password: (value) =>
         passwordRegex.test(value)
           ? null
-          : 'Minimum 8 characters, at least 1 uppercase Latin letter, 1 lowercase Latin letter, and 1 number',
+          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
       firstName: (value) =>
-        onlyLettersRegex.test(value) ? null : 'First name should only contain Latin letters and cannot be empty',
+        onlyLettersRegex.test(value) ? null : 'First name should only contain letters and cannot be empty',
       lastName: (value) =>
-        onlyLettersRegex.test(value) ? null : 'Last name should only contain Latin letters and cannot be empty',
+        onlyLettersRegex.test(value) ? null : 'Last name should only contain letters and cannot be empty',
       dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal to 13' : null),
       shippingAddress: {
         country: (value) => (value ? null : 'Please choose a country'),
-        city: (value) => (onlyLettersRegex.test(value) ? null : 'City should only contain Latin letters'),
+        city: (value) => (onlyLettersRegex.test(value) ? null : 'City should only contain letters and cannot be empty'),
         streetName: (value) => (value.trim() ? null : 'Address cannot be empty'),
         postalCode: (value) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
       },
@@ -101,7 +101,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
             ? null
             : onlyLettersRegex.test(value)
             ? null
-            : 'City should only contain Latin letters',
+            : 'City should only contain letters and cannot be empty',
         streetName: (value, values) =>
           values.copyShippingToBilling ? null : value.trim() ? null : 'Address cannot be empty',
         postalCode: (value, values) =>

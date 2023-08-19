@@ -38,7 +38,7 @@ describe('RegistrationPage', () => {
 
     expect(
       screen.getByText(
-        'Minimum 8 characters, at least 1 uppercase Latin letter, 1 lowercase Latin letter, and 1 number',
+        'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
       ),
     ).toBeInTheDocument();
   });
@@ -51,7 +51,7 @@ describe('RegistrationPage', () => {
     fireEvent.change(screen.getByLabelText('First Name *'), { target: { value: '' } });
     fireEvent.click(screen.getByText('Sign up'));
 
-    expect(screen.getByText('First name should only contain Latin letters and cannot be empty')).toBeInTheDocument();
+    expect(screen.getByText('First name should only contain letters and cannot be empty')).toBeInTheDocument();
   });
 
   it('should display an error message when the form is submitted with an empty last name', async () => {
@@ -62,7 +62,7 @@ describe('RegistrationPage', () => {
     fireEvent.change(screen.getByLabelText('Last Name *'), { target: { value: '' } });
     fireEvent.click(screen.getByText('Sign up'));
 
-    expect(screen.getByText('Last name should only contain Latin letters and cannot be empty')).toBeInTheDocument();
+    expect(screen.getByText('Last name should only contain letters and cannot be empty')).toBeInTheDocument();
   });
 
   it('should display an error message when the user submits the form with a date of birth indicating an age less than 13', async () => {
@@ -95,7 +95,7 @@ describe('RegistrationPage', () => {
     fireEvent.change(screen.getAllByLabelText('City *')[0], { target: { value: '!invalid-city!' } });
     fireEvent.click(screen.getByText('Sign up'));
 
-    expect(screen.getAllByText('City should only contain Latin letters')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('City should only contain letters and cannot be empty')[0]).toBeInTheDocument();
   });
 
   it('should display an error message when the user submits the form with an invalid shipping postal code', () => {
