@@ -1,7 +1,7 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { ErrorResponse, MyCustomerDraft } from '@commercetools/platform-sdk';
+import { ErrorResponse, CustomerDraft } from '@commercetools/platform-sdk';
 import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 
@@ -31,19 +31,20 @@ class UserService {
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
-  private createCustomerDraft(userData: UserData): MyCustomerDraft {
-    const customerDraft: MyCustomerDraft = {
+  private createCustomerDraft(userData: UserData): CustomerDraft {
+    const customerDraft: CustomerDraft = {
       email: userData.email,
       password: userData.password,
       firstName: userData.firstName,
       lastName: userData.lastName,
       dateOfBirth: formatDate(userData.dateOfBirth as Date),
-      addresses: [
-        { ...userData.shippingAddress },
-        userData.copyShippingToBilling ? { ...userData.shippingAddress } : { ...userData.billingAddress },
-      ],
+      addresses: userData.copyShippingToBilling
+        ? [{ ...userData.shippingAddress }]
+        : [{ ...userData.shippingAddress }, { ...userData.billingAddress }],
+      shippingAddresses: [0],
+      billingAddresses: userData.copyShippingToBilling ? [0] : [1],
       defaultShippingAddress: userData.setDefaultShippingAddress ? 0 : undefined,
-      defaultBillingAddress: userData.setDefaultBillingAddress ? 1 : undefined,
+      defaultBillingAddress: !userData.setDefaultBillingAddress ? undefined : userData.copyShippingToBilling ? 0 : 1,
     };
     return customerDraft;
   }
@@ -51,8 +52,7 @@ class UserService {
   public async signup(userData: UserData): Promise<string | void> {
     try {
       await this.apiRoot
-        .me()
-        .signup()
+        .customers()
         .post({
           body: { ...this.createCustomerDraft(userData) },
         })
