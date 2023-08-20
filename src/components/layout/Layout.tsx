@@ -7,12 +7,28 @@ import Footer from './footer/Footer';
 type LayoutProps = {
   setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
   userLoggedIn: boolean;
+  isOpenBurger: boolean;
+  closeBurger: () => void;
+  toggleBurger: () => void;
 };
 
-const Layout = ({ setUserLoggedIn, userLoggedIn }: LayoutProps) => {
+const Layout = ({ setUserLoggedIn, userLoggedIn, isOpenBurger, closeBurger, toggleBurger }: LayoutProps) => {
+  function closeBurgerDelay() {
+    if (isOpenBurger) {
+      setTimeout(() => {
+        closeBurger();
+      }, 100);
+    }
+  }
+
   return (
-    <Container className="wrapper">
-      <AppHeader setUserLoggedIn={setUserLoggedIn} userLoggedIn={userLoggedIn} />
+    <Container className="wrapper" onClick={closeBurgerDelay}>
+      <AppHeader
+        setUserLoggedIn={setUserLoggedIn}
+        userLoggedIn={userLoggedIn}
+        isOpenBurger={isOpenBurger}
+        toggleBurger={toggleBurger}
+      />
       <main className="main">
         <Outlet />
       </main>
