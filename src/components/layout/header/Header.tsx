@@ -21,7 +21,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         <Group className={classes.title}>
           <NavLink to="/">
             <div className={classes.logobox}>
-              <img className={classes.logo} src={require('../../../assets/img/logo.png')} alt="" />
+              <img className={classes.logo} src={require('../../../assets/img/logo.png')} alt="30 Fingers Store Logo" />
               <div className={classes.titlebox}>
                 <p className={classes.topTitle}>30 FINGERS</p>
                 <p className={classes.downTitle}>STORE</p>
@@ -36,7 +36,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
 
         <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
 
-        <Transition transition="slide-left" duration={500} mounted={isOpenBurger}>
+        <Transition transition="slide-down" duration={500} mounted={isOpenBurger}>
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
               <MenuLinks />
