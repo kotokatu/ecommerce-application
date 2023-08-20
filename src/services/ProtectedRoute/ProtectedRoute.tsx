@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children, userLoggedIn, redirectPath = '/' }: Protecte
   const location = useLocation();
 
   if (userLoggedIn) {
-    return <Navigate to={redirectPath} replace state={{ from: location }} />;
+    return <Navigate to={redirectPath} state={{ from: location }} />;
   }
 
   return <>{children ? children : <Outlet />}</>;

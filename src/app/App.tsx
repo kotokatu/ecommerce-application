@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import { useDisclosure } from '@mantine/hooks';
 
 import Layout from '../components/layout/Layout';
 import MainPage from '../components/pages/main/MainPage';
@@ -16,18 +17,31 @@ import ProtectedRoute from '../services/ProtectedRoute/ProtectedRoute';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [isOpenBurger, { toggle, close }] = useDisclosure(false);
 
   return (
     <MantineProvider
       theme={{
         primaryColor: 'dark',
+        // fontFamily: 'Days-One',
       }}
       withGlobalStyles
       withNormalizeCSS
     >
       <Notifications position="top-center" />
       <Routes>
-        <Route path="/" element={<Layout setUserLoggedIn={setUserLoggedIn} userLoggedIn={userLoggedIn} />}>
+        <Route
+          path="/"
+          element={
+            <Layout
+              setUserLoggedIn={setUserLoggedIn}
+              userLoggedIn={userLoggedIn}
+              isOpenBurger={isOpenBurger}
+              closeBurger={close}
+              toggleBurger={toggle}
+            />
+          }
+        >
           <Route index element={<MainPage />} />
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="about" element={<AboutPage />} />
