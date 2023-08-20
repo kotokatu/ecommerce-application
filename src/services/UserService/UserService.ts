@@ -65,7 +65,8 @@ class UserService {
 
   public async login(email: string, password: string) {
     try {
-      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
+      const newClient = new CtpClient({ username: email, password });
+      this.apiRoot = newClient.getApiRoot();
       await this.apiRoot
         .me()
         .login()
