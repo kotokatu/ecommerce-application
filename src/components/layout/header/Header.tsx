@@ -24,10 +24,6 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
           </NavLink>
         </Group>
 
-        <Group className={classes.menuLinks}>
-          <MenuLinks />
-        </Group>
-
         <Group className={classes.userLinks}>
           <UserLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
         </Group>

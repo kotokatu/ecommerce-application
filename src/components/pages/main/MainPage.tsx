@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { Container, Group } from '@mantine/core';
 import { mainStyle } from './main-style';
+import MenuLinks from '../../ui/app-links/MenuLinks';
 
 const MainPage = () => {
   const { classes } = mainStyle();
@@ -9,7 +10,7 @@ const MainPage = () => {
     return isActive ? `${classes.link} ${classes.linkActive}` : classes.link;
   }
 
-  const menuLinks = [
+  const userLinks = [
     {
       name: 'Login',
       routePath: '/login',
@@ -18,9 +19,13 @@ const MainPage = () => {
       name: 'Registration',
       routePath: '/registration',
     },
+    {
+      name: 'Basket',
+      routePath: '/basket',
+    },
   ];
 
-  const menuItems = menuLinks.map((link) => (
+  const userItems = userLinks.map((link) => (
     <NavLink key={link.name} to={link.routePath} className={setActiveLink}>
       {link.name}
     </NavLink>
@@ -28,7 +33,10 @@ const MainPage = () => {
 
   return (
     <Container className={classes.main}>
-      <Group className={classes.menuItems}>{menuItems}</Group>
+      <Group className={classes.menuItems}>
+        <MenuLinks />
+        {userItems}
+      </Group>
       <Group className={classes.content}></Group>
     </Container>
   );
