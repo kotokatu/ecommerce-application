@@ -10,7 +10,7 @@ import {
 } from '@commercetools/sdk-client-v2';
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { CastomTokenCache } from './TokenCache';
+import { TokenCacheHandler } from './TokenCache';
 
 const userClientBuilder = new ClientBuilder();
 const defaultClientBuilder = new ClientBuilder();
@@ -24,7 +24,7 @@ class CtpClient {
     clientSecret: process.env.REACT_APP_CLIENT_SECRET as string,
   };
   private userAuthOptions?: UserAuthOptions;
-  private tokenCache: TokenCache = new CastomTokenCache();
+  private tokenCache: TokenCache = new TokenCacheHandler();
 
   constructor(userAuthOptions?: UserAuthOptions) {
     if (userAuthOptions) this.userAuthOptions = userAuthOptions;

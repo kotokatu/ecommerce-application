@@ -1,17 +1,17 @@
 import { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 
-export class CastomTokenCache implements TokenCache {
-  castomCaсhe: TokenStore = {
+export class TokenCacheHandler implements TokenCache {
+  tokenCaсhe: TokenStore = {
     token: '',
     expirationTime: 0,
     refreshToken: undefined,
   };
 
   set(newCache: TokenStore) {
-    this.castomCaсhe = newCache;
+    this.tokenCaсhe = newCache;
   }
 
   get() {
-    return this.castomCaсhe;
+    return this.tokenCaсhe;
   }
 }
