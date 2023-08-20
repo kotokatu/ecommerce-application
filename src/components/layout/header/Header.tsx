@@ -1,104 +1,44 @@
 import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
-import { userService } from '../../../services/UserService/UserService';
+import UserLinks from '../../ui/app-links/UserLinks';
+import MenuLinks from '../../ui/app-links/MenuLinks';
 
 type HeaderProps = {
   setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
   userLoggedIn: boolean;
+  isOpenBurger: boolean;
+  toggleBurger: () => void;
 };
 
-export function AppHeader({ setUserLoggedIn, userLoggedIn }: HeaderProps) {
-  const [opened, { toggle }] = useDisclosure(false);
+export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleBurger }: HeaderProps) {
   const { classes } = headerStyle();
-
-  const menuLinks = [
-    {
-      name: 'Catalog',
-      routePath: '/catalog',
-    },
-    {
-      name: 'About',
-      routePath: '/about',
-    },
-  ];
-
-  const userLinks = [
-    {
-      name: 'Login',
-      routePath: '/login',
-      isActive: !userLoggedIn,
-    },
-    {
-      name: 'Logout',
-      routePath: '/login',
-      isActive: userLoggedIn,
-    },
-    {
-      name: 'Registration',
-      routePath: '/registration',
-      isActive: !userLoggedIn,
-    },
-    {
-      name: 'Profile',
-      routePath: '/profile',
-      isActive: userLoggedIn,
-    },
-    {
-      name: 'Basket',
-      routePath: '/basket',
-      isActive: true,
-    },
-  ];
-
-  function setActiveLink({ isActive }: { isActive: boolean }) {
-    return isActive ? `${classes.link} ${classes.linkActive}` : classes.link;
-  }
-
-  const menuItems = menuLinks.map((link) => (
-    <NavLink key={link.name} to={link.routePath} className={setActiveLink}>
-      {link.name}
-    </NavLink>
-  ));
-
-  const userItems = userLinks.map((link) =>
-    link.isActive ? (
-      <NavLink
-        key={link.name}
-        to={link.routePath}
-        className={setActiveLink}
-        onClick={() => {
-          if (link.name === 'Logout') {
-            setUserLoggedIn(false);
-            userService.logout();
-          }
-        }}
-      >
-        {link.name}
-      </NavLink>
-    ) : undefined,
-  );
 
   return (
     <Header height={80} className={classes.root}>
       <Container className={classes.header}>
         <Group className={classes.title}>
-          <NavLink to="/">30 Fingers Store</NavLink>
+          <NavLink to="/">
+            <img className={classes.logo} src={require('../../../assets/img/logo.jpg')} alt="" />
+          </NavLink>
         </Group>
 
-        <Group className={classes.menuLinks}>{menuItems}</Group>
+        <Group className={classes.menuLinks}>
+          <MenuLinks />
+        </Group>
 
-        <Group className={classes.userLinks}>{userItems}</Group>
+        <Group className={classes.userLinks}>
+          <UserLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+        </Group>
 
-        <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+        <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
 
-        <Transition transition="pop-top-right" duration={200} mounted={opened}>
+        <Transition transition="pop-top-right" duration={200} mounted={isOpenBurger}>
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
-              {menuItems}
-              {userItems}
+              <MenuLinks />
+              <UserLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
             </Paper>
           )}
         </Transition>
