@@ -7,9 +7,34 @@ export const headerStyle = createStyles((theme) => ({
     minWidth: '270px',
   },
 
-  logo: {
+  logobox: {
     width: '250px',
     height: '60px',
+    display: 'flex',
+  },
+
+  logo: {
+    width: '60px',
+    marginRight: '10px',
+  },
+
+  titlebox: {
+    fontFamily: 'Days-One',
+    width: '190px',
+    height: '60px',
+  },
+
+  topTitle: {
+    margin: '0',
+    lineHeight: '1',
+    paddingTop: '3px',
+    fontSize: '25px',
+  },
+
+  downTitle: {
+    margin: '0',
+    lineHeight: '1',
+    fontSize: '9.5px',
   },
 
   root: {

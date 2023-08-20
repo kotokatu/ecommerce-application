@@ -23,6 +23,7 @@ function App() {
     <MantineProvider
       theme={{
         primaryColor: 'dark',
+        // fontFamily: 'Days-One',
       }}
       withGlobalStyles
       withNormalizeCSS

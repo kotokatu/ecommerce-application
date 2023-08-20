@@ -20,7 +20,13 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
       <Container className={classes.header}>
         <Group className={classes.title}>
           <NavLink to="/">
-            <img className={classes.logo} src={require('../../../assets/img/logo.jpg')} alt="" />
+            <div className={classes.logobox}>
+              <img className={classes.logo} src={require('../../../assets/img/logo.png')} alt="" />
+              <div className={classes.titlebox}>
+                <p className={classes.topTitle}>30 FINGERS</p>
+                <p className={classes.downTitle}>STORE</p>
+              </div>
+            </div>
           </NavLink>
         </Group>
 

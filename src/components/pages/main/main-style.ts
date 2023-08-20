@@ -32,7 +32,6 @@ export const mainStyle = createStyles((theme) => ({
     textDecoration: 'none',
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     fontSize: 'initial',
-    width: '110px',
     fontWeight: 500,
 
     '&:hover': {
