@@ -11,8 +11,9 @@ export const mainStyle = createStyles((theme) => ({
   },
 
   menuItems: {
-    width: '107px',
+    width: '125px',
     display: 'flex',
+    alignItems: 'flex-start',
     flexDirection: 'column',
     borderRight: '0.0625rem solid #e9ecef',
   },
@@ -30,7 +31,8 @@ export const mainStyle = createStyles((theme) => ({
     borderRadius: theme.radius.sm,
     textDecoration: 'none',
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
-    fontSize: theme.fontSizes.sm,
+    fontSize: 'initial',
+    width: '110px',
     fontWeight: 500,
 
     '&:hover': {
