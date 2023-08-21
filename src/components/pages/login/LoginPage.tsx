@@ -1,7 +1,7 @@
 import { Paper, Title, Text, Container, TextInput, PasswordInput, Button, Box, createStyles } from '@mantine/core';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { userService } from '../../../services/UserService/UserService';
 import { notificationSuccess, notificationError } from '../../ui/notification';
 import { successfullLoginMessage } from './../../../utils/constants/messages';
@@ -33,6 +33,7 @@ const formStyles = createStyles((theme) => ({
 const LoginPage = ({ onSignIn }: LoginPageProps) => {
   const navigate = useNavigate();
   const { classes } = formStyles();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     initialValues: { email: '', password: '' },
@@ -54,8 +55,9 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
         <Box maw={320} mx="auto">
           <form
-            onSubmit={form.onSubmit((userData) => {
-              userService
+            onSubmit={form.onSubmit(async (userData) => {
+              setIsLoading(true);
+              await userService
                 .login(userData.email, userData.password)
                 .then(() => {
                   onSignIn(true);
@@ -63,6 +65,7 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
                   notificationSuccess(successfullLoginMessage);
                 })
                 .catch((err: Error) => notificationError(err.message));
+              setIsLoading(false);
             })}
           >
             <TextInput label="Email" placeholder="example@gmail.com" required {...form.getInputProps('email')} />
@@ -73,7 +76,7 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
               required
               {...form.getInputProps('password')}
             />
-            <Button type="submit" fullWidth mt="xl">
+            <Button type="submit" fullWidth mt="xl" loading={isLoading}>
               Sign in
             </Button>
             <Text color="dimmed" size="sm" align="center" pt={5}>
