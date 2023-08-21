@@ -7,11 +7,11 @@ export class TokenCacheHandler implements TokenCache {
     refreshToken: undefined,
   };
 
-  set(newCache: TokenStore) {
+  set(newCache: TokenStore): void {
     this.tokenCaсhe = newCache;
   }
 
-  get() {
+  get(): TokenStore {
     return this.tokenCaсhe;
   }
 }
