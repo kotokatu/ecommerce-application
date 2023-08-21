@@ -17,7 +17,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
 
   function hideScroll() {
     if (wrapper) {
-      wrapper.style.overflow = isOpenBurger ? 'hidden' : 'auto';
+      wrapper.style.overflow = isOpenBurger ? 'hidden' : 'unset';
     }
   }
 
