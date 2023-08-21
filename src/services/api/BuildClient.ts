@@ -11,6 +11,7 @@ import {
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import { TokenCacheHandler } from './TokenCache';
+import { Store } from '../../store/store';
 
 const userClientBuilder = new ClientBuilder();
 const defaultClientBuilder = new ClientBuilder();
@@ -72,8 +73,8 @@ class CtpClient {
     };
   }
 
-  public getAсcessToken() {
-    return this.tokenCache.get().token;
+  private createUserStore() {
+    new Store(this.tokenCache.get().token);
   }
 
   public getApiRoot() {
