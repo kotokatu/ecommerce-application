@@ -1,6 +1,6 @@
 import { Container, Group } from '@mantine/core';
 import { mainPageStyle } from './main-style';
-import MainLinks from '../../ui/app-links/MainLinks';
+import MainLinks from '../../components/app-links/MainLinks';
 
 type MainPageProps = {
   userLoggedIn: boolean;

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { userService } from '../../../services/UserService/UserService';
+import { userService } from '../../services/UserService/UserService';
 import {
   TextInput,
   Checkbox,
@@ -16,9 +16,9 @@ import {
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { createStyles } from '@mantine/core';
-import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
-import { notificationError, notificationSuccess } from '../../ui/notification';
-import { getAge } from '../../../utils/helpers/date-helpers';
+import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../utils/constants/validationRegex';
+import { notificationError, notificationSuccess } from '../../components/ui/notification';
+import { getAge } from '../../utils/helpers/date-helpers';
 
 type RegistrationPageProps = {
   onSignIn: Dispatch<SetStateAction<boolean>>;
