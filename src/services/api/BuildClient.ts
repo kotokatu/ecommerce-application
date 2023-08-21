@@ -72,8 +72,8 @@ class CtpClient {
     };
   }
 
-  public getToken() {
-    return this.tokenCache.get();
+  public getAсcessToken() {
+    return this.tokenCache.get().token;
   }
 
   public getApiRoot() {
