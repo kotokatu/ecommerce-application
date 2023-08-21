@@ -36,7 +36,13 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
 
         <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
 
-        <Transition transition="slide-down" duration={500} mounted={isOpenBurger}>
+        <Transition
+          transition="slide-left"
+          duration={500}
+          mounted={isOpenBurger}
+          onEnter={() => (document.body.style.overflow = 'hidden')}
+          onExited={() => (document.body.style.overflow = 'unset')}
+        >
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
               <MenuLinks />

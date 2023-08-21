@@ -50,7 +50,7 @@ export const headerStyle = createStyles((theme) => ({
     left: 0,
     right: 0,
     zIndex: 0,
-    height: '80vh',
+    height: '90vh',
     textAlign: 'center',
     fontSize: '25px',
     borderTopRightRadius: 0,
