@@ -1,4 +1,4 @@
-import { Paper, Title, Text, Container, TextInput, PasswordInput, Button, Box } from '@mantine/core';
+import { Paper, Title, Text, Container, TextInput, PasswordInput, Button, Box, createStyles } from '@mantine/core';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { Dispatch, SetStateAction } from 'react';
@@ -11,8 +11,28 @@ type LoginPageProps = {
   onSignIn: Dispatch<SetStateAction<boolean>>;
 };
 
+const formStyles = createStyles((theme) => ({
+  container: {
+    width: '450px',
+  },
+  title: {
+    fontWeight: 800,
+    fontSize: '30px',
+    [theme.fn.smallerThan('xs')]: {
+      fontSize: '20px',
+    },
+  },
+  formWrapper: {
+    padding: '1.5rem',
+    [theme.fn.smallerThan('xs')]: {
+      padding: '1rem',
+    },
+  },
+}));
+
 const LoginPage = ({ onSignIn }: LoginPageProps) => {
   const navigate = useNavigate();
+  const { classes } = formStyles();
 
   const form = useForm({
     initialValues: { email: '', password: '' },
@@ -27,23 +47,11 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
   });
 
   return (
-    <Container sx={{ width: 450 }}>
-      <Title
-        align="center"
-        sx={(theme) => ({
-          fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-          fontWeight: 800,
-        })}
-      >
+    <Container className={classes.container}>
+      <Title className={classes.title} order={1} align="center" mb={20}>
         Welcome back!
       </Title>
-      <Text color="dimmed" size="sm" align="center" mt={5} mb={10}>
-        Do not have an account yet?
-        <Link to="/registration" style={{ color: 'red' }}>
-          Create account
-        </Link>
-      </Text>
-      <Paper withBorder shadow="md" p={30} radius="md">
+      <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
         <Box maw={320} mx="auto">
           <form
             onSubmit={form.onSubmit((userData) => {
@@ -67,6 +75,12 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
             />
             <Button type="submit" fullWidth mt="xl">
               Sign in
+            </Button>
+            <Text color="dimmed" size="sm" align="center" pt={5}>
+              Do not have an account yet?
+            </Text>
+            <Button variant="outline" fullWidth mt={5} component={Link} to="/registration">
+              Sign up
             </Button>
           </form>
         </Box>

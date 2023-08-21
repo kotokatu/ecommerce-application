@@ -9,6 +9,6 @@ test('renders App element', () => {
       <App />
     </BrowserRouter>,
   );
-  const appElement = screen.getByText(/30 Fingers Store/i);
+  const appElement = screen.getByText(/30 FINGERS/i);
   expect(appElement).toBeInTheDocument();
 });
