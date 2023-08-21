@@ -3,6 +3,7 @@ import { createStyles, rem } from '@mantine/core';
 export const linksStyle = createStyles((theme) => ({
   link: {
     fontFamily: 'Arial',
+    fontSize: 'initial',
     display: 'block',
     lineHeight: 1,
     padding: `${rem(8)} ${rem(12)}`,
