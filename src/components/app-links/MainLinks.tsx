@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { linksStyle } from './links-style';
-import { notificationWarning } from '../notification';
+import { notificationWarning } from '../ui/notification';
 
 type MainLinksProps = {
   userLoggedIn: boolean;

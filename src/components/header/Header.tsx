@@ -2,7 +2,7 @@ import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/co
 import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
-import HeaderLinks from '../../ui/app-links/HeaderLinks';
+import HeaderLinks from '../app-links/HeaderLinks';
 
 type HeaderProps = {
   setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
@@ -27,7 +27,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         <Group className={classes.title}>
           <NavLink to="/">
             <div className={classes.logobox}>
-              <img className={classes.logo} src={require('../../../assets/img/logo.png')} alt="30 Fingers Store Logo" />
+              <img className={classes.logo} src={require('../../assets/img/logo.png')} alt="30 Fingers Store Logo" />
               <div className={classes.titlebox}>
                 <p className={classes.topTitle}>30 FINGERS</p>
                 <p className={classes.downTitle}>STORE</p>

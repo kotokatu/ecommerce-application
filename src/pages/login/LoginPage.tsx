@@ -2,10 +2,10 @@ import { Paper, Title, Text, Container, TextInput, PasswordInput, Button, Box, c
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { userService } from '../../../services/UserService/UserService';
-import { notificationSuccess, notificationError } from '../../ui/notification';
-import { successfullLoginMessage } from './../../../utils/constants/messages';
-import { emailRegex, passwordRegex } from '../../../utils/constants/validationRegex';
+import { userService } from '../../services/UserService/UserService';
+import { notificationSuccess, notificationError } from '../../components/ui/notification';
+import { successfullLoginMessage } from './../../utils/constants/messages';
+import { emailRegex, passwordRegex } from '../../utils/constants/validationRegex';
 
 type LoginPageProps = {
   onSignIn: Dispatch<SetStateAction<boolean>>;

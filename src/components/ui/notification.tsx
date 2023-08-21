@@ -6,7 +6,6 @@ import { FaExclamation } from 'react-icons/fa';
 export const notificationSuccess = (message: string) => {
   notifications.show({
     icon: <FcApproval />,
-    withCloseButton: true,
     color: 'green',
     style: { padding: '25px' },
     message,
@@ -17,7 +16,6 @@ export const notificationSuccess = (message: string) => {
 export const notificationError = (message: string) => {
   notifications.show({
     icon: <TbX />,
-    withCloseButton: true,
     color: 'red',
     style: { backgroundColor: 'pink', padding: '25px' },
     message,
@@ -26,7 +24,6 @@ export const notificationError = (message: string) => {
 export const notificationWarning = (message: string) => {
   notifications.show({
     icon: <FaExclamation />,
-    withCloseButton: true,
     color: 'yellow',
     style: { padding: '25px' },
     message,

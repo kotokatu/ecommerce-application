@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { userService } from '../../../services/UserService/UserService';
+import { userService } from '../../services/UserService/UserService';
 import { Dispatch, SetStateAction } from 'react';
 import { linksStyle } from './links-style';
 

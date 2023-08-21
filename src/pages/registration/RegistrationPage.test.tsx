@@ -7,10 +7,10 @@ import { BrowserRouter } from 'react-router-dom';
 import RegistrationPage from './RegistrationPage';
 import ResizeObserver from 'resize-observer-polyfill';
 import userEvent from '@testing-library/user-event';
-import { userService } from '../../../services/UserService/UserService';
+import { userService } from '../../services/UserService/UserService';
 global.ResizeObserver = ResizeObserver;
 jest.setTimeout(35000);
-jest.mock('../../../services/UserService/UserService', () => ({
+jest.mock('../../services/UserService/UserService', () => ({
   userService: {
     signup: jest.fn(),
   },
