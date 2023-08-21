@@ -2,8 +2,7 @@ import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/co
 import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
-import UserLinks from '../../ui/app-links/UserLinks';
-import MenuLinks from '../../ui/app-links/MenuLinks';
+import HeaderLinks from '../../ui/app-links/HeaderLinks';
 
 type HeaderProps = {
   setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
@@ -13,7 +12,14 @@ type HeaderProps = {
 };
 
 export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleBurger }: HeaderProps) {
+  const wrapper = document.querySelector('.wrapper') as HTMLElement;
   const { classes } = headerStyle();
+
+  function toggleScroll() {
+    if (wrapper) {
+      wrapper.style.overflow = isOpenBurger ? 'hidden' : 'unset';
+    }
+  }
 
   return (
     <Header height={80} className={classes.root}>
@@ -31,7 +37,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         </Group>
 
         <Group className={classes.userLinks}>
-          <UserLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+          <HeaderLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
         </Group>
 
         <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
@@ -40,13 +46,12 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
           transition="slide-left"
           duration={500}
           mounted={isOpenBurger}
-          onEnter={() => (document.body.style.overflow = 'hidden')}
-          onExited={() => (document.body.style.overflow = 'unset')}
+          onEnter={toggleScroll}
+          onExited={toggleScroll}
         >
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
-              <MenuLinks />
-              <UserLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+              <HeaderLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
             </Paper>
           )}
         </Transition>

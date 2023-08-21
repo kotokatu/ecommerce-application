@@ -1,7 +1,7 @@
-import { createStyles, rem } from '@mantine/core';
+import { createStyles } from '@mantine/core';
 
-export const mainStyle = createStyles((theme) => ({
-  main: {
+export const mainPageStyle = createStyles(() => ({
+  container: {
     display: 'flex',
     justifyContent: 'space-between',
     width: '100%',
@@ -10,7 +10,7 @@ export const mainStyle = createStyles((theme) => ({
     padding: '0',
   },
 
-  menuItems: {
+  links: {
     width: '125px',
     display: 'flex',
     alignItems: 'flex-start',
@@ -22,32 +22,5 @@ export const mainStyle = createStyles((theme) => ({
     flex: '1 1 auto',
     display: 'flex',
     justifyContent: 'center',
-  },
-
-  link: {
-    display: 'block',
-    lineHeight: 1,
-    padding: `${rem(8)} ${rem(12)}`,
-    borderRadius: theme.radius.sm,
-    textDecoration: 'none',
-    color: theme.colors.dark[9],
-    fontSize: 'initial',
-    fontWeight: 500,
-
-    '&:hover': {
-      backgroundColor: theme.colors.gray[2],
-    },
-
-    [theme.fn.smallerThan('sm')]: {
-      borderRadius: 0,
-      padding: theme.spacing.md,
-    },
-  },
-
-  linkActive: {
-    '&, &:hover': {
-      backgroundColor: theme.fn.variant({ variant: 'dark', color: theme.primaryColor }).background,
-      color: theme.fn.variant({ variant: 'dark', color: theme.primaryColor }).color,
-    },
   },
 }));

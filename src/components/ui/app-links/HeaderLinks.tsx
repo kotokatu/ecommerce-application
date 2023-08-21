@@ -3,48 +3,48 @@ import { userService } from '../../../services/UserService/UserService';
 import { Dispatch, SetStateAction } from 'react';
 import { linksStyle } from './links-style';
 
-type UserLinksProps = {
+type HeaderLinksProps = {
   setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
   userLoggedIn: boolean;
 };
 
-const UserLinks = ({ userLoggedIn, setUserLoggedIn }: UserLinksProps) => {
+const HeaderLinks = ({ userLoggedIn, setUserLoggedIn }: HeaderLinksProps) => {
   const { classes } = linksStyle();
 
   function setActiveLink({ isActive }: { isActive: boolean }) {
     return isActive ? `${classes.link} ${classes.linkActive}` : classes.link;
   }
 
-  const userLinks = [
+  const headerItems = [
     {
       name: 'Login',
       routePath: '/login',
-      isActive: !userLoggedIn,
+      isDisplay: !userLoggedIn,
     },
     {
       name: 'Logout',
       routePath: '/login',
-      isActive: userLoggedIn,
+      isDisplay: userLoggedIn,
     },
     {
       name: 'Registration',
       routePath: '/registration',
-      isActive: !userLoggedIn,
+      isDisplay: !userLoggedIn,
     },
     {
       name: 'Profile',
       routePath: '/profile',
-      isActive: userLoggedIn,
+      isDisplay: userLoggedIn,
     },
     {
       name: 'Basket',
       routePath: '/basket',
-      isActive: true,
+      isDisplay: true,
     },
   ];
 
-  const userItems = userLinks.map((link) =>
-    link.isActive ? (
+  const headerLinks = headerItems.map((link) =>
+    link.isDisplay ? (
       <NavLink
         key={link.name}
         to={link.routePath}
@@ -61,7 +61,7 @@ const UserLinks = ({ userLoggedIn, setUserLoggedIn }: UserLinksProps) => {
     ) : null,
   );
 
-  return <>{userItems}</>;
+  return <>{headerLinks}</>;
 };
 
-export default UserLinks;
+export default HeaderLinks;
