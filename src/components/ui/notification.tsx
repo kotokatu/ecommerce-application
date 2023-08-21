@@ -5,7 +5,7 @@ import { FcApproval } from 'react-icons/fc';
 export const notificationSuccess = (message: string) => {
   notifications.show({
     icon: <FcApproval />,
-    withCloseButton: false,
+    withCloseButton: true,
     color: 'green',
     style: { padding: '25px' },
     message,
