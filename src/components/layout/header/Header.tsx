@@ -15,7 +15,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
   const wrapper = document.querySelector('.wrapper') as HTMLElement;
   const { classes } = headerStyle();
 
-  function hideScroll() {
+  function toggleScroll() {
     if (wrapper) {
       wrapper.style.overflow = isOpenBurger ? 'hidden' : 'unset';
     }
@@ -46,8 +46,8 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
           transition="slide-left"
           duration={500}
           mounted={isOpenBurger}
-          onEnter={hideScroll}
-          onExited={hideScroll}
+          onEnter={toggleScroll}
+          onExited={toggleScroll}
         >
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
