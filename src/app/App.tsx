@@ -47,7 +47,7 @@ function App() {
             />
           }
         >
-          <Route index element={<MainPage />} />
+          <Route index element={<MainPage userLoggedIn={userLoggedIn} />} />
           <Route path="catalog" element={<CatalogPage />} />
           <Route path="about" element={<AboutPage />} />
 
