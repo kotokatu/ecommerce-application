@@ -50,6 +50,7 @@ class UserService {
   }
 
   public async signup(userData: UserData): Promise<string | void> {
+    this.apiRoot = new CtpClient().getApiRoot();
     try {
       await this.apiRoot
         .customers()
