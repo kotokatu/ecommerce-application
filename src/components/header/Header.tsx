@@ -1,17 +1,14 @@
 import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/core';
-import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
 import HeaderLinks from '../app-links/HeaderLinks';
 
 type HeaderProps = {
-  setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
-  userLoggedIn: boolean;
   isOpenBurger: boolean;
   toggleBurger: () => void;
 };
 
-export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleBurger }: HeaderProps) {
+export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
   const wrapper = document.querySelector('.wrapper') as HTMLElement;
   const { classes } = headerStyle();
 
@@ -37,7 +34,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         </Group>
 
         <Group className={classes.userLinks}>
-          <HeaderLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+          <HeaderLinks />
         </Group>
 
         <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
@@ -51,7 +48,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         >
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
-              <HeaderLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+              <HeaderLinks />
             </Paper>
           )}
         </Transition>

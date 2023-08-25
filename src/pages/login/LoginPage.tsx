@@ -1,15 +1,12 @@
 import { Paper, Title, Text, Container, TextInput, PasswordInput, Button, Box, createStyles } from '@mantine/core';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { userService } from '../../services/UserService/UserService';
 import { notificationSuccess, notificationError } from '../../components/ui/notification';
 import { successfullLoginMessage } from './../../utils/constants/messages';
 import { emailRegex, passwordRegex } from '../../utils/constants/validationRegex';
-
-type LoginPageProps = {
-  onSignIn: Dispatch<SetStateAction<boolean>>;
-};
+import useAuth from '../../utils/hooks/useAuth';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -30,10 +27,11 @@ const formStyles = createStyles((theme) => ({
   },
 }));
 
-const LoginPage = ({ onSignIn }: LoginPageProps) => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const { classes } = formStyles();
   const [isLoading, setIsLoading] = useState(false);
+  const { setUserLoggedIn } = useAuth();
 
   const form = useForm({
     initialValues: { email: '', password: '' },
@@ -60,7 +58,7 @@ const LoginPage = ({ onSignIn }: LoginPageProps) => {
               await userService
                 .login(userData.email, userData.password)
                 .then(() => {
-                  onSignIn(true);
+                  setUserLoggedIn(true);
                   navigate('/');
                   notificationSuccess(successfullLoginMessage);
                 })
