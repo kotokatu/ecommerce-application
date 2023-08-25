@@ -1,11 +1,11 @@
-import { Dispatch, SetStateAction, createContext } from 'react';
+import { Dispatch, SetStateAction, createContext, useState } from 'react';
 
 type AuthContextType = {
   userLoggedIn: boolean;
   setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
 };
 
-export const AuthContext = createContext<AuthContextType>(null!);
+export const AuthContext = createContext<AuthContextType>({ userLoggedIn: false, setUserLoggedIn: useState });
 
 type AuthProviderProps = {
   children: React.ReactNode;

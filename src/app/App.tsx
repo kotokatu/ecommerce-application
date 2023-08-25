@@ -42,11 +42,11 @@ function App() {
             <Route path="catalog" element={<CatalogPage />} />
             <Route path="about" element={<AboutPage />} />
 
-            <Route element={<ProtectedRoute redirectPath="/login" />}>
+            <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
               <Route path="profile" element={<ProfilePage />} />
             </Route>
 
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
               <Route path="login" element={<LoginPage />} />
               <Route path="registration" element={<RegistrationPage />} />
             </Route>
