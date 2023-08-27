@@ -12,9 +12,6 @@ import {
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import { tokenCache } from './TokenCache';
 
-// const userClientBuilder = new ClientBuilder();
-// const defaultClientBuilder = new ClientBuilder();
-
 class CtpClient {
   private projectKey = process.env.REACT_APP_PROJECT_KEY as string;
   private authURL = process.env.REACT_APP_AUTH_URL as string;

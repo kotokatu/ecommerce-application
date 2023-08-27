@@ -95,6 +95,24 @@ class UserService {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
+  public async searchProducts() {
+    try {
+      await this.apiRoot
+        .productProjections()
+        .search()
+        .get({ queryArgs: { filter: 'variants.attributes.size.key: "large"' } })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+  public async getProduct(key: string) {
+    try {
+      await this.apiRoot.productProjections().withKey({ key }).get().execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
   public async getProfile() {
     try {
       await this.apiRoot.me().get().execute();
