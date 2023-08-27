@@ -6,14 +6,14 @@ import {
   type AuthMiddlewareOptions,
   type UserAuthOptions,
   type PasswordAuthMiddlewareOptions,
-  type TokenCache,
+  type RefreshAuthMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { TokenCacheHandler } from './TokenCache';
+import { tokenCache } from './TokenCache';
 
-const userClientBuilder = new ClientBuilder();
-const defaultClientBuilder = new ClientBuilder();
+// const userClientBuilder = new ClientBuilder();
+// const defaultClientBuilder = new ClientBuilder();
 
 class CtpClient {
   private projectKey = process.env.REACT_APP_PROJECT_KEY as string;
@@ -24,23 +24,30 @@ class CtpClient {
     clientSecret: process.env.REACT_APP_CLIENT_SECRET as string,
   };
   private userAuthOptions?: UserAuthOptions;
-  private tokenCache: TokenCache = new TokenCacheHandler();
 
   constructor(userAuthOptions?: UserAuthOptions) {
     if (userAuthOptions) this.userAuthOptions = userAuthOptions;
   }
 
   private getClient(): Client {
-    return this.userAuthOptions
-      ? userClientBuilder
-          .withPasswordFlow(this.getUserAuthOptions())
-          .withHttpMiddleware(this.getHttpMiddlewareOptions())
-          .withLoggerMiddleware()
-          .build()
-      : defaultClientBuilder
-          .withClientCredentialsFlow(this.getAuthOptions())
-          .withHttpMiddleware(this.getHttpMiddlewareOptions())
-          .build();
+    console.log(tokenCache.getRefreshToken());
+    if (this.userAuthOptions) {
+      return new ClientBuilder()
+        .withPasswordFlow(this.getUserAuthOptions())
+        .withHttpMiddleware(this.getHttpMiddlewareOptions())
+        .withLoggerMiddleware()
+        .build();
+    } else if (tokenCache.getRefreshToken()) {
+      return new ClientBuilder()
+        .withRefreshTokenFlow(this.getRefreshTokenOptions())
+        .withHttpMiddleware(this.getHttpMiddlewareOptions())
+        .withLoggerMiddleware()
+        .build();
+    }
+    return new ClientBuilder()
+      .withClientCredentialsFlow(this.getAuthOptions())
+      .withHttpMiddleware(this.getHttpMiddlewareOptions())
+      .build();
   }
 
   private getUserAuthOptions(): PasswordAuthMiddlewareOptions {
@@ -52,7 +59,7 @@ class CtpClient {
       scopes: [
         'manage_my_orders:30fingers-project manage_my_business_units:30fingers-project manage_my_payments:30fingers-project create_anonymous_token:30fingers-project manage_my_profile:30fingers-project manage_my_quote_requests:30fingers-project manage_my_quotes:30fingers-project view_published_products:30fingers-project manage_my_shopping_lists:30fingers-project view_categories:30fingers-project',
       ],
-      tokenCache: this.tokenCache,
+      tokenCache: tokenCache,
     };
   }
 
@@ -72,8 +79,15 @@ class CtpClient {
     };
   }
 
-  public getAсcessToken() {
-    return this.tokenCache.get().token;
+  getRefreshTokenOptions(): RefreshAuthMiddlewareOptions {
+    return {
+      host: this.apiURL,
+      projectKey: this.projectKey,
+      credentials: this.credentials,
+      refreshToken: 'bXvTyxc5yuebdvwTwyXn==',
+      tokenCache: tokenCache,
+      fetch,
+    };
   }
 
   public getApiRoot() {
