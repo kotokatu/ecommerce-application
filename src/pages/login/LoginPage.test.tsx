@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 describe('Login Page', () => {
   it('renders forms without errors', () => {
-    render(<LoginPage onSignIn={jest.fn()} />, {
+    render(<LoginPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
     expect(screen.getByLabelText('Email *')).toBeInTheDocument();
@@ -14,7 +14,7 @@ describe('Login Page', () => {
   });
 
   it('validates email format and displays error message', () => {
-    render(<LoginPage onSignIn={jest.fn()} />, {
+    render(<LoginPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -26,7 +26,7 @@ describe('Login Page', () => {
   });
 
   it('validates password format and displays error message', () => {
-    render(<LoginPage onSignIn={jest.fn()} />, {
+    render(<LoginPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 

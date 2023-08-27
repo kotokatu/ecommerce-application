@@ -1,12 +1,11 @@
 import { Container, Group } from '@mantine/core';
 import { mainPageStyle } from './main-style';
 import MainLinks from '../../components/app-links/MainLinks';
+import useAuth from '../../utils/hooks/useAuth';
 
-type MainPageProps = {
-  userLoggedIn: boolean;
-};
-const MainPage = ({ userLoggedIn }: MainPageProps) => {
+const MainPage = () => {
   const { classes } = mainPageStyle();
+  const { userLoggedIn } = useAuth();
 
   return (
     <Container className={classes.container}>

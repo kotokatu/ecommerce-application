@@ -1,18 +1,15 @@
-import { Dispatch, SetStateAction } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Container } from '@mantine/core';
 import { AppHeader } from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 
 type LayoutProps = {
-  setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
-  userLoggedIn: boolean;
   isOpenBurger: boolean;
   closeBurger: () => void;
   toggleBurger: () => void;
 };
 
-const Layout = ({ setUserLoggedIn, userLoggedIn, isOpenBurger, closeBurger, toggleBurger }: LayoutProps) => {
+const Layout = ({ isOpenBurger, closeBurger, toggleBurger }: LayoutProps) => {
   function closeBurgerDelay() {
     if (isOpenBurger) {
       setTimeout(() => {
@@ -23,12 +20,7 @@ const Layout = ({ setUserLoggedIn, userLoggedIn, isOpenBurger, closeBurger, togg
 
   return (
     <Container className="wrapper" onClick={closeBurgerDelay}>
-      <AppHeader
-        setUserLoggedIn={setUserLoggedIn}
-        userLoggedIn={userLoggedIn}
-        isOpenBurger={isOpenBurger}
-        toggleBurger={toggleBurger}
-      />
+      <AppHeader isOpenBurger={isOpenBurger} toggleBurger={toggleBurger} />
       <main className="main">
         <Outlet />
       </main>

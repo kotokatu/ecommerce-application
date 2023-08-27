@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { userService } from '../../services/UserService/UserService';
 import {
@@ -19,10 +19,7 @@ import { createStyles } from '@mantine/core';
 import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../utils/constants/validationRegex';
 import { notificationError, notificationSuccess } from '../../components/ui/notification';
 import { getAge } from '../../utils/helpers/date-helpers';
-
-type RegistrationPageProps = {
-  onSignIn: Dispatch<SetStateAction<boolean>>;
-};
+import useAuth from '../../utils/hooks/useAuth';
 
 const countryData = [
   { value: 'IT', label: 'Italy' },
@@ -49,10 +46,11 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
+const RegistrationPage = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { setUserLoggedIn } = useAuth();
   const form = useForm({
     initialValues: {
       email: '',
@@ -125,7 +123,7 @@ const RegistrationPage = ({ onSignIn }: RegistrationPageProps) => {
           setIsLoading(true);
           try {
             await userService.signup(values);
-            onSignIn(true);
+            setUserLoggedIn(true);
             notificationSuccess('Account was succesfully created');
             navigate('/', { replace: true });
           } catch (err) {
