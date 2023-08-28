@@ -6,7 +6,7 @@ import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { UserProfile } from '../../utils/types/serviceTypes';
 
-const LOCAL_STORAGE_DATA = 'customerData';
+const CUSTOMER_DATA_STORAGE_KEY = 'customer-data-token-30fingers';
 
 type Address = {
   country: string;
@@ -64,7 +64,7 @@ class UserService {
       shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
       billingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
     };
-    localStorage.setItem(LOCAL_STORAGE_DATA, JSON.stringify(customerProfile));
+    localStorage.setItem(CUSTOMER_DATA_STORAGE_KEY, JSON.stringify(customerProfile));
   }
 
   public async signup(userData: UserData): Promise<string | void> {
@@ -101,8 +101,8 @@ class UserService {
     }
   }
 
-  public getCustomerData(): CustomerDraft | null {
-    return JSON.parse(localStorage.getItem(LOCAL_STORAGE_DATA) || '');
+  public getCustomerData(): UserProfile | null {
+    return JSON.parse(localStorage.getItem(CUSTOMER_DATA_STORAGE_KEY) || '');
   }
 
   public logout() {
