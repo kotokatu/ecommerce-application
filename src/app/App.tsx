@@ -13,7 +13,8 @@ import RegistrationPage from '../pages/registration/RegistrationPage';
 import BasketPage from '../pages/basket/BasketPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import NotFoundPage from '../pages/not-found/NotFoundPage';
-import ProtectedRoute from '../routes/ProtectedRoute/ProtectedRoute';
+import ProtectedRoute from '../routes/ProtectedRoute';
+import AuthProvider from '../routes/AuthProvider';
 import DetailedProductPage from '../pages/detailed/DetailedProductPage';
 
 function App() {
@@ -35,37 +36,28 @@ function App() {
       withNormalizeCSS
     >
       <Notifications position="top-center" />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout
-              setUserLoggedIn={setUserLoggedIn}
-              userLoggedIn={userLoggedIn}
-              isOpenBurger={isOpenBurger}
-              closeBurger={close}
-              toggleBurger={toggle}
-            />
-          }
-        >
-          <Route index element={<MainPage userLoggedIn={userLoggedIn} />} />
-          <Route path="catalog" element={<CatalogPage />} />
-          <Route path="about" element={<AboutPage />} />
+      <AuthProvider userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}>
+        <Routes>
+          <Route path="/" element={<Layout isOpenBurger={isOpenBurger} closeBurger={close} toggleBurger={toggle} />}>
+            <Route index element={<MainPage />} />
+            <Route path="catalog" element={<CatalogPage />} />
+            <Route path="about" element={<AboutPage />} />
 
-          <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
-            <Route path="profile" element={<ProfilePage />} />
+            <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="registration" element={<RegistrationPage />} />
+            </Route>
+
+            <Route path="product" element={<DetailedProductPage />} />
+            <Route path="basket" element={<BasketPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
-
-          <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
-            <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
-            <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
-          </Route>
-
-          <Route path="product" element={<DetailedProductPage />} />
-          <Route path="basket" element={<BasketPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </MantineProvider>
   );
 }

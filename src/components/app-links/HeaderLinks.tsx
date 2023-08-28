@@ -1,14 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { userService } from '../../services/UserService/UserService';
-import { Dispatch, SetStateAction } from 'react';
 import { linksStyle } from './links-style';
+import useAuth from '../../utils/hooks/useAuth';
 
-type HeaderLinksProps = {
-  setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
-  userLoggedIn: boolean;
-};
-
-const HeaderLinks = ({ userLoggedIn, setUserLoggedIn }: HeaderLinksProps) => {
+const HeaderLinks = () => {
+  const { userLoggedIn, setUserLoggedIn } = useAuth();
   const { classes } = linksStyle();
 
   function setActiveLink({ isActive }: { isActive: boolean }) {
