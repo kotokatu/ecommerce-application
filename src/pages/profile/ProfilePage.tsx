@@ -18,7 +18,7 @@ const formStyles = createStyles((theme) => ({
       padding: '1rem',
     },
   },
-  text: {
+  smallTitle: {
     fontWeight: 400,
     fontSize: '16px',
     [theme.fn.smallerThan('xs')]: {
@@ -31,7 +31,7 @@ const ProfilePage: React.FC = () => {
   const { classes } = formStyles();
   return (
     <Container className={classes.container}>
-      <Title className={classes.title} order={1}>
+      <Title className={classes.title} order={1} align="center" mb={20}>
         User Profile
       </Title>
       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
@@ -41,35 +41,62 @@ const ProfilePage: React.FC = () => {
               <Avatar variant="filled" radius="xl" size="lg" src={null}>
                 VR
               </Avatar>
-              <Text align="center" className={classes.text}>
-                Username
+              <Text align="center" className={classes.smallTitle}>
+                Username dfgdgddfgg
               </Text>
             </Flex>
           </Col>
           <Col span={12} md={9}>
-            <Paper shadow="xs">
-              <Text size="md" className="user-profile-label">
-                Bio
+            <Flex gap="md" justify="center" align="center" direction="column">
+              <Text size="md" className={classes.smallTitle}>
+                Personal information
               </Text>
-              <Text size="sm" color="gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar lectus sed mattis
+              <Paper shadow="xs" withBorder style={{ width: '100%' }}>
+                <Text size="md" className={classes.smallTitle}>
+                  First Name
+                </Text>
+                <Text size="sm" color="gray">
+                  sfsdfdf dgdfgdg
+                </Text>
+                <Text size="md" className={classes.smallTitle}>
+                  Second Name
+                </Text>
+                <Text size="sm" color="gray">
+                  fhfhfghfh
+                </Text>
+                <Text className={classes.smallTitle}>Date of birth</Text>
+                <Text size="sm" color="gray">
+                  15.03.1995
+                </Text>
+                <Text size="md" className={classes.smallTitle}>
+                  Email
+                </Text>
+                <Text size="sm" color="gray">
+                  aasasas@mail.com
+                </Text>
+              </Paper>
+              <Text size="md" className={classes.smallTitle}>
+                Addresses
               </Text>
-              <Text size="sm" color="gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar lectus sed mattis
-              </Text>
-              <Text size="sm" color="gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar lectus sed mattis
-              </Text>
-              <Text size="sm" color="gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar lectus sed mattis
-              </Text>
-              <Text size="sm" color="gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar lectus sed mattis
-              </Text>
-              <Text size="sm" color="gray">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus pulvinar lectus sed mattis
-              </Text>
-            </Paper>
+              <Paper shadow="xs" withBorder>
+                <Text className={classes.smallTitle}>Date of birth</Text>
+                <Text size="sm" color="gray">
+                  15.03.1995
+                </Text>
+                <Text size="md" className={classes.smallTitle}>
+                  Email
+                </Text>
+                <Text size="sm" color="gray">
+                  aasasas@mail.com
+                </Text>
+                <Text size="md" className={classes.smallTitle}>
+                  Bio
+                </Text>
+                <Text size="sm" color="gray">
+                  Lolus pulvina
+                </Text>
+              </Paper>
+            </Flex>
           </Col>
         </Grid>
       </Paper>
