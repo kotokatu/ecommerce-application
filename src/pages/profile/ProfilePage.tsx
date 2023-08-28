@@ -1,8 +1,8 @@
 import { Avatar, Col, Grid, Paper, Text, Title, createStyles, Container, Flex, Button } from '@mantine/core';
 import React from 'react';
 import { userService } from '../../services/UserService/UserService';
-import { CustomerDraft } from '@commercetools/platform-sdk';
 import { getFirstLetters } from '../../utils/helpers/getFirstLetters';
+import { UserProfile } from '../../utils/types/serviceTypes';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -45,7 +45,7 @@ const formStyles = createStyles((theme) => ({
 
 const ProfilePage: React.FC = () => {
   const { classes } = formStyles();
-  const userData = userService.getCustomerData() as CustomerDraft;
+  const userData = userService.getCustomerData() as UserProfile;
   const avatarLetters = getFirstLetters(userData.firstName, userData.lastName);
 
   return (
@@ -102,18 +102,18 @@ const ProfilePage: React.FC = () => {
             </Text>
             <Text className={classes.smallTitle}>Country</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[0].country
+              {userData?.shippingAddress.country}
             </Text>
             <Text className={classes.smallTitle}>City</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[0].city
+              {userData?.shippingAddress.city}
             </Text>
             <Text className={classes.smallTitle}>Street</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[0].streetName
+              {userData?.shippingAddress.streetName}
             </Text>
             <Text className={classes.smallTitle}>Postal Code</Text>
-            <Text color="gray">userData?.addresses[0].postalCode</Text>
+            <Text color="gray">{userData?.shippingAddress.postalCode}</Text>
           </Paper>
           <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
             <Text className={classes.smallTitle} align="center">
@@ -121,19 +121,19 @@ const ProfilePage: React.FC = () => {
             </Text>
             <Text className={classes.smallTitle}>Country</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[1].country
+              {userData?.billingAddress.country}
             </Text>
             <Text className={classes.smallTitle}>City</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[1].city
+              {userData?.billingAddress.city}
             </Text>
             <Text className={classes.smallTitle}>Street</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[1].streetName
+              {userData?.billingAddress.streetName}
             </Text>
             <Text className={classes.smallTitle}>Postal Code</Text>
             <Text className={classes.text} color="gray">
-              userData?.addresses[1].postalCode
+              {userData?.billingAddress.postalCode}
             </Text>
             <Text className={classes.text} color="red" align="center">
               *Used as default

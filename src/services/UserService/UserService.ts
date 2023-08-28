@@ -4,6 +4,9 @@ import { formatDate } from '../../utils/helpers/date-helpers';
 import { ErrorResponse, CustomerDraft, Customer } from '@commercetools/platform-sdk';
 import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
+import { UserProfile } from '../../utils/types/serviceTypes';
+
+const LOCAL_STORAGE_DATA = 'customerData';
 
 type Address = {
   country: string;
@@ -27,9 +30,7 @@ type UserData = {
 
 class UserService {
   private apiRoot: ByProjectKeyRequestBuilder;
-  private customerData: CustomerDraft | null;
   constructor() {
-    this.customerData = null;
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
@@ -50,20 +51,20 @@ class UserService {
     };
     return customerDraft;
   }
-  //убрать дублирование кода, невозможно переиспользовать из за разных входных параметров
-  private createCustomerObject(userData: Customer) {
-    this.customerData = {
+
+  private createCustomerProfile(userData: Customer) {
+    const customerProfile: UserProfile = {
       email: userData.email,
-      password: userData.password,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      dateOfBirth: userData.dateOfBirth,
-      addresses: userData.addresses ? [userData.addresses[0], userData.addresses[1]] : undefined,
-      shippingAddresses: [0],
-      billingAddresses: [1],
-      defaultShippingAddress: userData.shippingAddressIds ? 0 : undefined,
-      defaultBillingAddress: userData.billingAddressIds ? 0 : undefined,
+      password: userData.password || 'no data',
+      firstName: userData.firstName || 'no data',
+      lastName: userData.lastName || 'no data',
+      dateOfBirth: userData.dateOfBirth || 'no data',
+      shippingAddress: userData.addresses[0],
+      billingAddress: userData.addresses[1],
+      shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
+      billingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
     };
+    localStorage.setItem(LOCAL_STORAGE_DATA, JSON.stringify(customerProfile));
   }
 
   public async signup(userData: UserData): Promise<string | void> {
@@ -94,15 +95,14 @@ class UserService {
           },
         })
         .execute();
-      const customerData = customerSignIn.body.customer;
-      this.createCustomerObject(customerData);
+      this.createCustomerProfile(customerSignIn.body.customer);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
 
   public getCustomerData(): CustomerDraft | null {
-    return this.customerData;
+    return JSON.parse(localStorage.getItem(LOCAL_STORAGE_DATA) || '');
   }
 
   public logout() {
