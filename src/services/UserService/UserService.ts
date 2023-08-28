@@ -50,7 +50,7 @@ class UserService {
     };
     return customerDraft;
   }
-
+  //убрать дублирование кода, невозможно переиспользовать из за разных входных параметров
   private createCustomerObject(userData: Customer) {
     this.customerData = {
       email: userData.email,
@@ -64,7 +64,6 @@ class UserService {
       defaultShippingAddress: userData.shippingAddressIds ? 0 : undefined,
       defaultBillingAddress: userData.billingAddressIds ? 0 : undefined,
     };
-    console.log(this.customerData);
   }
 
   public async signup(userData: UserData): Promise<string | void> {
@@ -97,7 +96,6 @@ class UserService {
         .execute();
       const customerData = customerSignIn.body.customer;
       this.createCustomerObject(customerData);
-      console.log(customerSignIn.body.customer.billingAddressIds);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
