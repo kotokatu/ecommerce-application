@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
   return (
     <Container className={classes.container}>
       <Title className={classes.title} order={1} align="center" mb={20}>
-        User Profile
+        Your Profile
       </Title>
       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
         <Grid gutter="md">
