@@ -28,6 +28,19 @@ const formStyles = createStyles((theme) => ({
       fontSize: '10px',
     },
   },
+  text: {
+    fontWeight: 400,
+    fontSize: '15px',
+    [theme.fn.smallerThan('xs')]: {
+      fontSize: '9px',
+    },
+  },
+  avatarContainer: {
+    marginTop: 65,
+    [theme.fn.smallerThan('md')]: {
+      marginTop: 10,
+    },
+  },
 }));
 
 const ProfilePage: React.FC = () => {
@@ -43,7 +56,7 @@ const ProfilePage: React.FC = () => {
       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
         <Grid gutter="md">
           <Col span={12} md={3}>
-            <Flex gap="md" justify="center" align="center" direction="column" mt={50}>
+            <Flex gap="md" justify="center" align="center" direction="column" className={classes.avatarContainer}>
               <Avatar variant="filled" radius="xl" size="lg" src={null}>
                 {avatarLetters}
               </Avatar>
@@ -57,95 +70,76 @@ const ProfilePage: React.FC = () => {
           </Col>
           <Col span={12} md={9}>
             <Flex gap="md" justify="center" align="center" direction="column">
-              <Text size="md" className={classes.smallTitle}>
-                Personal information
-              </Text>
+              <Text className={classes.smallTitle}>Personal information</Text>
               <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-                <Text size="md" className={classes.smallTitle}>
-                  First Name
-                </Text>
-                <Text size="sm" color="gray">
+                <Text className={classes.smallTitle}>First Name</Text>
+                <Text className={classes.text} color="gray">
                   {userData?.firstName}
                 </Text>
-                <Text size="md" className={classes.smallTitle}>
-                  Second Name
-                </Text>
-                <Text size="sm" color="gray">
+                <Text className={classes.smallTitle}>Second Name</Text>
+                <Text className={classes.text} color="gray">
                   {userData?.lastName}
                 </Text>
                 <Text className={classes.smallTitle}>Date of birth</Text>
-                <Text size="sm" color="gray">
+                <Text className={classes.text} color="gray">
                   {userData?.dateOfBirth}
                 </Text>
-                <Text size="md" className={classes.smallTitle}>
-                  Email
-                </Text>
-                <Text size="sm" color="gray">
+                <Text className={classes.smallTitle}>Email</Text>
+                <Text className={classes.text} color="gray">
                   {userData?.email}
                 </Text>
               </Paper>
-              <Text size="md" className={classes.smallTitle}>
-                Addresses
-              </Text>
-              <Flex gap="sm" justify="center" align="center" direction="row" style={{ width: '100%' }}>
-                <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-                  <Text size="md" className={classes.smallTitle} align="center">
-                    Shipping Address
-                  </Text>
-                  <Text className={classes.smallTitle}>Country</Text>
-                  <Text size="sm" color="gray">
-                    QQQQ
-                  </Text>
-                  <Text size="md" className={classes.smallTitle}>
-                    City
-                  </Text>
-                  <Text size="sm" color="gray">
-                    WWW
-                  </Text>
-                  <Text size="md" className={classes.smallTitle}>
-                    Street
-                  </Text>
-                  <Text size="sm" color="gray">
-                    6666
-                  </Text>
-                  <Text size="md" className={classes.smallTitle}>
-                    Postal Code
-                  </Text>
-                  <Text size="sm" color="gray">
-                    EEEE
-                  </Text>
-                </Paper>
-                <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-                  <Text size="md" className={classes.smallTitle} align="center">
-                    Billing Address
-                  </Text>
-                  <Text className={classes.smallTitle}>Country</Text>
-                  <Text size="sm" color="gray">
-                    QQQQ
-                  </Text>
-                  <Text size="md" className={classes.smallTitle}>
-                    City
-                  </Text>
-                  <Text size="sm" color="gray">
-                    WWW
-                  </Text>
-                  <Text size="md" className={classes.smallTitle}>
-                    Street
-                  </Text>
-                  <Text size="sm" color="gray">
-                    6666
-                  </Text>
-                  <Text size="md" className={classes.smallTitle}>
-                    Postal Code
-                  </Text>
-                  <Text size="sm" color="gray">
-                    EEEE
-                  </Text>
-                </Paper>
-              </Flex>
             </Flex>
           </Col>
         </Grid>
+        <Text className={classes.smallTitle} m={20} align="center">
+          Addresses
+        </Text>
+        <Flex gap="sm" justify="center" align="start" direction="row" style={{ width: '100%' }}>
+          <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+            <Text className={classes.smallTitle} align="center">
+              Shipping Address
+            </Text>
+            <Text className={classes.smallTitle}>Country</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[0].country
+            </Text>
+            <Text className={classes.smallTitle}>City</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[0].city
+            </Text>
+            <Text className={classes.smallTitle}>Street</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[0].streetName
+            </Text>
+            <Text className={classes.smallTitle}>Postal Code</Text>
+            <Text color="gray">userData?.addresses[0].postalCode</Text>
+          </Paper>
+          <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+            <Text className={classes.smallTitle} align="center">
+              Billing Address
+            </Text>
+            <Text className={classes.smallTitle}>Country</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[1].country
+            </Text>
+            <Text className={classes.smallTitle}>City</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[1].city
+            </Text>
+            <Text className={classes.smallTitle}>Street</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[1].streetName
+            </Text>
+            <Text className={classes.smallTitle}>Postal Code</Text>
+            <Text className={classes.text} color="gray">
+              userData?.addresses[1].postalCode
+            </Text>
+            <Text className={classes.text} color="red" align="center">
+              *Used as default
+            </Text>
+          </Paper>
+        </Flex>
       </Paper>
     </Container>
   );
