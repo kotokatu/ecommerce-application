@@ -27,7 +27,9 @@ type UserData = {
 
 class UserService {
   private apiRoot: ByProjectKeyRequestBuilder;
+  private customerData: CustomerDraft | null;
   constructor() {
+    this.customerData = null;
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
@@ -49,6 +51,24 @@ class UserService {
     return customerDraft;
   }
 
+  private createCustomerObject(userData: CustomerDraft) {
+    this.customerData = {
+      email: userData.email,
+      password: userData.password,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      dateOfBirth: userData.dateOfBirth,
+      /*addresses: userData.copyShippingToBilling
+        ? [{ ...userData.shippingAddress }]
+        : [{ ...userData.shippingAddress }, { ...userData.billingAddress }],
+      shippingAddresses: [0],
+      billingAddresses: userData.copyShippingToBilling ? [0] : [1],
+      defaultShippingAddress: userData.setDefaultShippingAddress ? 0 : undefined,
+      defaultBillingAddress: !userData.setDefaultBillingAddress ? undefined : userData.copyShippingToBilling ? 0 : 1,
+    */
+    };
+  }
+
   public async signup(userData: UserData): Promise<string | void> {
     this.apiRoot = new CtpClient().getApiRoot();
     try {
@@ -67,7 +87,7 @@ class UserService {
   public async login(email: string, password: string) {
     try {
       this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
-      await this.apiRoot
+      const customerSignIn = await this.apiRoot
         .me()
         .login()
         .post({
@@ -77,9 +97,15 @@ class UserService {
           },
         })
         .execute();
+      this.createCustomerObject(customerSignIn.body.customer);
+      console.log(customerSignIn.body.customer);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
+  }
+
+  public getCustomerData(): CustomerDraft | null {
+    return this.customerData;
   }
 
   public logout() {
@@ -88,3 +114,48 @@ class UserService {
 }
 
 export const userService = new UserService();
+
+const customerData = {
+  customer: {
+    id: 'fd5fe676-bc43-4cba-b922-13dc1a71522c',
+    version: 1,
+    versionModifiedAt: '2023-08-20T04:12:23.061Z',
+    lastMessageSequenceNumber: 1,
+    createdAt: '2023-08-20T04:12:23.061Z',
+    lastModifiedAt: '2023-08-20T04:12:23.061Z',
+    lastModifiedBy: {
+      clientId: 'OoukhLJaJweagUnRGY7tvzSO',
+      isPlatformClient: false,
+    },
+    createdBy: {
+      clientId: 'OoukhLJaJweagUnRGY7tvzSO',
+      isPlatformClient: false,
+    },
+    email: 'aa@mail.com',
+    firstName: 'qqqq',
+    lastName: 'sfds',
+    dateOfBirth: '1990-02-01',
+    password: '****d14=',
+    addresses: [
+      {
+        id: '-QJXGJmE',
+        streetName: 'sfsg',
+        postalCode: '12345',
+        city: 'wewef',
+        country: 'IT',
+      },
+      {
+        id: '-9SA8NSX',
+        streetName: 'fggdf',
+        postalCode: '12345',
+        city: 'dfsd',
+        country: 'IT',
+      },
+    ],
+    shippingAddressIds: ['-QJXGJmE'],
+    billingAddressIds: ['-9SA8NSX'],
+    isEmailVerified: false,
+    stores: [],
+    authenticationMode: 'Password',
+  },
+};
