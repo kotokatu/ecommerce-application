@@ -1,7 +1,7 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { ErrorResponse, CustomerDraft } from '@commercetools/platform-sdk';
+import { ErrorResponse, CustomerDraft, Customer } from '@commercetools/platform-sdk';
 import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 
@@ -51,22 +51,20 @@ class UserService {
     return customerDraft;
   }
 
-  private createCustomerObject(userData: CustomerDraft) {
+  private createCustomerObject(userData: Customer) {
     this.customerData = {
       email: userData.email,
       password: userData.password,
       firstName: userData.firstName,
       lastName: userData.lastName,
       dateOfBirth: userData.dateOfBirth,
-      /*addresses: userData.copyShippingToBilling
-        ? [{ ...userData.shippingAddress }]
-        : [{ ...userData.shippingAddress }, { ...userData.billingAddress }],
+      addresses: userData.addresses ? [userData.addresses[0], userData.addresses[1]] : undefined,
       shippingAddresses: [0],
-      billingAddresses: userData.copyShippingToBilling ? [0] : [1],
-      defaultShippingAddress: userData.setDefaultShippingAddress ? 0 : undefined,
-      defaultBillingAddress: !userData.setDefaultBillingAddress ? undefined : userData.copyShippingToBilling ? 0 : 1,
-    */
+      billingAddresses: [1],
+      defaultShippingAddress: userData.shippingAddressIds ? 0 : undefined,
+      defaultBillingAddress: userData.billingAddressIds ? 0 : undefined,
     };
+    console.log(this.customerData);
   }
 
   public async signup(userData: UserData): Promise<string | void> {
@@ -97,8 +95,9 @@ class UserService {
           },
         })
         .execute();
-      this.createCustomerObject(customerSignIn.body.customer);
-      console.log(customerSignIn.body.customer);
+      const customerData = customerSignIn.body.customer;
+      this.createCustomerObject(customerData);
+      console.log(customerSignIn.body.customer.billingAddressIds);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
@@ -114,48 +113,3 @@ class UserService {
 }
 
 export const userService = new UserService();
-
-const customerData = {
-  customer: {
-    id: 'fd5fe676-bc43-4cba-b922-13dc1a71522c',
-    version: 1,
-    versionModifiedAt: '2023-08-20T04:12:23.061Z',
-    lastMessageSequenceNumber: 1,
-    createdAt: '2023-08-20T04:12:23.061Z',
-    lastModifiedAt: '2023-08-20T04:12:23.061Z',
-    lastModifiedBy: {
-      clientId: 'OoukhLJaJweagUnRGY7tvzSO',
-      isPlatformClient: false,
-    },
-    createdBy: {
-      clientId: 'OoukhLJaJweagUnRGY7tvzSO',
-      isPlatformClient: false,
-    },
-    email: 'aa@mail.com',
-    firstName: 'qqqq',
-    lastName: 'sfds',
-    dateOfBirth: '1990-02-01',
-    password: '****d14=',
-    addresses: [
-      {
-        id: '-QJXGJmE',
-        streetName: 'sfsg',
-        postalCode: '12345',
-        city: 'wewef',
-        country: 'IT',
-      },
-      {
-        id: '-9SA8NSX',
-        streetName: 'fggdf',
-        postalCode: '12345',
-        city: 'dfsd',
-        country: 'IT',
-      },
-    ],
-    shippingAddressIds: ['-QJXGJmE'],
-    billingAddressIds: ['-9SA8NSX'],
-    isEmailVerified: false,
-    stores: [],
-    authenticationMode: 'Password',
-  },
-};

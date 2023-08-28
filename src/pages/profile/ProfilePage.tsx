@@ -46,7 +46,7 @@ const ProfilePage: React.FC = () => {
                 VR
               </Avatar>
               <Text align="center" className={classes.smallTitle}>
-                `${userData?.dateOfBirth}`
+                {userData?.firstName} {userData?.lastName}
               </Text>
             </Flex>
           </Col>
@@ -66,7 +66,7 @@ const ProfilePage: React.FC = () => {
                   Second Name
                 </Text>
                 <Text size="sm" color="gray">
-                  {userData?.firstName}
+                  {userData?.lastName}
                 </Text>
                 <Text className={classes.smallTitle}>Date of birth</Text>
                 <Text size="sm" color="gray">
