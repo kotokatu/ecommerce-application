@@ -1,6 +1,13 @@
 import { createStyles } from '@mantine/core';
 
 export const headerStyle = createStyles((theme) => ({
+  header: {
+    position: 'relative',
+    zIndex: 1,
+    marginBottom: '10px',
+    padding: '20px 0',
+  },
+
   title: {
     fontSize: '30px',
     fontWeight: 800,
@@ -37,13 +44,6 @@ export const headerStyle = createStyles((theme) => ({
     fontSize: '9.5px',
   },
 
-  root: {
-    position: 'relative',
-    zIndex: 1,
-    marginBottom: '30px',
-    padding: '20px 0',
-  },
-
   dropdown: {
     position: 'absolute',
     top: 80,
@@ -63,7 +63,7 @@ export const headerStyle = createStyles((theme) => ({
     },
   },
 
-  header: {
+  container: {
     maxWidth: '100%',
     display: 'flex',
     justifyContent: 'space-between',
