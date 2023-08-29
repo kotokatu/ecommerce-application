@@ -46,7 +46,7 @@ export const dropdownStyles = createStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     height: '50px',
-    width: '90%',
+    padding: '0 10px',
   },
 
   slider: {

@@ -6,7 +6,7 @@ import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -28,8 +28,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   items: {
+    flex: '1 1 auto',
     display: 'flex',
-    maxWidth: '1440px',
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: '40px',
@@ -100,10 +100,7 @@ const CatalogPage = () => {
         />
         <div className={classes.items}>
           {products.map((product) => {
-            return <ProductCard key={product.id} product={product.masterVariant} title={`${product.name['en-US']}`} />;
-          })}
-          {products.map((product) => {
-            return <ProductCard key={product.id} product={product.masterVariant} title={`${product.name['en-US']}`} />;
+            return <ProductCard key={product.id} product={product.masterVariant} title={product.name['en-US']} />;
           })}
         </div>
       </div>

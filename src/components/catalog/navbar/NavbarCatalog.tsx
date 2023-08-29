@@ -6,13 +6,13 @@ import DropdownItems from '../dropdown/DropdownItems';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   navbar: {
+    boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
     gap: '20px',
-    minWidth: '200px',
     marginRight: '10px',
     borderRight: '0.0625rem solid #e9ecef',
-    width: '250px',
+    minWidth: '260px',
   },
 
   buttons: {
