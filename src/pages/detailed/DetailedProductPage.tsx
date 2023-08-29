@@ -23,6 +23,7 @@ const DetailedProductPage = (): JSX.Element => {
   const [product, setProduct] = useState<ProductProjection>();
   const { productKey } = useParams();
   const theme = useMantineTheme();
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await userService.getProduct(productKey as string);
@@ -77,7 +78,7 @@ const DetailedProductPage = (): JSX.Element => {
               slide: {
                 height: rem(650),
                 backgroundPosition: 'center center',
-                backgroundSize: 'cover',
+                backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
 
                 [theme.fn.smallerThan('md')]: {
@@ -99,7 +100,7 @@ const DetailedProductPage = (): JSX.Element => {
                   {product.name['en-US']}
                 </Title>
                 <Title order={6} mt="md" ff="Montserrat">
-                  {product.masterVariant.prices ? '€' + product.masterVariant.prices[0].value.centAmount / 100 : 0}
+                  {product.masterVariant.prices ? product.masterVariant.prices[0].value.centAmount / 100 + ' €' : 0}
                 </Title>
                 <Select my="md" maw={450} withinPortal data={productSizes(product)} placeholder="Select size" />
                 <Button>Add To Cart</Button>
