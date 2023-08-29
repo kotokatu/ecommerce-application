@@ -12,6 +12,7 @@ const navbarCatalogStyles = createStyles((theme) => ({
     gap: '20px',
     marginRight: '10px',
     borderRight: '0.0625rem solid #e9ecef',
+    width: '260px',
     minWidth: '260px',
   },
 

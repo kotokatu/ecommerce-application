@@ -58,10 +58,6 @@ const DropdownPrice = ({
               setValue={(event) => {
                 setMinPrice(event);
                 setValueSlider([+event, valueSlider[1]]);
-                // if (+event >= max) {
-                //   setMinPrice('');
-                //   setValueSlider([min, valueSlider[1]]);
-                // }
               }}
               setValueOnBlur={(event) => {
                 if (+event <= min) {
@@ -85,14 +81,6 @@ const DropdownPrice = ({
               setValue={(event) => {
                 setMaxPrice(event);
                 setValueSlider([valueSlider[0], +event]);
-                // if (+event <= min) {
-                //   setMaxPrice('');
-                //   setValueSlider([valueSlider[0], max]);
-                // }
-                // if (+event >= max) {
-                //   setMaxPrice('');
-                //   setValueSlider([valueSlider[0], max]);
-                // }
               }}
               setValueOnBlur={(event) => {
                 if (+event >= max || +event === 0) {
