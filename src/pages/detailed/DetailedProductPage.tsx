@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Container, Grid, SimpleGrid, Paper, Title, Text, rem, createStyles } from '@mantine/core';
+import { useParams } from 'react-router-dom';
+import { Container, Grid, SimpleGrid, Paper, Title, rem, createStyles } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { userService } from '../../services/UserService/UserService';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import parse from 'html-react-parser';
+import './detailed-product-page.scss';
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -25,40 +27,45 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const DetailedProductPage = () => {
+const DetailedProductPage = (): JSX.Element => {
   const { classes } = useStyles();
   const [productData, setProductData] = useState<ProductProjection | undefined>();
+  const { productKey } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await userService.getProduct('jacket-02');
+      const data = await userService.getProduct(productKey as string);
       if (data) setProductData(data);
     };
     fetchData();
-  }, []);
+  }, [productKey]);
+
+  const slides = (): JSX.Element[] | null => {
+    if (productData?.masterVariant.images) {
+      return productData?.masterVariant.images.map((image, ind) => (
+        <Carousel.Slide
+          key={'slide' + ind}
+          className={classes.slide}
+          sx={{ backgroundImage: `url(${image.url})` }}
+        ></Carousel.Slide>
+      ));
+    }
+    return null;
+  };
 
   return (
     <Container className={classes.container} my="md" size="lg">
-      <SimpleGrid cols={2} spacing="md" breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
+      <SimpleGrid cols={2} spacing={40} breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
         <Carousel className={classes.carousel} mx="auto" withIndicators>
-          <Carousel.Slide
-            className={classes.slide}
-            sx={{ backgroundImage: `url(${productData?.masterVariant?.images?.[0]?.url})` }}
-          ></Carousel.Slide>
-          <Carousel.Slide
-            className={classes.slide}
-            sx={{ backgroundImage: `url(${productData?.masterVariant?.images?.[1]?.url})` }}
-          ></Carousel.Slide>
-          <Carousel.Slide
-            className={classes.slide}
-            sx={{ backgroundImage: `url(${productData?.masterVariant?.images?.[2]?.url})` }}
-          ></Carousel.Slide>
+          {slides()}
         </Carousel>
         <Grid gutter="md">
           <Grid.Col>
             <Paper>
               <Title order={5}>{productData?.name['en-US']}</Title>
-              <Text>{productData?.description?.['en-US'] ? parse(productData?.description?.['en-US']) : ''}</Text>
+              <Paper className="product-description">
+                {productData?.description?.['en-US'] ? parse(productData?.description?.['en-US']) : ''}
+              </Paper>
             </Paper>
           </Grid.Col>
           <Grid.Col span={12}></Grid.Col>

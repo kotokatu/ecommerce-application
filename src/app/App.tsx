@@ -52,7 +52,7 @@ function App() {
               <Route path="registration" element={<RegistrationPage />} />
             </Route>
 
-            <Route path="product" element={<DetailedProductPage />} />
+            <Route path=":productKey" element={<DetailedProductPage />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
