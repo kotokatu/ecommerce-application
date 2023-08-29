@@ -72,7 +72,7 @@ const ProductCard = ({ product, title }: ProductCardProps) => {
 
   const slides = product.images?.map((image) => (
     <Carousel.Slide key={image.url}>
-      <Image src={image.url} height={350} />
+      <Image src={image.url} height={400} />
     </Carousel.Slide>
   ));
 
