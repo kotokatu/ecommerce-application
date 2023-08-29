@@ -9,8 +9,8 @@ type DropdownPriceProps = {
   max: number;
   minPriceInput: string;
   maxPriceInput: string;
-  valueSlider: number[];
-  setValueSlider: Dispatch<SetStateAction<number[]>>;
+  priceRange: number[];
+  setPriceRange: Dispatch<SetStateAction<number[]>>;
   setMinPrice: Dispatch<SetStateAction<string>>;
   setMaxPrice: Dispatch<SetStateAction<string>>;
   initiallyOpened?: boolean;
@@ -19,8 +19,8 @@ type DropdownPriceProps = {
 const DropdownPrice = ({
   min,
   max,
-  valueSlider,
-  setValueSlider,
+  priceRange,
+  setPriceRange,
   minPriceInput,
   setMinPrice,
   maxPriceInput,
@@ -32,7 +32,7 @@ const DropdownPrice = ({
 
   return (
     <>
-      <UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.button}>
+      <UnstyledButton onClick={() => setOpened((open) => !open)} className={classes.button}>
         <Box>Price</Box>
       </UnstyledButton>
       <Collapse in={opened}>
@@ -40,13 +40,13 @@ const DropdownPrice = ({
           <div className={classes.sliderbox}>
             <Slider
               className={classes.slider}
-              value={valueSlider}
+              value={priceRange}
               min={min}
               max={max}
-              onChange={(event) => {
-                setValueSlider(event);
-                setMinPrice(`${event[0]}`);
-                setMaxPrice(`${event[1]}`);
+              onChange={(value) => {
+                setPriceRange(value);
+                setMinPrice(`${value[0]}`);
+                setMaxPrice(`${value[1]}`);
               }}
             />
           </div>
@@ -55,22 +55,22 @@ const DropdownPrice = ({
               label="Min"
               placeholder="Min"
               value={minPriceInput}
-              setValue={(event) => {
-                setMinPrice(event);
-                setValueSlider([+event, valueSlider[1]]);
+              setValue={(value) => {
+                setMinPrice(value);
+                setPriceRange([+value, priceRange[1]]);
               }}
-              setValueOnBlur={(event) => {
-                if (+event <= min) {
+              setValueOnBlur={(value) => {
+                if (+value <= min) {
                   setMinPrice(`${min}`);
-                  setValueSlider([min, valueSlider[1]]);
+                  setPriceRange([min, priceRange[1]]);
                 }
-                if (+event >= valueSlider[1]) {
-                  setMinPrice(`${valueSlider[1]}`);
-                  setValueSlider([valueSlider[1], valueSlider[1]]);
+                if (+value >= priceRange[1]) {
+                  setMinPrice(`${priceRange[1]}`);
+                  setPriceRange([priceRange[1], priceRange[1]]);
                 }
-                if (+event === 0) {
+                if (+value === 0) {
                   setMinPrice('');
-                  setValueSlider([min, valueSlider[1]]);
+                  setPriceRange([min, priceRange[1]]);
                 }
               }}
             />
@@ -78,18 +78,18 @@ const DropdownPrice = ({
               label="Max"
               placeholder="Max"
               value={maxPriceInput}
-              setValue={(event) => {
-                setMaxPrice(event);
-                setValueSlider([valueSlider[0], +event]);
+              setValue={(value) => {
+                setMaxPrice(value);
+                setPriceRange([priceRange[0], +value]);
               }}
-              setValueOnBlur={(event) => {
-                if (+event >= max || +event === 0) {
-                  setMaxPrice('');
-                  setValueSlider([valueSlider[0], max]);
+              setValueOnBlur={(value) => {
+                if (+value <= priceRange[0]) {
+                  setMaxPrice(`${priceRange[0]}`);
+                  setPriceRange([priceRange[0], priceRange[0]]);
                 }
-                if (+event <= valueSlider[0]) {
-                  setMaxPrice(`${valueSlider[0]}`);
-                  setValueSlider([valueSlider[0], valueSlider[0]]);
+                if (+value >= max || +value === 0) {
+                  setMaxPrice('');
+                  setPriceRange([priceRange[0], max]);
                 }
               }}
             />

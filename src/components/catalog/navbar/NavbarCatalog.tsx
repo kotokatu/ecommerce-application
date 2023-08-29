@@ -4,7 +4,7 @@ import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 
-const navbarCatalogStyles = createStyles((theme) => ({
+const navbarCatalogStyles = createStyles(() => ({
   navbar: {
     boxSizing: 'border-box',
     display: 'flex',
@@ -41,14 +41,14 @@ const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [valueSlider, setValueSlider] = useState([minProductPrice, maxProductPrice]);
+  const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
 
   function getFilterProducts() {
     console.log(
       'min',
-      valueSlider[0],
+      priceRange[0],
       'max',
-      valueSlider[1],
+      priceRange[1],
       'brands',
       selectedBrands,
       'sizes',
@@ -62,7 +62,7 @@ const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice
     document.querySelectorAll<HTMLInputElement>('input:checked').forEach((item) => (item.checked = false));
     setMinPrice('');
     setMaxPrice('');
-    setValueSlider([minProductPrice, maxProductPrice]);
+    setPriceRange([minProductPrice, maxProductPrice]);
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
@@ -96,8 +96,8 @@ const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice
         <DropdownPrice
           min={minProductPrice}
           max={maxProductPrice}
-          valueSlider={valueSlider}
-          setValueSlider={setValueSlider}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
           minPriceInput={minPrice}
           setMinPrice={setMinPrice}
           maxPriceInput={maxPrice}
@@ -108,7 +108,7 @@ const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice
         <Button fullWidth onClick={getFilterProducts}>
           Show
         </Button>
-        <Button fullWidth type="submit" variant="outline" onClick={clearFilterProducts}>
+        <Button fullWidth variant="outline" onClick={clearFilterProducts}>
           Clear all
         </Button>
       </div>
