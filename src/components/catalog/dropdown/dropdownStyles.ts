@@ -37,11 +37,16 @@ export const dropdownStyles = createStyles((theme) => ({
     },
   },
 
+  pricedropdown: {
+    padding: '0 10px',
+  },
+
   sliderbox: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     height: '50px',
+    width: '90%',
   },
 
   slider: {

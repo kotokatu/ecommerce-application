@@ -36,7 +36,7 @@ const DropdownPrice = ({
         <Box>Price</Box>
       </UnstyledButton>
       <Collapse in={opened}>
-        <div>
+        <div className={classes.pricedropdown}>
           <div className={classes.sliderbox}>
             <Slider
               className={classes.slider}
@@ -56,23 +56,25 @@ const DropdownPrice = ({
               placeholder="Min"
               value={minPriceInput}
               setValue={(event) => {
-                if (event) {
-                  setMinPrice(event);
-                  setValueSlider([+event, valueSlider[1]]);
-                }
-                if (+event <= min) {
-                  setMinPrice('');
-                  setValueSlider([min, valueSlider[1]]);
-                }
-                if (+event >= max) {
-                  setMinPrice('');
-                  setValueSlider([min, valueSlider[1]]);
-                }
+                setMinPrice(event);
+                setValueSlider([+event, valueSlider[1]]);
+                // if (+event >= max) {
+                //   setMinPrice('');
+                //   setValueSlider([min, valueSlider[1]]);
+                // }
               }}
               setValueOnBlur={(event) => {
-                if (+event > valueSlider[1]) {
+                if (+event <= min) {
+                  setMinPrice(`${min}`);
+                  setValueSlider([min, valueSlider[1]]);
+                }
+                if (+event >= valueSlider[1]) {
                   setMinPrice(`${valueSlider[1]}`);
                   setValueSlider([valueSlider[1], valueSlider[1]]);
+                }
+                if (+event === 0) {
+                  setMinPrice('');
+                  setValueSlider([min, valueSlider[1]]);
                 }
               }}
             />
@@ -81,21 +83,23 @@ const DropdownPrice = ({
               placeholder="Max"
               value={maxPriceInput}
               setValue={(event) => {
-                if (event) {
-                  setMaxPrice(event);
-                  setValueSlider([valueSlider[0], +event]);
-                }
-                if (+event <= min) {
-                  setMaxPrice('');
-                  setValueSlider([valueSlider[0], max]);
-                }
-                if (+event >= max) {
-                  setMaxPrice('');
-                  setValueSlider([valueSlider[0], max]);
-                }
+                setMaxPrice(event);
+                setValueSlider([valueSlider[0], +event]);
+                // if (+event <= min) {
+                //   setMaxPrice('');
+                //   setValueSlider([valueSlider[0], max]);
+                // }
+                // if (+event >= max) {
+                //   setMaxPrice('');
+                //   setValueSlider([valueSlider[0], max]);
+                // }
               }}
               setValueOnBlur={(event) => {
-                if (+event < valueSlider[0]) {
+                if (+event >= max || +event === 0) {
+                  setMaxPrice('');
+                  setValueSlider([valueSlider[0], max]);
+                }
+                if (+event <= valueSlider[0]) {
                   setMaxPrice(`${valueSlider[0]}`);
                   setValueSlider([valueSlider[0], valueSlider[0]]);
                 }

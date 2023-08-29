@@ -1,13 +1,31 @@
-import { Button } from '@mantine/core';
+import { Button, createStyles } from '@mantine/core';
 import { useState } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 
+const navbarCatalogStyles = createStyles((theme) => ({
+  navbar: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    minWidth: '200px',
+    marginRight: '10px',
+    borderRight: '0.0625rem solid #e9ecef',
+    width: '250px',
+  },
+
+  buttons: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    padding: '0 10px',
+  },
+}));
+
 const categoryItems = ['Men', 'Women', 'Accessories'];
 
 type NavbarCatalogProps = {
-  className: string;
   brands: string[];
   sizes: string[];
   colors: string[];
@@ -15,7 +33,8 @@ type NavbarCatalogProps = {
   maxProductPrice: number;
 };
 
-const NavbarCatalog = ({ className, brands, sizes, colors, minProductPrice, maxProductPrice }: NavbarCatalogProps) => {
+const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice }: NavbarCatalogProps) => {
+  const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -49,7 +68,7 @@ const NavbarCatalog = ({ className, brands, sizes, colors, minProductPrice, maxP
   }
 
   return (
-    <div className={className}>
+    <div className={classes.navbar}>
       <div>
         <DropdownLinks name="Category" links={categoryItems} />
       </div>
@@ -84,7 +103,7 @@ const NavbarCatalog = ({ className, brands, sizes, colors, minProductPrice, maxP
           setMaxPrice={setMaxPrice}
         />
       </div>
-      <div>
+      <div className={classes.buttons}>
         <Button fullWidth onClick={getFilterProducts}>
           Show
         </Button>

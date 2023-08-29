@@ -19,8 +19,8 @@ export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
   }
 
   return (
-    <Header height={80} className={classes.root}>
-      <Container className={classes.header}>
+    <Header height={80} className={classes.header}>
+      <Container className={classes.container}>
         <Group className={classes.title}>
           <NavLink to="/">
             <div className={classes.logobox}>

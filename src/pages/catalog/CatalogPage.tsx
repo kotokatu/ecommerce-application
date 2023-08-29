@@ -1,14 +1,16 @@
 import { userService } from '../../services/UserService/UserService';
 import { useEffect, useState } from 'react';
 import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { Button, createStyles } from '@mantine/core';
+import { createStyles } from '@mantine/core';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
+import ProductCard from '../../components/catalog/product-card/ProductCard';
 
 const useStyles = createStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
+    width: '100%',
   },
 
   header: {
@@ -22,13 +24,7 @@ const useStyles = createStyles((theme) => ({
 
   content: {
     display: 'flex',
-  },
-
-  navbar: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    minWidth: '200px',
+    justifyContent: 'space-between',
   },
 
   items: {
@@ -96,29 +92,23 @@ const CatalogPage = () => {
       <HeaderCatalog className={classes.header} />
       <div className={classes.content}>
         <NavbarCatalog
-          className={classes.navbar}
           brands={brands}
           sizes={sizes}
           colors={colors}
           minProductPrice={minProductPrice}
           maxProductPrice={maxProductPrice}
         />
-        <Button onClick={() => console.log(products)} />
+        <div className={classes.items}>
+          {products.map((product) => {
+            return <ProductCard key={product.id} product={product.masterVariant} title={`${product.name['en-US']}`} />;
+          })}
+          {products.map((product) => {
+            return <ProductCard key={product.id} product={product.masterVariant} title={`${product.name['en-US']}`} />;
+          })}
+        </div>
       </div>
     </div>
   ) : null;
-  // <div>
-  //   {products.map((product) => (
-  //     <li key={product.key}>
-  //       <span>{product.name['en-US']}</span>
-  //       <img
-  //         src={product.masterVariant.images ? product.masterVariant.images[0].url : ''}
-  //         alt=""
-  //         style={{ width: '100px' }}
-  //       />
-  //     </li>
-  //   ))}
-  // </div>
 };
 
 export default CatalogPage;
