@@ -5,6 +5,7 @@ import { ErrorResponse, CustomerDraft, Customer } from '@commercetools/platform-
 import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { UserProfile } from '../../utils/types/serviceTypes';
+import { tokenCache } from '../api/TokenCache';
 
 const CUSTOMER_DATA_STORAGE_KEY = 'customer-data-token-30fingers';
 
@@ -68,7 +69,6 @@ class UserService {
   }
 
   public async signup(userData: UserData): Promise<string | void> {
-    this.apiRoot = new CtpClient().getApiRoot();
     try {
       await this.apiRoot
         .customers()
@@ -97,6 +97,7 @@ class UserService {
         .execute();
       this.createCustomerProfile(customerSignIn.body.customer);
     } catch (err) {
+      this.apiRoot = new CtpClient().getApiRoot();
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
@@ -106,7 +107,41 @@ class UserService {
   }
 
   public logout() {
+    tokenCache.clear();
     this.apiRoot = new CtpClient().getApiRoot();
+  }
+
+  public async getProducts() {
+    try {
+      return await this.apiRoot.productProjections().get().execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+  public async searchProducts() {
+    try {
+      await this.apiRoot
+        .productProjections()
+        .search()
+        .get({ queryArgs: { filter: 'variants.attributes.size.key: "large"' } })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+  public async getProduct(key: string) {
+    try {
+      await this.apiRoot.productProjections().withKey({ key }).get().execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+  public async getProfile() {
+    try {
+      await this.apiRoot.me().get().execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 }
 
