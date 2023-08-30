@@ -14,8 +14,8 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { userService } from '../../services/UserService/UserService';
 import { ProductProjection } from '@commercetools/platform-sdk';
+import { productService } from '../../services/ProductService/ProductService';
 import parse from 'html-react-parser';
 import './detailed-product-page.scss';
 
@@ -26,7 +26,7 @@ const DetailedProductPage = (): JSX.Element => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await userService.getProduct(productKey as string);
+      const data = await productService.getProduct(productKey as string);
       if (data) setProduct(data);
     };
     fetchData();
