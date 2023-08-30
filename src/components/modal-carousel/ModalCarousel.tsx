@@ -23,11 +23,17 @@ const ModalCarousel = ({ slides, opened, setOpened }: ModalCarouselProps) => {
       size={1200}
       styles={{
         header: {
-          paddingBottom: '5px',
+          paddingBottom: '0',
           paddingTop: '5px',
         },
         content: {
           paddingBottom: '15px',
+        },
+        close: {
+          width: '30px',
+          height: '30px',
+          color: '#000000',
+          borderRadius: '100%',
         },
       }}
     >
