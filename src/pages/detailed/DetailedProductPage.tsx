@@ -13,6 +13,7 @@ import {
   rem,
   getStylesRef,
   Loader,
+  Center,
   createStyles,
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
@@ -84,7 +85,7 @@ const DetailedProductPage = (): JSX.Element => {
   }, [productKey]);
 
   return (
-    <Container w="100%" h="100%" my="md" size="lg" display="flex">
+    <Container w="100%" h="100%" my="md" size="lg">
       {product ? (
         <SimpleGrid cols={2} spacing={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
           <Carousel classNames={classes} withIndicators loop>
@@ -119,7 +120,9 @@ const DetailedProductPage = (): JSX.Element => {
           </Grid>
         </SimpleGrid>
       ) : (
-        <Loader variant="bars" size="xl" display="block" mx="auto" />
+        <Center h="100%">
+          <Loader variant="bars" size="xl" display="block" mx="auto" />
+        </Center>
       )}
     </Container>
   );
