@@ -38,12 +38,8 @@ class ProductService {
     }
   }
   public async getProduct(key: string): Promise<ProductProjection | undefined> {
-    try {
-      const productData = await this.apiRoot.productProjections().withKey({ key }).get().execute();
-      return productData.body;
-    } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
-    }
+    const productData = await this.apiRoot.productProjections().withKey({ key }).get().execute();
+    return productData.body;
   }
 }
 
