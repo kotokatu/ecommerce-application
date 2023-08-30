@@ -1,4 +1,4 @@
-import { userService } from '../../services/UserService/UserService';
+import { productService } from '../../services/ProductService/ProductService';
 import { useEffect, useState } from 'react';
 import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { createStyles } from '@mantine/core';
@@ -42,7 +42,7 @@ const CatalogPage = () => {
 
   useEffect(() => {
     const getProducts = async () => {
-      const response = await userService.getProducts();
+      const response = await productService.getProducts();
       const result = response?.body.results as ProductProjection[];
 
       setProducts(result);
