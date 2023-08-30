@@ -27,7 +27,6 @@ class CtpClient {
   }
 
   private getClient(): Client {
-    console.log(tokenCache.getRefreshToken());
     if (this.userAuthOptions) {
       return new ClientBuilder()
         .withPasswordFlow(this.getUserAuthOptions())
@@ -53,9 +52,6 @@ class CtpClient {
       projectKey: this.projectKey,
       credentials: { ...this.credentials, user: this.userAuthOptions as UserAuthOptions },
       fetch,
-      scopes: [
-        'manage_my_orders:30fingers-project manage_my_business_units:30fingers-project manage_my_payments:30fingers-project create_anonymous_token:30fingers-project manage_my_profile:30fingers-project manage_my_quote_requests:30fingers-project manage_my_quotes:30fingers-project view_published_products:30fingers-project manage_my_shopping_lists:30fingers-project view_categories:30fingers-project',
-      ],
       tokenCache: tokenCache,
     };
   }
