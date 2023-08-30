@@ -90,7 +90,7 @@ class UserService {
 
   public async getProducts() {
     try {
-      await this.apiRoot.productProjections().get().execute();
+      return await this.apiRoot.productProjections().get().execute();
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
