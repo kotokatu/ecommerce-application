@@ -15,6 +15,7 @@ import ProfilePage from '../pages/profile/ProfilePage';
 import NotFoundPage from '../pages/not-found/NotFoundPage';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import AuthProvider from '../routes/AuthProvider';
+import DetailedProductPage from '../pages/detailed/DetailedProductPage';
 
 function App() {
   const loginState = localStorage.getItem('userLoggedIn');
@@ -51,6 +52,7 @@ function App() {
               <Route path="registration" element={<RegistrationPage />} />
             </Route>
 
+            <Route path=":productKey" element={<DetailedProductPage />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
