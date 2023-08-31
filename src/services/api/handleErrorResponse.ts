@@ -1,7 +1,7 @@
 import { ErrorResponse } from '@commercetools/platform-sdk';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 
-enum ErrorCodes {
+export enum ErrorCodes {
   FailedToFetch = 0,
   Unauthorized = 401,
   BadRequest = 400,
@@ -11,7 +11,7 @@ enum ErrorCodes {
   ServiceUnavailable = 503,
 }
 
-const getErrorMessage = (error: ClientResponse<ErrorResponse> | Error) => {
+export const getErrorMessage = (error: ClientResponse<ErrorResponse> | Error) => {
   if (error instanceof Error) {
     return error.message;
   }
