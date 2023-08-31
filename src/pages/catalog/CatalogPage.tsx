@@ -40,28 +40,13 @@ const useStyles = createStyles(() => ({
 const CatalogPage = () => {
   const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const { category, subcategory } = useParams();
+  const { category } = useParams();
   const { classes } = useStyles();
 
   useEffect(() => {
     const getProducts = async () => {
-      const responseProducts = [];
-
-      if (category && !subcategory) {
-        const params = {
-          filter: `categories.id: "${category}"`,
-        };
-        responseProducts.push(await productService.searchProducts(params));
-      } else if (category && subcategory) {
-        const params = {
-          filter: `categories.id: "${subcategory}"`,
-        };
-        responseProducts.push(await productService.searchProducts(params));
-      } else {
-        responseProducts.push(await productService.getProducts());
-      }
-
-      const resultProducts = responseProducts[0]?.body.results as ProductProjection[];
+      const responseProducts = await productService.getProducts();
+      const resultProducts = responseProducts?.body.results as ProductProjection[];
 
       const responseCategories = await productService.getCategories();
       const resultCategories = responseCategories?.body.results as Category[];
@@ -70,12 +55,12 @@ const CatalogPage = () => {
       setCategories(resultCategories);
     };
     getProducts();
-  }, [category, subcategory]);
+  }, []);
 
   const brands: string[] = [];
   const sizes: string[] = [];
   const colors: string[] = [];
-  const prices: number[] = [];
+  const prices: number[] = [0, 10000];
   const currentCategories: CategoryType[] = [];
 
   categories.forEach((categoryFromAPI) => {
@@ -118,20 +103,21 @@ const CatalogPage = () => {
     });
   });
 
-  const minProductPrice = Math.min.apply(null, prices);
-  const maxProductPrice = Math.max.apply(null, prices);
+  const minProductPrice = Math.min(...prices);
+  const maxProductPrice = Math.max(...prices);
 
   return (
     <div className={classes.container}>
-      <HeaderCatalog />
+      <HeaderCatalog setProducts={setProducts} />
       <div className={classes.content}>
         <NavbarCatalog
           categories={currentCategories}
           brands={brands}
           sizes={sizes}
           colors={colors}
-          minProductPrice={prices.length ? minProductPrice : 0}
-          maxProductPrice={prices.length ? maxProductPrice : 100000}
+          minProductPrice={minProductPrice}
+          maxProductPrice={maxProductPrice}
+          setProducts={setProducts}
         />
         <div className={classes.items}>
           {products.length ? (
