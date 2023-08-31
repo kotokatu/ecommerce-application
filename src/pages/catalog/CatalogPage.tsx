@@ -61,7 +61,7 @@ const CatalogPage = () => {
       }
 
       if (searchQuery) {
-        params = { 'text.en-US': `${searchQuery}` };
+        params = { 'text.en-US': `${searchQuery}`, fuzzy: true };
       }
 
       const products = (await productService.searchProducts(params)) as ProductProjection[];
