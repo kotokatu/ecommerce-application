@@ -108,7 +108,7 @@ const DetailedProductPage = (): JSX.Element => {
   }, [productID, navigate]);
 
   return (
-    <Container w="100%" h="100%" my="md" size="lg">
+    <Container w="100%" my="md" px={0} size="lg">
       {product ? (
         <>
           <SimpleGrid cols={2} spacing={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
@@ -151,9 +151,7 @@ const DetailedProductPage = (): JSX.Element => {
           <ModalCarousel slides={slides(product)} opened={opened} setOpened={setOpened}></ModalCarousel>
         </>
       ) : (
-        <Center h="100%">
-          <Loader variant="bars" size="xl" display="block" mx="auto" />
-        </Center>
+        <Loader variant="bars" size="xl" display="block" mx="auto" />
       )}
     </Container>
   );

@@ -1,25 +1,22 @@
-import { productService } from '../../services/ProductService/ProductService';
 import { useEffect, useState } from 'react';
-import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
+import { Category, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { createStyles } from '@mantine/core';
+import { useParams } from 'react-router-dom';
+import { productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
+
+export type CategoryType = {
+  name: string;
+  id: string;
+};
 
 const useStyles = createStyles(() => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-  },
-
-  header: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    width: '100%',
-    marginBottom: '20px',
-    gap: '20px',
   },
 
   content: {
@@ -34,26 +31,62 @@ const useStyles = createStyles(() => ({
     justifyContent: 'center',
     gap: '40px',
   },
+
+  center: {
+    marginTop: '100px',
+  },
 }));
 
 const CatalogPage = () => {
   const [products, setProducts] = useState<ProductProjection[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
   useEffect(() => {
-    const getProducts = async () => {
-      const response = await productService.getProducts();
-      const result = response?.body.results as ProductProjection[];
-
-      setProducts(result);
+    const getCategories = async () => {
+      const categories = (await productService.getCategories()) as Category[];
+      setCategories(categories);
     };
+
+    const getProducts = async () => {
+      let params = {};
+
+      if (category) {
+        params = {
+          filter: `categories.id: "${subcategory || category}"`,
+        };
+      }
+
+      const products = (await productService.searchProducts(params)) as ProductProjection[];
+      setProducts(products);
+    };
+
     getProducts();
-  }, []);
+    getCategories();
+  }, [category, subcategory]);
 
   const brands: string[] = [];
   const sizes: string[] = [];
   const colors: string[] = [];
-  const prices: number[] = [];
+  const prices: number[] = [0, 10000];
+  const currentCategories: CategoryType[] = [];
+  const allCategories: CategoryType[] = [];
+
+  categories.forEach((categoryFromAPI) => {
+    allCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
+  });
+
+  categories.forEach((categoryFromAPI) => {
+    if (!categoryFromAPI.parent && !category) {
+      currentCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
+    }
+    if (categoryFromAPI.parent && category) {
+      if (categoryFromAPI.parent.obj?.id === category) {
+        currentCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
+      }
+    }
+  });
 
   function fillAtributeArrays(array: ProductVariant) {
     array.attributes?.forEach((attribute) => {
@@ -84,14 +117,15 @@ const CatalogPage = () => {
     });
   });
 
-  const minProductPrice = Math.min.apply(null, prices);
-  const maxProductPrice = Math.max.apply(null, prices);
+  const minProductPrice = Math.min(...prices);
+  const maxProductPrice = Math.max(...prices);
 
-  return products.length ? (
+  return (
     <div className={classes.container}>
-      <HeaderCatalog className={classes.header} />
+      <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
+          categories={currentCategories}
           brands={brands}
           sizes={sizes}
           colors={colors}
@@ -99,13 +133,17 @@ const CatalogPage = () => {
           maxProductPrice={maxProductPrice}
         />
         <div className={classes.items}>
-          {products.map((product) => {
-            return <ProductCard key={product.id} product={product.masterVariant} title={product.name['en-US']} />;
-          })}
+          {products.length ? (
+            products.map((product) => {
+              return <ProductCard key={product.id} product={product} title={product.name['en-US']} />;
+            })
+          ) : (
+            <h2 className={classes.center}>Product not found</h2>
+          )}
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default CatalogPage;

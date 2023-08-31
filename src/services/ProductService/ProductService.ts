@@ -19,27 +19,34 @@ class ProductService {
     }
   }
 
-  public async getProducts() {
+  public async searchProducts(params: Record<string, string>) {
     try {
-      return await this.apiRoot.productProjections().get().execute();
+      const products = await this.apiRoot.productProjections().search().get({ queryArgs: params }).execute();
+      return products.body.results;
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
-  public async searchProducts() {
-    try {
-      await this.apiRoot
-        .productProjections()
-        .search()
-        .get({ queryArgs: { filter: 'variants.attributes.size.key: "large"' } })
-        .execute();
-    } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
-    }
-  }
+
   public async getProduct(ID: string): Promise<ProductProjection | undefined> {
-    const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
-    return productData.body;
+    try {
+      const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
+      return productData.body;
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+
+  public async getCategories() {
+    try {
+      const categories = await this.apiRoot
+        .categories()
+        .get({ queryArgs: { expand: 'parent' } })
+        .execute();
+      return categories.body.results;
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 }
 

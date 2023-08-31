@@ -1,24 +1,51 @@
 import { useState } from 'react';
-import SearchInput from '../input/SearchInput';
+import { createStyles } from '@mantine/core';
+import { CategoryType } from '../../../pages/catalog/CatalogPage';
 import SortPicker from '../sort-picker/SortPicker';
+import SearchInput from '../input/SearchInput';
+import BreadCrumbs from '../breadcrumbs/BreadCrumbs';
 
-const HeaderCatalog = ({ className }: { className: string }) => {
+const headerCatalogStyles = createStyles(() => ({
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginBottom: '20px',
+    padding: '0 1rem',
+  },
+
+  inputs: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: '10px',
+  },
+}));
+
+type HeaderCatalogProps = {
+  allCategories: CategoryType[];
+};
+
+const HeaderCatalog = ({ allCategories }: HeaderCatalogProps) => {
   const [searchValue, setSearchValue] = useState('');
+  const { classes } = headerCatalogStyles();
 
   function searchProduct() {
     console.log(searchValue);
   }
 
   return (
-    <div className={className}>
-      <SortPicker />
-      <SearchInput
-        label="Search product"
-        placeholder="Enter a name"
-        value={searchValue}
-        setValue={setSearchValue}
-        searchProduct={searchProduct}
-      />
+    <div className={classes.header}>
+      <BreadCrumbs allCategories={allCategories} />
+      <div className={classes.inputs}>
+        <SortPicker />
+        <SearchInput
+          label="Search product"
+          placeholder="Enter a name"
+          value={searchValue}
+          setValue={setSearchValue}
+          searchProduct={searchProduct}
+        />
+      </div>
     </div>
   );
 };
