@@ -52,7 +52,9 @@ function App() {
               <Route path="registration" element={<RegistrationPage />} />
             </Route>
 
-            <Route path="/catalog/product/:productKey" element={<DetailedProductPage />} />
+            <Route path="catalog/product/:id" element={<DetailedProductPage />} />
+            <Route path="catalog/category/:category" element={<CatalogPage />} />
+            <Route path="catalog/category/:category/:subcategory" element={<CatalogPage />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

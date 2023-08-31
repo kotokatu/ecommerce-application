@@ -3,6 +3,7 @@ import { useState } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
+import { CategoryType } from '../../../pages/catalog/CatalogPage';
 
 const navbarCatalogStyles = createStyles(() => ({
   navbar: {
@@ -24,9 +25,8 @@ const navbarCatalogStyles = createStyles(() => ({
   },
 }));
 
-const categoryItems = ['Men', 'Women', 'Accessories'];
-
 type NavbarCatalogProps = {
+  categories: CategoryType[];
   brands: string[];
   sizes: string[];
   colors: string[];
@@ -34,7 +34,7 @@ type NavbarCatalogProps = {
   maxProductPrice: number;
 };
 
-const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice }: NavbarCatalogProps) => {
+const NavbarCatalog = ({ categories, brands, sizes, colors, minProductPrice, maxProductPrice }: NavbarCatalogProps) => {
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -71,7 +71,7 @@ const NavbarCatalog = ({ brands, sizes, colors, minProductPrice, maxProductPrice
   return (
     <div className={classes.navbar}>
       <div>
-        <DropdownLinks name="Category" links={categoryItems} />
+        <DropdownLinks name="Category" links={categories} />
       </div>
       <div>
         <DropdownItems

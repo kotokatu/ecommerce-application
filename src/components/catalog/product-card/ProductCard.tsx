@@ -1,6 +1,7 @@
 import { createStyles, Image, Card, Text, Group, Button, getStylesRef, rem } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { ProductVariant } from '@commercetools/platform-sdk';
+import { ProductProjection } from '@commercetools/platform-sdk';
+import { Link } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -60,17 +61,23 @@ const useStyles = createStyles((theme) => ({
     flex: '0 0 auto',
     justifyContent: 'space-between',
   },
+
+  button: {
+    span: {
+      color: 'white',
+    },
+  },
 }));
 
 type ProductCardProps = {
-  product: ProductVariant;
+  product: ProductProjection;
   title: string;
 };
 
 const ProductCard = ({ product, title }: ProductCardProps) => {
   const { classes } = useStyles();
 
-  const slides = product.images?.map((image) => (
+  const slides = product.masterVariant.images?.map((image) => (
     <Carousel.Slide key={image.url}>
       <Image src={image.url} height={400} />
     </Carousel.Slide>
@@ -95,14 +102,18 @@ const ProductCard = ({ product, title }: ProductCardProps) => {
 
         <Group className={classes.cardinfo}>
           <Text className={classes.brand}>
-            {product.attributes?.map((attribute) => (attribute.name === 'brand' ? attribute.value.label : ''))}
+            {product.masterVariant.attributes?.map((attribute) =>
+              attribute.name === 'brand' ? attribute.value.label : '',
+            )}
           </Text>
 
           <Text className={classes.title}>{title}</Text>
 
           <div className={classes.footer}>
-            <Text>{`${product.prices?.map((price) => price.value.centAmount / 100)} €`}</Text>
-            <Button radius="md">View</Button>
+            <Text>{`${product.masterVariant.prices?.map((price) => price.value.centAmount / 100)} €`}</Text>
+            <Button className={classes.button} radius="md" component={Link} to={`/catalog/product/${product.id}`}>
+              View
+            </Button>
           </div>
         </Group>
       </Card>
