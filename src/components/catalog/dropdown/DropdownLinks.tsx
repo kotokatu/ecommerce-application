@@ -18,22 +18,25 @@ const DropdownLinks = ({ name, initiallyOpened, links, setProducts }: DropdownLi
   const [opened, setOpened] = useState(initiallyOpened || false);
   const { category } = useParams();
 
-  const getProductsById = async (id: string) => {
-    const params = {
-      filter: `categories.id: "${id}"`,
-    };
-    const responseProducts = await productService.searchProducts(params);
-    const resultProducts = responseProducts?.body.results as ProductProjection[];
+  // const getProductsById = async (id: string) => {
+  //   const params = {
+  //     filter: `categories.id: "${id}"`,
+  //   };
+  //   const responseProducts = await productService.searchProducts(params);
+  //   const resultProducts = responseProducts?.body.results as ProductProjection[];
 
-    setProducts(resultProducts);
-  };
+  //   setProducts(resultProducts);
+  // };
 
   const linkItems = links.map((link) => (
     <NavLink
       className={classes.item}
       key={link.id}
-      to={`/catalog/category/${category ? category : link.id}/${category ? link.id : ''}`}
-      onClick={() => getProductsById(link.id)}
+      to={`/catalog/${category ? category : link.id}/${category ? link.id : ''}`}
+      onClick={() => {
+        console.log(link.id);
+        // getProductsById(link.id);
+      }}
     >
       {link.name}
     </NavLink>

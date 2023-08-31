@@ -53,8 +53,8 @@ function App() {
             </Route>
 
             <Route path="catalog/product/:id" element={<DetailedProductPage />} />
-            <Route path="catalog/category/:category" element={<CatalogPage />} />
-            <Route path="catalog/category/:category/:subcategory" element={<CatalogPage />} />
+            <Route path="catalog/:category" element={<CatalogPage />} />
+            <Route path="catalog/:category/:subcategory" element={<CatalogPage />} />
             <Route path="basket" element={<BasketPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

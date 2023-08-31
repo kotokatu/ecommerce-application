@@ -40,13 +40,42 @@ const useStyles = createStyles(() => ({
 const CatalogPage = () => {
   const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const { category } = useParams();
+  const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
+  document.addEventListener('load', async () => {
+    const responseCategories = await productService.getCategories();
+    const resultCategories = responseCategories?.body.results as Category[];
+
+    setCategories(resultCategories);
+  });
+
+  // useEffect(() => {
+  //   const getProducts = async () => {
+  //     const responseProducts = await productService.getProducts();
+  //     const resultProducts = responseProducts?.body.results as ProductProjection[];
+
+  //     const responseCategories = await productService.getCategories();
+  //     const resultCategories = responseCategories?.body.results as Category[];
   useEffect(() => {
     const getProducts = async () => {
-      const responseProducts = await productService.getProducts();
-      const resultProducts = responseProducts?.body.results as ProductProjection[];
+      const responseProducts = [];
+
+      if (category && !subcategory) {
+        const params = {
+          filter: `categories.id: "${category}"`,
+        };
+        responseProducts.push(await productService.searchProducts(params));
+      } else if (category && subcategory) {
+        const params = {
+          filter: `categories.id: "${subcategory}"`,
+        };
+        responseProducts.push(await productService.searchProducts(params));
+      } else {
+        responseProducts.push(await productService.getProducts());
+      }
+
+      const resultProducts = responseProducts[0]?.body.results as ProductProjection[];
 
       const responseCategories = await productService.getCategories();
       const resultCategories = responseCategories?.body.results as Category[];
@@ -55,13 +84,18 @@ const CatalogPage = () => {
       setCategories(resultCategories);
     };
     getProducts();
-  }, []);
+  }, [category, subcategory]);
 
   const brands: string[] = [];
   const sizes: string[] = [];
   const colors: string[] = [];
   const prices: number[] = [0, 10000];
   const currentCategories: CategoryType[] = [];
+  const allCategories: CategoryType[] = [];
+
+  categories.forEach((categoryFromAPI) => {
+    allCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
+  });
 
   categories.forEach((categoryFromAPI) => {
     if (!categoryFromAPI.parent && !category) {
@@ -108,7 +142,7 @@ const CatalogPage = () => {
 
   return (
     <div className={classes.container}>
-      <HeaderCatalog setProducts={setProducts} />
+      <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
           categories={currentCategories}
