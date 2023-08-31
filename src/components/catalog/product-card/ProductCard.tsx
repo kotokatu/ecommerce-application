@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const useStyles = createStyles((theme) => ({
   card: {
     width: '300px',
+    height: 'fit-content',
     cursor: 'pointer',
     padding: '0 1rem',
 

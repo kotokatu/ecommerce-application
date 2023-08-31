@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Category, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { Loader, createStyles } from '@mantine/core';
+import { createStyles } from '@mantine/core';
 import { useParams } from 'react-router-dom';
 import { productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
@@ -38,15 +38,13 @@ const useStyles = createStyles(() => ({
 }));
 
 const CatalogPage = () => {
-  const [products, setProducts] = useState<ProductProjection[]>(null!);
+  const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
   useEffect(() => {
     const getProducts = async () => {
-      setProducts(null!);
-
       const responseProducts = [];
 
       if (category && !subcategory) {
@@ -107,14 +105,14 @@ const CatalogPage = () => {
     });
   }
 
-  products?.forEach((product) => {
+  products.forEach((product) => {
     fillAtributeArrays(product.masterVariant);
     product.variants.forEach((product) => {
       fillAtributeArrays(product);
     });
   });
 
-  products?.forEach((product) => {
+  products.forEach((product) => {
     product.masterVariant.prices?.forEach((price) => {
       if (!prices.includes(price.value.centAmount / 100)) prices.push(price.value.centAmount / 100);
     });
@@ -132,22 +130,16 @@ const CatalogPage = () => {
           brands={brands}
           sizes={sizes}
           colors={colors}
-          minProductPrice={minProductPrice}
-          maxProductPrice={maxProductPrice}
+          minProductPrice={prices.length ? minProductPrice : 0}
+          maxProductPrice={prices.length ? maxProductPrice : 100000}
         />
         <div className={classes.items}>
-          {products ? (
-            products.length ? (
-              products.map((product) => {
-                return <ProductCard key={product.id} product={product} title={product.name['en-US']} />;
-              })
-            ) : (
-              <h2 className={classes.center}>Product not found</h2>
-            )
+          {products.length ? (
+            products.map((product) => {
+              return <ProductCard key={product.id} product={product} title={product.name['en-US']} />;
+            })
           ) : (
-            <div className={classes.center}>
-              <Loader variant="bars" size="xl" display={'block'} mx="auto" />
-            </div>
+            <h2 className={classes.center}>Product not found</h2>
           )}
         </div>
       </div>
