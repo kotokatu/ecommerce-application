@@ -65,9 +65,10 @@ const HeaderCatalog = ({ setProducts }: { setProducts: Dispatch<SetStateAction<P
   const [searchValue, setSearchValue] = useState('');
   const { classes } = headerCatalogStyles();
 
-  function searchProduct() {
-    console.log(searchValue);
-  }
+  const searchProduct = async () => {
+    const searchedProducts = await productService.searchProducts({ where: `${searchValue}` });
+    console.log(searchedProducts);
+  };
 
   const getProductsById = async (params: Record<string, string>) => {
     const responseProducts = await productService.searchProducts(params);
@@ -107,7 +108,7 @@ const HeaderCatalog = ({ setProducts }: { setProducts: Dispatch<SetStateAction<P
           placeholder="Enter a name"
           value={searchValue}
           setValue={setSearchValue}
-          searchProduct={searchProduct}
+          searchProduct={() => searchProduct()}
         />
       </div>
     </div>
