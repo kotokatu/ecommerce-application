@@ -43,25 +43,25 @@ const CatalogPage = () => {
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
-  const getCategories = async () => {
-    const categories = (await productService.getCategories()) as Category[];
-    setCategories(categories);
-  };
-
-  const getProducts = async () => {
-    let params = {};
-
-    if (category) {
-      params = {
-        filter: `categories.id: "${subcategory || category}"`,
-      };
-    }
-
-    const products = (await productService.searchProducts(params)) as ProductProjection[];
-    setProducts(products);
-  };
-
   useEffect(() => {
+    const getCategories = async () => {
+      const categories = (await productService.getCategories()) as Category[];
+      setCategories(categories);
+    };
+
+    const getProducts = async () => {
+      let params = {};
+
+      if (category) {
+        params = {
+          filter: `categories.id: "${subcategory || category}"`,
+        };
+      }
+
+      const products = (await productService.searchProducts(params)) as ProductProjection[];
+      setProducts(products);
+    };
+
     getProducts();
     getCategories();
   }, [category, subcategory]);
