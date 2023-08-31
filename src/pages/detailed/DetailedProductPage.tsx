@@ -74,11 +74,12 @@ const productSizes = (product: ProductProjection): string[] => {
 
 const DetailedProductPage = (): JSX.Element => {
   const [product, setProduct] = useState<ProductProjection>();
-  const { productKey } = useParams();
+  const { productID } = useParams();
   const { classes } = carouselStyles();
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
 
+  console.log(productID);
   const slides = (product: ProductProjection): JSX.Element[] | null => {
     if (product.masterVariant.images) {
       return product.masterVariant.images.map((image, ind) => (
@@ -95,7 +96,7 @@ const DetailedProductPage = (): JSX.Element => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await productService.getProduct(productKey as string);
+        const data = await productService.getProduct(productID as string);
         if (data) setProduct(data);
       } catch (err) {
         if ((err as ClientResponse<ErrorResponse>).statusCode === ErrorCodes.NotFound) {
@@ -104,7 +105,7 @@ const DetailedProductPage = (): JSX.Element => {
       }
     };
     fetchData();
-  }, [productKey, navigate]);
+  }, [productID, navigate]);
 
   return (
     <Container w="100%" h="100%" my="md" size="lg">

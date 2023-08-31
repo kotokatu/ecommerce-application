@@ -37,8 +37,8 @@ class ProductService {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
-  public async getProduct(key: string): Promise<ProductProjection | undefined> {
-    const productData = await this.apiRoot.productProjections().withKey({ key }).get().execute();
+  public async getProduct(ID: string): Promise<ProductProjection | undefined> {
+    const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
     return productData.body;
   }
 }
