@@ -1,10 +1,9 @@
 import { Button, createStyles } from '@mantine/core';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../pages/catalog/CatalogPage';
-import { ProductProjection } from '@commercetools/platform-sdk';
 
 const navbarCatalogStyles = createStyles(() => ({
   navbar: {
@@ -33,18 +32,9 @@ type NavbarCatalogProps = {
   colors: string[];
   minProductPrice: number;
   maxProductPrice: number;
-  setProducts: Dispatch<SetStateAction<ProductProjection[]>>;
 };
 
-const NavbarCatalog = ({
-  categories,
-  brands,
-  sizes,
-  colors,
-  minProductPrice,
-  maxProductPrice,
-  setProducts,
-}: NavbarCatalogProps) => {
+const NavbarCatalog = ({ categories, brands, sizes, colors, minProductPrice, maxProductPrice }: NavbarCatalogProps) => {
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -81,7 +71,7 @@ const NavbarCatalog = ({
   return (
     <div className={classes.navbar}>
       <div>
-        <DropdownLinks name="Category" links={categories} setProducts={setProducts} />
+        <DropdownLinks name="Category" links={categories} />
       </div>
       <div>
         <DropdownItems

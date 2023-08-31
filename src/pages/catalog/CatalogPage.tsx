@@ -43,47 +43,27 @@ const CatalogPage = () => {
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
-  document.addEventListener('load', async () => {
-    const responseCategories = await productService.getCategories();
-    const resultCategories = responseCategories?.body.results as Category[];
+  const getCategories = async () => {
+    const categories = (await productService.getCategories()) as Category[];
+    setCategories(categories);
+  };
 
-    setCategories(resultCategories);
-  });
+  const getProducts = async () => {
+    let params = {};
 
-  // useEffect(() => {
-  //   const getProducts = async () => {
-  //     const responseProducts = await productService.getProducts();
-  //     const resultProducts = responseProducts?.body.results as ProductProjection[];
+    if (category) {
+      params = {
+        filter: `categories.id: "${subcategory || category}"`,
+      };
+    }
 
-  //     const responseCategories = await productService.getCategories();
-  //     const resultCategories = responseCategories?.body.results as Category[];
+    const products = (await productService.searchProducts(params)) as ProductProjection[];
+    setProducts(products);
+  };
+
   useEffect(() => {
-    const getProducts = async () => {
-      const responseProducts = [];
-
-      if (category && !subcategory) {
-        const params = {
-          filter: `categories.id: "${category}"`,
-        };
-        responseProducts.push(await productService.searchProducts(params));
-      } else if (category && subcategory) {
-        const params = {
-          filter: `categories.id: "${subcategory}"`,
-        };
-        responseProducts.push(await productService.searchProducts(params));
-      } else {
-        responseProducts.push(await productService.getProducts());
-      }
-
-      const resultProducts = responseProducts[0]?.body.results as ProductProjection[];
-
-      const responseCategories = await productService.getCategories();
-      const resultCategories = responseCategories?.body.results as Category[];
-
-      setProducts(resultProducts);
-      setCategories(resultCategories);
-    };
     getProducts();
+    getCategories();
   }, [category, subcategory]);
 
   const brands: string[] = [];
@@ -151,7 +131,6 @@ const CatalogPage = () => {
           colors={colors}
           minProductPrice={minProductPrice}
           maxProductPrice={maxProductPrice}
-          setProducts={setProducts}
         />
         <div className={classes.items}>
           {products.length ? (

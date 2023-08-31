@@ -19,20 +19,15 @@ class ProductService {
     }
   }
 
-  public async getProducts() {
-    try {
-      return await this.apiRoot.productProjections().get().execute();
-    } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
-    }
-  }
   public async searchProducts(params: Record<string, string>) {
     try {
-      return await this.apiRoot.productProjections().search().get({ queryArgs: params }).execute();
+      const products = await this.apiRoot.productProjections().search().get({ queryArgs: params }).execute();
+      return products.body.results;
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
+
   public async getProduct(ID: string): Promise<ProductProjection | undefined> {
     try {
       const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
@@ -41,23 +36,14 @@ class ProductService {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
+
   public async getCategories() {
     try {
-      return await this.apiRoot
+      const categories = await this.apiRoot
         .categories()
         .get({ queryArgs: { expand: 'parent' } })
         .execute();
-    } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
-    }
-  }
-  public async getCategyName(categoryId: string) {
-    try {
-      const category = await this.apiRoot
-        .categories()
-        .get({ queryArgs: { where: `id="${categoryId}"` } })
-        .execute();
-      return category.body.results[0].name['en-US'];
+      return categories.body.results;
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
