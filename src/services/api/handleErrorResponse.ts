@@ -24,7 +24,6 @@ export const getErrorMessage = (error: ClientResponse<ErrorResponse> | Error) =>
         return 'Authorization failed. Please try again';
       case ErrorCodes.BadRequest:
         return err.message;
-      case ErrorCodes.FailedToFetch:
       case ErrorCodes.BadGateway:
       case ErrorCodes.InternalServerError:
       case ErrorCodes.ServiceUnavailable:

@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { createStyles } from '@mantine/core';
 import { CategoryType } from '../../../pages/catalog/CatalogPage';
 import SortPicker from '../sort-picker/SortPicker';
 import SearchInput from '../input/SearchInput';
 import BreadCrumbs from '../breadcrumbs/BreadCrumbs';
+import { ProductProjection } from '@commercetools/platform-sdk';
 
 const headerCatalogStyles = createStyles(() => ({
   header: {
@@ -23,16 +25,26 @@ const headerCatalogStyles = createStyles(() => ({
 
 type HeaderCatalogProps = {
   allCategories: CategoryType[];
+  setProducts: React.Dispatch<React.SetStateAction<ProductProjection[]>>;
 };
 
-const HeaderCatalog = ({ allCategories }: HeaderCatalogProps) => {
-  const [searchValue, setSearchValue] = useState('');
+const HeaderCatalog = ({ allCategories, setProducts }: HeaderCatalogProps) => {
   const { classes } = headerCatalogStyles();
+  const [searchValue, setSearchValue] = useState('');
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const searchProduct = async () => {
-    const searchedProducts = await productService.searchProducts({ where: `${searchValue}` });
-    console.log(searchedProducts);
+  const setSearchQuery = () => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('search', searchValue);
+    navigate('/catalog?' + searchParams.toString());
   };
+
+  useEffect(() => {
+    const searchQuery = searchParams.get('search');
+    setSearchValue(searchQuery || '');
+  }, [searchParams]);
 
   return (
     <div className={classes.header}>
@@ -44,7 +56,7 @@ const HeaderCatalog = ({ allCategories }: HeaderCatalogProps) => {
           placeholder="Enter a name"
           value={searchValue}
           setValue={setSearchValue}
-          searchProduct={() => searchProduct()}
+          searchProduct={setSearchQuery}
         />
       </div>
     </div>
