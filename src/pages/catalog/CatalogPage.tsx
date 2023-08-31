@@ -40,28 +40,42 @@ const useStyles = createStyles(() => ({
 const CatalogPage = () => {
   const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const { category } = useParams();
+  const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
   useEffect(() => {
-    const getProducts = async () => {
-      const responseProducts = await productService.getProducts();
-      const resultProducts = responseProducts?.body.results as ProductProjection[];
-
-      const responseCategories = await productService.getCategories();
-      const resultCategories = responseCategories?.body.results as Category[];
-
-      setProducts(resultProducts);
-      setCategories(resultCategories);
+    const getCategories = async () => {
+      const categories = (await productService.getCategories()) as Category[];
+      setCategories(categories);
     };
+
+    const getProducts = async () => {
+      let params = {};
+
+      if (category) {
+        params = {
+          filter: `categories.id: "${subcategory || category}"`,
+        };
+      }
+
+      const products = (await productService.searchProducts(params)) as ProductProjection[];
+      setProducts(products);
+    };
+
     getProducts();
-  }, []);
+    getCategories();
+  }, [category, subcategory]);
 
   const brands: string[] = [];
   const sizes: string[] = [];
   const colors: string[] = [];
   const prices: number[] = [0, 10000];
   const currentCategories: CategoryType[] = [];
+  const allCategories: CategoryType[] = [];
+
+  categories.forEach((categoryFromAPI) => {
+    allCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
+  });
 
   categories.forEach((categoryFromAPI) => {
     if (!categoryFromAPI.parent && !category) {
@@ -108,7 +122,7 @@ const CatalogPage = () => {
 
   return (
     <div className={classes.container}>
-      <HeaderCatalog setProducts={setProducts} />
+      <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
           categories={currentCategories}
@@ -117,7 +131,6 @@ const CatalogPage = () => {
           colors={colors}
           minProductPrice={minProductPrice}
           maxProductPrice={maxProductPrice}
-          setProducts={setProducts}
         />
         <div className={classes.items}>
           {products.length ? (
