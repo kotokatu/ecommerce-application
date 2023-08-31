@@ -37,10 +37,18 @@ class ProductService {
     }
   }
 
-  public async getProduct(ID: string): Promise<ProductProjection | undefined> {
-    const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
-    return productData.body;
+  public async getCategories() {
+    try {
+      const categories = await this.apiRoot
+        .categories()
+        .get({ queryArgs: { expand: 'parent' } })
+        .execute();
+      return categories.body.results;
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 }
 
 export const productService = new ProductService();
+
