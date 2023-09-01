@@ -79,7 +79,6 @@ const DetailedProductPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
 
-  console.log(productID);
   const slides = (product: ProductProjection): JSX.Element[] | null => {
     if (product.masterVariant.images) {
       return product.masterVariant.images.map((image, ind) => (
@@ -100,7 +99,7 @@ const DetailedProductPage = (): JSX.Element => {
         if (data) setProduct(data);
       } catch (err) {
         if ((err as ClientResponse<ErrorResponse>).statusCode === ErrorCodes.NotFound) {
-          navigate('*', { replace: true });
+          navigate('/*', { replace: true });
         } else notificationError(getErrorMessage(err as ClientResponse<ErrorResponse> | Error));
       }
     };
@@ -108,7 +107,7 @@ const DetailedProductPage = (): JSX.Element => {
   }, [productID, navigate]);
 
   return (
-    <Container w="100%" my="md" px={0} size="lg">
+    <Container w="100%" h="100%" my="md" px={0} size="lg">
       {product ? (
         <>
           <SimpleGrid cols={2} spacing={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
@@ -151,7 +150,9 @@ const DetailedProductPage = (): JSX.Element => {
           <ModalCarousel slides={slides(product)} opened={opened} setOpened={setOpened}></ModalCarousel>
         </>
       ) : (
-        <Loader variant="bars" size="xl" display="block" mx="auto" />
+        <Center h="100%">
+          <Loader variant="bars" size="xl" display="block" mx="auto" />
+        </Center>
       )}
     </Container>
   );

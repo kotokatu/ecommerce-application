@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Category, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { createStyles } from '@mantine/core';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
@@ -40,6 +40,7 @@ const useStyles = createStyles(() => ({
 const CatalogPage = () => {
   const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
@@ -51,11 +52,16 @@ const CatalogPage = () => {
 
     const getProducts = async () => {
       let params = {};
+      const searchQuery = searchParams.get('search');
 
       if (category) {
         params = {
           filter: `categories.id: "${subcategory || category}"`,
         };
+      }
+
+      if (searchQuery) {
+        params = { 'text.en-US': `${searchQuery}` };
       }
 
       const products = (await productService.searchProducts(params)) as ProductProjection[];
@@ -64,7 +70,7 @@ const CatalogPage = () => {
 
     getProducts();
     getCategories();
-  }, [category, subcategory]);
+  }, [category, subcategory, searchParams]);
 
   const brands: string[] = [];
   const sizes: string[] = [];
@@ -122,7 +128,7 @@ const CatalogPage = () => {
 
   return (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={allCategories} />
+      <HeaderCatalog allCategories={allCategories} setProducts={setProducts} />
       <div className={classes.content}>
         <NavbarCatalog
           categories={currentCategories}
