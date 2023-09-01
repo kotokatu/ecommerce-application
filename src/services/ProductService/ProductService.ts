@@ -9,6 +9,7 @@ export const FilterParams = {
   brand: 'variants.attributes.brand.label',
   color: 'variants.attributes.color.label',
   size: 'variants.attributes.size.label',
+  price: 'variants.price.centAmount',
 };
 
 export type QueryArgs = {
@@ -24,6 +25,7 @@ export type GetProductsReturnType = {
   brands: FacetTerm[];
   colors: FacetTerm[];
   sizes: FacetTerm[];
+  prices: FacetTerm[];
   products: ProductProjection[];
 };
 
@@ -72,10 +74,10 @@ class ProductService {
         })
         .execute();
       const { facets, results: products } = response.body;
-      const [categories, brands, colors, sizes] = Object.values(FilterParams).map((facet) =>
+      const [categories, brands, colors, sizes, prices] = Object.values(FilterParams).map((facet) =>
         (facets[facet] as TermFacetResult).terms.map((term) => term.term),
       );
-      return { categories, brands, colors, sizes, products };
+      return { categories, brands, colors, sizes, prices, products };
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }

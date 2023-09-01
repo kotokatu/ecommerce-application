@@ -79,11 +79,12 @@ const CatalogPage = () => {
 
         if (!res) return;
 
-        const { categories, brands, colors, sizes, products } = res;
+        const { categories, brands, colors, sizes, prices, products } = res;
         console.log(categories);
         console.log(brands);
         console.log(colors);
         console.log(sizes);
+        console.log(prices);
         setProducts(products);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
