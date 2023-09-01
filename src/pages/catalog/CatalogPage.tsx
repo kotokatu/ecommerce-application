@@ -72,7 +72,7 @@ const CatalogPage = () => {
         // }
 
         if (searchQuery) {
-          queryParams = { 'text.en-US': `${searchQuery}` };
+          queryParams = { 'text.en-US': `${searchQuery}`, fuzzy: true };
         }
 
         const res = await productService.getProducts(queryParams);
@@ -164,7 +164,7 @@ const CatalogPage = () => {
         <div className={classes.items}>
           {products.length ? (
             products.map((product) => {
-              return <ProductCard key={product.id} product={product} title={product.name['en-US']} />;
+              return <ProductCard key={product.id} product={product} />;
             })
           ) : (
             <h2 className={classes.center}>Product not found</h2>
