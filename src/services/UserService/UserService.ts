@@ -1,10 +1,11 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { ErrorResponse, CustomerDraft } from '@commercetools/platform-sdk';
+import { ErrorResponse, CustomerDraft, Customer } from '@commercetools/platform-sdk';
 import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { tokenCache } from '../api/TokenCache';
+import { UserProfile } from '../../utils/types/serviceTypes';
 
 type Address = {
   country: string;
@@ -50,6 +51,21 @@ class UserService {
     return customerDraft;
   }
 
+  public createCustomerProfile(userData: Customer): UserProfile {
+    const customerProfile: UserProfile = {
+      email: userData.email,
+      password: userData.password || 'no data',
+      firstName: userData.firstName || 'no data',
+      lastName: userData.lastName || 'no data',
+      dateOfBirth: userData.dateOfBirth || 'no data',
+      shippingAddress: userData.addresses[0],
+      billingAddress: userData.addresses[1],
+      shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
+      billingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
+    };
+    return customerProfile;
+  }
+
   public async signup(userData: UserData): Promise<string | void> {
     try {
       await this.apiRoot
@@ -90,7 +106,8 @@ class UserService {
 
   public async getProfile() {
     try {
-      await this.apiRoot.me().get().execute();
+      const customerData = await this.apiRoot.me().get().execute();
+      return this.createCustomerProfile(customerData.body);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
