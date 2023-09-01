@@ -1,9 +1,10 @@
-import { Avatar, Col, Grid, Paper, Text, Title, createStyles, Container, Flex, Button } from '@mantine/core';
+import { Avatar, Col, Grid, Paper, Text, Title, createStyles, Container, Flex, Button, TextInput } from '@mantine/core';
 // import React from 'react';
 import { userService } from '../../services/UserService/UserService';
 import { getFirstLetters } from '../../utils/helpers/getFirstLetters';
 import { UserProfile } from '../../utils/types/serviceTypes';
 import { useEffect, useState } from 'react';
+import { DatePickerInput } from '@mantine/dates';
 
 const defaultData: UserProfile = {
   email: 'No data',
@@ -184,8 +185,8 @@ const ProfilePage = () => {
               <Text align="center" className={classes.smallTitle}>
                 {userData?.firstName} {userData?.lastName}
               </Text>
-              <Button type="submit" fullWidth onClick={() => setIsEditMode(false)}>
-                Edit
+              <Button type="submit" variant="outline" fullWidth onClick={() => setIsEditMode(false)} color="red">
+                Save
               </Button>
             </Flex>
           </Col>
@@ -194,21 +195,13 @@ const ProfilePage = () => {
               <Text className={classes.smallTitle}>Personal information</Text>
               <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
                 <Text className={classes.smallTitle}>First Name</Text>
-                <Text className={classes.text} color="gray">
-                  {userData?.firstName}
-                </Text>
+                <TextInput className={classes.smallTitle} placeholder={userData?.firstName} />
                 <Text className={classes.smallTitle}>Second Name</Text>
-                <Text className={classes.text} color="gray">
-                  {userData?.lastName}
-                </Text>
+                <TextInput className={classes.smallTitle} placeholder={userData?.lastName} />
                 <Text className={classes.smallTitle}>Date of birth</Text>
-                <Text className={classes.text} color="gray">
-                  {userData?.dateOfBirth}
-                </Text>
+                <DatePickerInput valueFormat="DD.MM.YYYY" placeholder={userData?.dateOfBirth} />
                 <Text className={classes.smallTitle}>Email</Text>
-                <Text className={classes.text} color="gray">
-                  {userData?.email}
-                </Text>
+                <TextInput className={classes.smallTitle} placeholder={userData?.email} mb={10} />
               </Paper>
             </Flex>
           </Col>
@@ -222,24 +215,33 @@ const ProfilePage = () => {
               Shipping Address
             </Text>
             <Text className={classes.smallTitle}>Country</Text>
-            <Text className={classes.text} color="gray">
-              {userData?.shippingAddress.country}
-            </Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.shippingAddress.country} />
             <Text className={classes.smallTitle}>City</Text>
-            <Text className={classes.text} color="gray">
-              {userData?.shippingAddress.city}
-            </Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.shippingAddress.city} />
             <Text className={classes.smallTitle}>Address</Text>
-            <Text className={classes.text} color="gray">
-              {userData?.shippingAddress.streetName}
-            </Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.shippingAddress.streetName} />
             <Text className={classes.smallTitle}>Postal Code</Text>
-            <Text color="gray">{userData?.shippingAddress.postalCode}</Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.shippingAddress.postalCode} />
             <Text className={classes.text} color="red" align="center">
               {userData?.shippingAddressAsDefault ? '* Used as default' : 'Not default'}
             </Text>
           </Paper>
-          <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}></Paper>
+          <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+            <Text className={classes.smallTitle} align="center">
+              Billing Address
+            </Text>
+            <Text className={classes.smallTitle}>Country</Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.billingAddress.country} />
+            <Text className={classes.smallTitle}>City</Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.billingAddress.city} />
+            <Text className={classes.smallTitle}>Address</Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.billingAddress.streetName} />
+            <Text className={classes.smallTitle}>Postal Code</Text>
+            <TextInput className={classes.smallTitle} placeholder={userData?.billingAddress.postalCode} />
+            <Text className={classes.text} color="red" align="center">
+              {userData?.billingAddressAsDefault ? '* Used as default' : 'Not default'}
+            </Text>
+          </Paper>
         </Flex>
       </Paper>
     </Container>
