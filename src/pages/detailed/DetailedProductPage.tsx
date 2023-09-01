@@ -78,12 +78,16 @@ const DetailedProductPage = (): JSX.Element => {
   const { classes } = carouselStyles();
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
+  const [initialSlide, setInitialSlide] = useState(0);
 
   const slides = (product: ProductProjection): JSX.Element[] | null => {
     if (product.masterVariant.images) {
       return product.masterVariant.images.map((image, ind) => (
         <Carousel.Slide
-          onClick={() => !opened && setOpened(true)}
+          onClick={() => {
+            !opened && setOpened(true);
+            setInitialSlide(ind);
+          }}
           key={'slide' + ind}
           sx={{ backgroundImage: `url(${image.url})` }}
         ></Carousel.Slide>
@@ -147,7 +151,12 @@ const DetailedProductPage = (): JSX.Element => {
               </Grid.Col>
             </Grid>
           </SimpleGrid>
-          <ModalCarousel slides={slides(product)} opened={opened} setOpened={setOpened}></ModalCarousel>
+          <ModalCarousel
+            slides={slides(product)}
+            opened={opened}
+            setOpened={setOpened}
+            initialSlide={initialSlide}
+          ></ModalCarousel>
         </>
       ) : (
         <Center h="100%">
