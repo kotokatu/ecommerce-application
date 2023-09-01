@@ -1,7 +1,8 @@
-import { Container, Group } from '@mantine/core';
+import { Container, Group, Image } from '@mantine/core';
 import { mainPageStyle } from './main-style';
 import MainLinks from '../../components/app-links/MainLinks';
 import useAuth from '../../utils/hooks/useAuth';
+import HeroImage from '../../assets/img/hero_image.jpg';
 
 const MainPage = () => {
   const { classes } = mainPageStyle();
@@ -12,7 +13,9 @@ const MainPage = () => {
       <Group className={classes.links}>
         <MainLinks userLoggedIn={userLoggedIn} />
       </Group>
-      <Group className={classes.content}></Group>
+      <Group align="flex-start" className={classes.content}>
+        <Image src={HeroImage}></Image>
+      </Group>
     </Container>
   );
 };
