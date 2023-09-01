@@ -61,7 +61,7 @@ class UserService {
       shippingAddress: userData.addresses[0],
       billingAddress: userData.addresses[1],
       shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
-      billingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
+      billingAddressAsDefault: userData.defaultBillingAddressId ? true : false,
     };
     return customerProfile;
   }
