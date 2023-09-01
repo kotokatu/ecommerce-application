@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Category, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { createStyles } from '@mantine/core';
+import { createStyles, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { productService } from '../../services/ProductService/ProductService';
+import { FilterParams, productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
+import type { QueryArgs } from '../../services/ProductService/ProductService';
+import { notificationError } from '../../components/ui/notification';
 
 export type CategoryType = {
   name: string;
@@ -40,37 +42,57 @@ const useStyles = createStyles(() => ({
 const CatalogPage = () => {
   const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  // const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
   useEffect(() => {
     const getCategories = async () => {
-      const categories = (await productService.getCategories()) as Category[];
-      setCategories(categories);
+      try {
+        const categories = (await productService.getCategories()) as Category[];
+        setCategories(categories);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
     };
 
     const getProducts = async () => {
-      let params = {};
-      const searchQuery = searchParams.get('search');
+      try {
+        let queryParams: QueryArgs = {};
+        const searchQuery = searchParams.get('search');
 
-      if (category) {
-        params = {
-          filter: `categories.id: "${subcategory || category}"`,
-        };
+        if (category) {
+          queryParams.filter = `categories.id: "${subcategory || category}"`;
+        }
+
+        // if (filters) {
+        //   queryParams.filter = filters;
+        //   queryParams['filter.facets'] = filters;
+        // }
+
+        if (searchQuery) {
+          queryParams = { 'text.en-US': `${searchQuery}` };
+        }
+
+        const res = await productService.getProducts(queryParams);
+
+        if (!res) return;
+
+        const { categories, brands, colors, sizes, products } = res;
+        console.log(categories);
+        console.log(brands);
+        console.log(colors);
+        console.log(sizes);
+        setProducts(products);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
       }
-
-      if (searchQuery) {
-        params = { 'text.en-US': `${searchQuery}` };
-      }
-
-      const products = (await productService.searchProducts(params)) as ProductProjection[];
-      setProducts(products);
     };
 
     getProducts();
     getCategories();
-  }, [category, subcategory, searchParams]);
+  }, [category, subcategory, searchParams /* filters */]);
 
   const brands: string[] = [];
   const sizes: string[] = [];
@@ -128,7 +150,7 @@ const CatalogPage = () => {
 
   return (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={allCategories} setProducts={setProducts} />
+      <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
           categories={currentCategories}
@@ -138,6 +160,7 @@ const CatalogPage = () => {
           minProductPrice={minProductPrice}
           maxProductPrice={maxProductPrice}
         />
+        {/* <Button onClick={() => setFilters([`${FilterParams.brand}:"Palm Angels","Jacquemus"`])}></Button> */}
         <div className={classes.items}>
           {products.length ? (
             products.map((product) => {

@@ -5,7 +5,6 @@ import { CategoryType } from '../../../pages/catalog/CatalogPage';
 import SortPicker from '../sort-picker/SortPicker';
 import SearchInput from '../input/SearchInput';
 import BreadCrumbs from '../breadcrumbs/BreadCrumbs';
-import { ProductProjection } from '@commercetools/platform-sdk';
 
 const headerCatalogStyles = createStyles(() => ({
   header: {
@@ -25,10 +24,9 @@ const headerCatalogStyles = createStyles(() => ({
 
 type HeaderCatalogProps = {
   allCategories: CategoryType[];
-  setProducts: React.Dispatch<React.SetStateAction<ProductProjection[]>>;
 };
 
-const HeaderCatalog = ({ allCategories, setProducts }: HeaderCatalogProps) => {
+const HeaderCatalog = ({ allCategories }: HeaderCatalogProps) => {
   const { classes } = headerCatalogStyles();
   const [searchValue, setSearchValue] = useState('');
   const [searchParams] = useSearchParams();
