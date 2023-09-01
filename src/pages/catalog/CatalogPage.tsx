@@ -141,7 +141,7 @@ const CatalogPage = () => {
         <div className={classes.items}>
           {products.length ? (
             products.map((product) => {
-              return <ProductCard key={product.id} product={product} title={product.name['en-US']} />;
+              return <ProductCard key={product.id} product={product} />;
             })
           ) : (
             <h2 className={classes.center}>Product not found</h2>
