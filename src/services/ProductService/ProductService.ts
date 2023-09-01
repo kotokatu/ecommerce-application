@@ -72,8 +72,8 @@ class ProductService {
         })
         .execute();
       const { facets, results: products } = response.body;
-      const [categories, brands, colors, sizes] = Object.values(FilterParams).map(
-        (facet) => (facets[facet] as TermFacetResult).terms,
+      const [categories, brands, colors, sizes] = Object.values(FilterParams).map((facet) =>
+        (facets[facet] as TermFacetResult).terms.map((term) => term.term),
       );
       return { categories, brands, colors, sizes, products };
     } catch (err) {
