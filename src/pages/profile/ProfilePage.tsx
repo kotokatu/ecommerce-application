@@ -7,7 +7,6 @@ import Profile from './profile components/ProfileData';
 import { Link } from 'react-router-dom';
 
 export const defaultData: UserProfile = {
-  version: 1,
   email: 'Loading...',
   password: 'Loading...',
   firstName: 'Loading...',
