@@ -6,7 +6,7 @@ import { ClientResponse } from '@commercetools/sdk-client-v2';
 
 export const FilterParams = {
   category: 'categories.id',
-  brand: 'variants.attributes.brand.label',
+  brand: 'variants.attributes.brand',
   color: 'variants.attributes.color.label',
   size: 'variants.attributes.size.label',
   price: 'variants.price.centAmount',
