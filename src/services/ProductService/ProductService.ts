@@ -5,7 +5,7 @@ import { getErrorMessage } from '../../utils/helpers/error-handler';
 
 export const FilterParams = {
   category: 'categories.id',
-  brand: 'variants.attributes.brand.label',
+  brand: 'variants.attributes.brand',
   color: 'variants.attributes.color.label',
   size: 'variants.attributes.size.label',
   price: 'variants.price.centAmount',
@@ -20,11 +20,11 @@ export type QueryArgs = {
 };
 
 export type GetProductsReturnType = {
-  categories: FacetTerm[];
-  brands: FacetTerm[];
-  colors: FacetTerm[];
-  sizes: FacetTerm[];
-  prices: FacetTerm[];
+  categories: string[];
+  brands: string[];
+  colors: string[];
+  sizes: string[];
+  prices: string[];
   products: ProductProjection[];
 };
 
