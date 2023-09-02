@@ -57,11 +57,11 @@ const useStyles = createStyles(() => ({
     overflow: 'hidden',
     margin: 0,
 
-    '& :first-child': {
+    '& p:first-of-type': {
       margin: 0,
     },
 
-    '& :not(:first-child)': {
+    '& :not(p:first-of-type)': {
       display: 'none',
     },
   },

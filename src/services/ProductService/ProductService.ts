@@ -21,11 +21,11 @@ export type QueryArgs = {
 };
 
 export type GetProductsReturnType = {
-  categories: FacetTerm[];
-  brands: FacetTerm[];
-  colors: FacetTerm[];
-  sizes: FacetTerm[];
-  prices: FacetTerm[];
+  categories: string[];
+  brands: string[];
+  colors: string[];
+  sizes: string[];
+  prices: string[];
   products: ProductProjection[];
 };
 

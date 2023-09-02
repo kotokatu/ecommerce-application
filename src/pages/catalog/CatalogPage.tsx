@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Category, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { createStyles, Button } from '@mantine/core';
+import { Category, ProductVariant } from '@commercetools/platform-sdk';
+import { createStyles, Button, Center, Loader } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { FilterParams, productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
-import type { QueryArgs } from '../../services/ProductService/ProductService';
+import type { GetProductsReturnType, QueryArgs } from '../../services/ProductService/ProductService';
 import { notificationError } from '../../components/ui/notification';
 
 export type CategoryType = {
@@ -40,8 +40,8 @@ const useStyles = createStyles(() => ({
 }));
 
 const CatalogPage = () => {
-  const [products, setProducts] = useState<ProductProjection[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [resources, setResources] = useState<GetProductsReturnType>();
   // const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
@@ -63,7 +63,8 @@ const CatalogPage = () => {
         const searchQuery = searchParams.get('search');
 
         if (category) {
-          queryParams.filter = `categories.id: "${subcategory || category}"`;
+          queryParams.filter = [`categories.id: "${subcategory || category}"`];
+          queryParams['filter.facets'] = [`categories.id: "${subcategory || category}"`];
         }
 
         // if (filters) {
@@ -79,13 +80,7 @@ const CatalogPage = () => {
 
         if (!res) return;
 
-        const { categories, brands, colors, sizes, prices, products } = res;
-        console.log(categories);
-        console.log(brands);
-        console.log(colors);
-        console.log(sizes);
-        console.log(prices);
-        setProducts(products);
+        setResources(res);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
       }
@@ -95,10 +90,6 @@ const CatalogPage = () => {
     getCategories();
   }, [category, subcategory, searchParams /* filters */]);
 
-  const brands: string[] = [];
-  const sizes: string[] = [];
-  const colors: string[] = [];
-  const prices: number[] = [0, 10000];
   const currentCategories: CategoryType[] = [];
   const allCategories: CategoryType[] = [];
 
@@ -116,55 +107,25 @@ const CatalogPage = () => {
       }
     }
   });
+  console.log(resources);
+  const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
+  const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
-  function fillAtributeArrays(array: ProductVariant) {
-    array.attributes?.forEach((attribute) => {
-      switch (attribute.name) {
-        case 'brand':
-          if (!brands.includes(attribute.value.label)) brands.push(attribute.value.label);
-          break;
-        case 'size':
-          if (!sizes.includes(attribute.value.label)) sizes.push(attribute.value.label);
-          break;
-        case 'color':
-          if (!colors.includes(attribute.value.label)) colors.push(attribute.value.label);
-          break;
-      }
-    });
-  }
-
-  products.forEach((product) => {
-    fillAtributeArrays(product.masterVariant);
-    product.variants.forEach((product) => {
-      fillAtributeArrays(product);
-    });
-  });
-
-  products.forEach((product) => {
-    product.masterVariant.prices?.forEach((price) => {
-      if (!prices.includes(price.value.centAmount / 100)) prices.push(price.value.centAmount / 100);
-    });
-  });
-
-  const minProductPrice = Math.min(...prices);
-  const maxProductPrice = Math.max(...prices);
-
-  return (
+  return resources ? (
     <div className={classes.container}>
       <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
           categories={currentCategories}
-          brands={brands}
-          sizes={sizes}
-          colors={colors}
-          minProductPrice={minProductPrice}
-          maxProductPrice={maxProductPrice}
+          brands={resources.brands}
+          sizes={resources.sizes}
+          colors={resources.colors}
+          minProductPrice={minProductPrice || 0}
+          maxProductPrice={maxProductPrice || 10000}
         />
-        {/* <Button onClick={() => setFilters([`${FilterParams.brand}:"Palm Angels","Jacquemus"`])}></Button> */}
         <div className={classes.items}>
-          {products.length ? (
-            products.map((product) => {
+          {resources.products.length ? (
+            resources.products.map((product) => {
               return <ProductCard key={product.id} product={product} />;
             })
           ) : (
@@ -173,6 +134,10 @@ const CatalogPage = () => {
         </div>
       </div>
     </div>
+  ) : (
+    <Center h="100%">
+      <Loader variant="bars" size="xl" display="block" mx="auto" />
+    </Center>
   );
 };
 
