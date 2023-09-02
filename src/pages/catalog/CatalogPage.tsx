@@ -11,7 +11,6 @@ import { CategoryCache } from '../../services/api/CategoryCache';
 import type { CategoryType } from '../../services/api/CategoryCache';
 
 export const categoryCache = new CategoryCache();
-console.log(categoryCache);
 
 const useStyles = createStyles(() => ({
   container: {
@@ -87,7 +86,6 @@ const CatalogPage = () => {
   const currentCategories = categoryCache.categories
     .filter((cachedCategory) => categories.includes(cachedCategory.id))
     .filter((cachedCategory) => {
-      console.log(cachedCategory.parentID, category);
       return cachedCategory.parentID === category;
     });
 
