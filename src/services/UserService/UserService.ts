@@ -1,9 +1,8 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { ErrorResponse, CustomerDraft } from '@commercetools/platform-sdk';
-import { handleErrorResponse } from '../api/handleErrorResponse';
-import { ClientResponse } from '@commercetools/sdk-client-v2';
+import { CustomerDraft } from '@commercetools/platform-sdk';
+import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { tokenCache } from '../api/TokenCache';
 
 type Address = {
@@ -60,7 +59,7 @@ class UserService {
         .execute();
       await this.login(userData.email, userData.password);
     } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+      throw new Error(getErrorMessage(err));
     }
   }
 
@@ -79,7 +78,7 @@ class UserService {
         .execute();
     } catch (err) {
       this.apiRoot = new CtpClient().getApiRoot();
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+      throw new Error(getErrorMessage(err));
     }
   }
 
@@ -92,7 +91,7 @@ class UserService {
     try {
       await this.apiRoot.me().get().execute();
     } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+      throw new Error(getErrorMessage(err));
     }
   }
 }
