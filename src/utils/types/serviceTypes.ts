@@ -1,6 +1,7 @@
 import { Address } from '@commercetools/platform-sdk';
 
 export type UserProfile = {
+  version: number;
   email: string;
   password: string;
   firstName: string;

@@ -27,6 +27,17 @@ type UserData = {
   copyShippingToBilling: boolean;
 };
 
+interface CustomerUpdateDraft {
+  firstName: string;
+  lastName: string;
+  address: {
+    street: string;
+    streetNumber: string;
+    zipCode: string;
+    town: string;
+  };
+}
+
 class UserService {
   private apiRoot: ByProjectKeyRequestBuilder;
   constructor() {
@@ -53,6 +64,7 @@ class UserService {
 
   public createCustomerProfile(userData: Customer): UserProfile {
     const customerProfile: UserProfile = {
+      version: userData.version,
       email: userData.email,
       password: userData.password || 'no data',
       firstName: userData.firstName || 'no data',
@@ -120,6 +132,89 @@ class UserService {
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
+  }
+
+  // private updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, currentCustomer: UserProfile) {
+  //   this.apiRoot
+  //     .me()
+  //     .post({
+  //       body: {
+  //         version: currentCustomer.version,
+  //         actions: [
+  //           {
+  //             action: 'setFirstName',
+  //             firstName: customerUpdateDraft.firstName,
+  //           },
+  //           {
+  //             action: 'setLastName',
+  //             lastName: customerUpdateDraft.lastName,
+  //           },
+  //           {
+  //             action: 'changeAddress',
+  //             addressId: currentCustomer.address.id,
+  //             address: {
+  //               firstName: customerUpdateDraft.firstName,
+  //               lastName: customerUpdateDraft.lastName,
+  //               streetName: customerUpdateDraft.address.street,
+  //               streetNumber: customerUpdateDraft.address.streetNumber,
+  //               postalCode: customerUpdateDraft.address.zipCode,
+  //               city: customerUpdateDraft.address.town,
+  //               country: currentCustomer.shippingAddress.country,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     })
+  //     .execute()
+  //     .then(({ body }: ClientResponse<Customer>) => {
+  //       this.handleUpdateCustomerSuccess(body);
+  //     });
+  // }
+
+  private updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, currentCustomer: UserProfile) {
+    this.apiRoot
+      .me()
+      .post({
+        body: {
+          version: currentCustomer.version,
+          actions: [
+            {
+              action: 'setFirstName',
+              firstName: customerUpdateDraft.firstName,
+            },
+            {
+              action: 'setLastName',
+              lastName: customerUpdateDraft.lastName,
+            },
+            {
+              action: 'changeAddress',
+              addressId: currentCustomer.shippingAddress,
+              address: {
+                firstName: customerUpdateDraft.firstName,
+                lastName: customerUpdateDraft.lastName,
+                streetName: customerUpdateDraft.address.street,
+                streetNumber: customerUpdateDraft.address.streetNumber,
+                postalCode: customerUpdateDraft.address.zipCode,
+                city: customerUpdateDraft.address.town,
+                country: currentCustomer.shippingAddress.country,
+              },
+            },
+          ],
+        },
+      })
+      .execute()
+      .then(({ body }: ClientResponse<Customer>) => {
+        this.handleUpdateCustomerSuccess(body);
+      });
+  }
+
+  private handleUpdateCustomerSuccess(rawCustomer: Customer) {
+    const updatedCustomer = this.createCustomer(rawCustomer);
+    const customerInSession = JSON.parse(localStorage.getItem(CURRENT_CUSTOMER));
+    updatedCustomer.password = customerInSession.password;
+    localStorage.setItem(CURRENT_CUSTOMER, JSON.stringify(updatedCustomer));
+    this.currentCustomerSubject.next(updatedCustomer);
+    this.customerUpdateSuccessSubject.next(true);
   }
 }
 
