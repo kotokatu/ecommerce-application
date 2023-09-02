@@ -5,11 +5,12 @@ import { SetStateAction, useState } from 'react';
 
 type ModalCarouselProps = {
   slides: JSX.Element[] | null;
+  initialSlide: number;
   opened: boolean;
   setOpened: React.Dispatch<SetStateAction<boolean>>;
 };
 
-const ModalCarousel = ({ slides, opened, setOpened }: ModalCarouselProps) => {
+const ModalCarousel = ({ slides, opened, setOpened, initialSlide }: ModalCarouselProps) => {
   const TRANSITION_DURATION = 200;
   const [embla, setEmbla] = useState<Embla | null>(null);
 
@@ -40,6 +41,7 @@ const ModalCarousel = ({ slides, opened, setOpened }: ModalCarouselProps) => {
       <Carousel
         getEmblaApi={setEmbla}
         loop
+        initialSlide={initialSlide}
         controlSize={30}
         controlsOffset={10}
         styles={{

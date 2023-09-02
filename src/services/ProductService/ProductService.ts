@@ -1,12 +1,11 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { ErrorResponse, ProductProjection, ProductType, TermFacetResult, FacetTerm } from '@commercetools/platform-sdk';
-import { handleErrorResponse } from '../api/handleErrorResponse';
-import { ClientResponse } from '@commercetools/sdk-client-v2';
+import { ProductProjection, ProductType, TermFacetResult, FacetTerm } from '@commercetools/platform-sdk';
+import { getErrorMessage } from '../../utils/helpers/error-handler';
 
 export const FilterParams = {
   category: 'categories.id',
-  brand: 'variants.attributes.brand.label',
+  brand: 'variants.attributes.brand',
   color: 'variants.attributes.color.label',
   size: 'variants.attributes.size.label',
   price: 'variants.price.centAmount',
@@ -21,11 +20,11 @@ export type QueryArgs = {
 };
 
 export type GetProductsReturnType = {
-  categories: FacetTerm[];
-  brands: FacetTerm[];
-  colors: FacetTerm[];
-  sizes: FacetTerm[];
-  prices: FacetTerm[];
+  categories: string[];
+  brands: string[];
+  colors: string[];
+  sizes: string[];
+  prices: string[];
   products: ProductProjection[];
 };
 
@@ -40,11 +39,11 @@ class ProductService {
       const productTypes = await this.apiRoot.productTypes().get().execute();
       return productTypes.body.results;
     } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+      throw new Error(getErrorMessage(err));
     }
   }
 
-  public async getProduct(ID: string): Promise<ProductProjection | undefined> {
+  public async getProduct(ID: string): Promise<ProductProjection> {
     const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
     return productData.body;
   }
@@ -57,7 +56,7 @@ class ProductService {
         .execute();
       return categories.body.results;
     } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+      throw new Error(getErrorMessage(err));
     }
   }
 
@@ -79,7 +78,7 @@ class ProductService {
       );
       return { categories, brands, colors, sizes, prices, products };
     } catch (err) {
-      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+      throw new Error(getErrorMessage(err));
     }
   }
 }

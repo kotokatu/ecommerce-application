@@ -57,11 +57,11 @@ const useStyles = createStyles(() => ({
     overflow: 'hidden',
     margin: 0,
 
-    '& :first-child': {
+    '& p:first-of-type': {
       margin: 0,
     },
 
-    '& :not(:first-child)': {
+    '& :not(p:first-of-type)': {
       display: 'none',
     },
   },
@@ -122,7 +122,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Group className={classes.title} spacing={0}>
             <Text ff="Montserrat" size="14px" mb="5px" lh={1} fw={400}>{`${product.masterVariant.attributes?.find(
               (attribute) => attribute.name === 'brand',
-            )?.value.label}`}</Text>
+            )?.value}`}</Text>
             <Text ff="Montserrat" lh={1} fw={600}>{`${product.name['en-US']}`}</Text>
           </Group>
 
