@@ -107,7 +107,7 @@ const CatalogPage = () => {
       }
     }
   });
-  console.log(resources);
+
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
