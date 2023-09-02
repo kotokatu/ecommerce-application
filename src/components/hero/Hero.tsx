@@ -1,4 +1,5 @@
 import { Title, Text, Container, Button, createStyles, rem } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import HeroImage from '../../assets/img/hero_image.jpg';
 
 const useStyles = createStyles((theme) => ({
@@ -106,7 +107,7 @@ export function Hero() {
         </Container>
 
         <div className={classes.controls}>
-          <Button className={classes.control} variant="white" size="lg">
+          <Button className={classes.control} variant="white" size="lg" component={Link} to="/catalog">
             Shop
           </Button>
         </div>
