@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { createStyles } from '@mantine/core';
-import { CategoryType } from '../../../pages/catalog/CatalogPage';
+import { CategoryType } from '../../../services/api/CategoryCache';
 import SortPicker from '../sort-picker/SortPicker';
 import SearchInput from '../input/SearchInput';
 import BreadCrumbs from '../breadcrumbs/BreadCrumbs';

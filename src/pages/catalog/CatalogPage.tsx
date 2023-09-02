@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Category } from '@commercetools/platform-sdk';
 import { createStyles, Center, Loader } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { productService } from '../../services/ProductService/ProductService';
@@ -8,11 +7,11 @@ import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/ProductService/ProductService';
 import { notificationError } from '../../components/ui/notification';
+import { CategoryCache } from '../../services/api/CategoryCache';
+import type { CategoryType } from '../../services/api/CategoryCache';
 
-export type CategoryType = {
-  name: string;
-  id: string;
-};
+export const categoryCache = new CategoryCache();
+console.log(categoryCache);
 
 const useStyles = createStyles(() => ({
   container: {
@@ -40,7 +39,7 @@ const useStyles = createStyles(() => ({
 }));
 
 const CatalogPage = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
@@ -48,17 +47,7 @@ const CatalogPage = () => {
   const { classes } = useStyles();
 
   useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const categories = (await productService.getCategories()) as Category[];
-        setCategories(categories);
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-
     const getProducts = async () => {
-      console.log(filters);
       try {
         let queryParams: QueryArgs = {};
         const searchQuery = searchParams.get('search');
@@ -82,32 +71,25 @@ const CatalogPage = () => {
         if (!res) return;
 
         setResources(res);
+        setCategories(res.categories);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
       }
     };
 
     getProducts();
-    getCategories();
   }, [category, subcategory, searchParams, filters]);
 
-  const currentCategories: CategoryType[] = [];
-  const allCategories: CategoryType[] = [];
-
-  categories.forEach((categoryFromAPI) => {
-    allCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
+  const allCategories = categories.map((categoryID) => {
+    return categoryCache.categories.find((cachedCategory) => cachedCategory.id === categoryID) as CategoryType;
   });
 
-  categories.forEach((categoryFromAPI) => {
-    if (!categoryFromAPI.parent && !category) {
-      currentCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
-    }
-    if (categoryFromAPI.parent && category) {
-      if (categoryFromAPI.parent.obj?.id === category) {
-        currentCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
-      }
-    }
-  });
+  const currentCategories = categoryCache.categories
+    .filter((cachedCategory) => categories.includes(cachedCategory.id))
+    .filter((cachedCategory) => {
+      console.log(cachedCategory.parentID, category);
+      return cachedCategory.parentID === category;
+    });
 
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
@@ -117,7 +99,7 @@ const CatalogPage = () => {
       <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
-          categories={currentCategories}
+          categories={currentCategories as CategoryType[]}
           brands={resources.brands}
           sizes={resources.sizes}
           colors={resources.colors}
