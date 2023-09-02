@@ -1,9 +1,10 @@
-import { createStyles, Container, Title } from '@mantine/core';
+import { createStyles, Container, Title, Button, Text, Flex } from '@mantine/core';
 import { userService } from '../../services/UserService/UserService';
 import { UserProfile } from '../../utils/types/serviceTypes';
 import { useEffect, useState } from 'react';
 import ProfileEdit from './profile components/ProfileEditMode';
 import Profile from './profile components/ProfileData';
+import { Link } from 'react-router-dom';
 
 export const defaultData: UserProfile = {
   email: 'Loading...',
@@ -19,7 +20,10 @@ export const defaultData: UserProfile = {
 
 const formStyles = createStyles((theme) => ({
   container: {
-    width: '700px',
+    width: '80%',
+    [theme.fn.smallerThan('xs')]: {
+      width: '95%',
+    },
   },
   title: {
     fontWeight: 800,
@@ -48,12 +52,6 @@ const formStyles = createStyles((theme) => ({
       fontSize: '9px',
     },
   },
-  avatarContainer: {
-    marginTop: 65,
-    [theme.fn.smallerThan('md')]: {
-      marginTop: 10,
-    },
-  },
 }));
 
 const ProfilePage = () => {
@@ -77,114 +75,39 @@ const ProfilePage = () => {
           Your Profile
         </Title>
         <Profile {...userData} />
+        <Text color="dimmed" size="sm" align="center" pt={5}>
+          Do you want to edit Profile?
+        </Text>
+        <Flex align="center" justify="center">
+          <Button style={{ width: '180px', marginTop: '10px' }} onClick={() => setIsEditMode(true)}>
+            Edit
+          </Button>
+        </Flex>
       </Container>
     );
   }
-  //   return (
-  //     <Container className={classes.container}>
-  //       <Title className={classes.title} order={1} align="center" mb={20}>
-  //         Your Profile
-  //       </Title>
-  //       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
-  //         <Grid gutter="md">
-  //           <Col span={12} md={3}>
-  //             <Flex gap="md" justify="center" align="center" direction="column" className={classes.avatarContainer}>
-  //               <Avatar variant="filled" radius="xl" size="lg" src={null}>
-  //                 {avatarLetters}
-  //               </Avatar>
-  //               <Text align="center" className={classes.smallTitle}>
-  //                 {userData?.firstName} {userData?.lastName}
-  //               </Text>
-  //               <Button type="submit" fullWidth onClick={() => setIsEditMode(true)}>
-  //                 Edit
-  //               </Button>
-  //             </Flex>
-  //           </Col>
-  //           <Col span={12} md={9}>
-  //             <Flex gap="md" justify="center" align="center" direction="column">
-  //               <Text className={classes.smallTitle}>Personal information</Text>
-  //               <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-  //                 <Text className={classes.smallTitle}>First Name</Text>
-  //                 <Text className={classes.text} color="gray">
-  //                   {userData?.firstName}
-  //                 </Text>
-  //                 <Text className={classes.smallTitle}>Last Name</Text>
-  //                 <Text className={classes.text} color="gray">
-  //                   {userData?.lastName}
-  //                 </Text>
-  //                 <Text className={classes.smallTitle}>Date of birth</Text>
-  //                 <Text className={classes.text} color="gray">
-  //                   {userData?.dateOfBirth}
-  //                 </Text>
-  //                 <Text className={classes.smallTitle}>Email</Text>
-  //                 <Text className={classes.text} color="gray">
-  //                   {userData?.email}
-  //                 </Text>
-  //               </Paper>
-  //             </Flex>
-  //           </Col>
-  //         </Grid>
-  //         <Text className={classes.smallTitle} m={20} align="center">
-  //           Addresses
-  //         </Text>
-  //         <Flex gap="sm" justify="center" align="start" direction="row" style={{ width: '100%' }}>
-  //           <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-  //             <Text className={classes.smallTitle} align="center">
-  //               Shipping Address
-  //             </Text>
-  //             <Text className={classes.smallTitle}>Country</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.shippingAddress.country}
-  //             </Text>
-  //             <Text className={classes.smallTitle}>City</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.shippingAddress.city}
-  //             </Text>
-  //             <Text className={classes.smallTitle}>Address</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.shippingAddress.streetName}
-  //             </Text>
-  //             <Text className={classes.smallTitle}>Postal Code</Text>
-  //             <Text color="gray">{userData?.shippingAddress.postalCode}</Text>
-  //             <Text className={classes.text} color="red" align="center">
-  //               {userData?.shippingAddressAsDefault ? '* Used as default' : 'Not default'}
-  //             </Text>
-  //           </Paper>
-  //           <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-  //             <Text className={classes.smallTitle} align="center">
-  //               Billing Address
-  //             </Text>
-  //             <Text className={classes.smallTitle}>Country</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.billingAddress.country}
-  //             </Text>
-  //             <Text className={classes.smallTitle}>City</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.billingAddress.city}
-  //             </Text>
-  //             <Text className={classes.smallTitle}>Address</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.billingAddress.streetName}
-  //             </Text>
-  //             <Text className={classes.smallTitle}>Postal Code</Text>
-  //             <Text className={classes.text} color="gray">
-  //               {userData?.billingAddress.postalCode}
-  //             </Text>
-  //             <Text className={classes.text} color="red" align="center">
-  //               {userData?.billingAddressAsDefault ? '* Used as default' : 'Not default'}
-  //             </Text>
-  //           </Paper>
-  //         </Flex>
-  //       </Paper>
-  //     </Container>
-  //   );
-  // }
+
   return (
     <Container className={classes.container}>
       <Title className={classes.title} order={1} align="center" mb={20}>
         Your Profile
       </Title>
       <ProfileEdit {...userData} />
+      <Text color="dimmed" size="sm" align="center" pt={5}>
+        Do not want to save changes?
+      </Text>
+      <Flex align="center" justify="center">
+        <Button
+          style={{ width: '180px' }}
+          mt={5}
+          color="red"
+          onClick={() => setIsEditMode(false)}
+          component={Link}
+          to="/profile"
+        >
+          Cancel
+        </Button>
+      </Flex>
     </Container>
   );
 };

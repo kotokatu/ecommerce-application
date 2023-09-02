@@ -35,15 +35,17 @@ const formStyles = createStyles((theme) => ({
     },
   },
   avatarContainer: {
-    marginTop: 65,
+    margin: 'auto',
+    height: '100%',
+    marginTop: '20px',
     [theme.fn.smallerThan('md')]: {
-      marginTop: 10,
+      marginTop: '10px',
+      height: 'auto',
     },
   },
 }));
 
 const ProfilePage = (userData: UserProfile) => {
-  const [isEditMode, setIsEditMode] = useState(false);
   const { classes } = formStyles();
   const avatarLetters = getFirstLetters(userData?.firstName, userData?.lastName);
 
@@ -52,15 +54,12 @@ const ProfilePage = (userData: UserProfile) => {
       <Grid gutter="md">
         <Col span={12} md={3}>
           <Flex gap="md" justify="center" align="center" direction="column" className={classes.avatarContainer}>
-            <Avatar variant="filled" radius="xl" size="lg" src={null}>
+            <Avatar variant="filled" radius="xl" size="xl" src={null}>
               {avatarLetters}
             </Avatar>
             <Text align="center" className={classes.smallTitle}>
               {userData?.firstName} {userData?.lastName}
             </Text>
-            <Button type="submit" fullWidth onClick={() => setIsEditMode(true)}>
-              Edit
-            </Button>
           </Flex>
         </Col>
         <Col span={12} md={9}>
@@ -108,7 +107,9 @@ const ProfilePage = (userData: UserProfile) => {
             {userData?.shippingAddress.streetName}
           </Text>
           <Text className={classes.smallTitle}>Postal Code</Text>
-          <Text color="gray">{userData?.shippingAddress.postalCode}</Text>
+          <Text className={classes.text} color="gray">
+            {userData?.shippingAddress.postalCode}
+          </Text>
           <Text className={classes.text} color="red" align="center">
             {userData?.shippingAddressAsDefault ? '* Used as default' : 'Not default'}
           </Text>

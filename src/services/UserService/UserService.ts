@@ -112,6 +112,15 @@ class UserService {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
+
+  public async changeUserData() {
+    try {
+      const aa = await this.apiRoot.me().password();
+      console.log(999, aa);
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
 }
 
 export const userService = new UserService();

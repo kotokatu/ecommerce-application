@@ -1,7 +1,6 @@
 import {
   Paper,
   Text,
-  Title,
   createStyles,
   Checkbox,
   Container,
@@ -22,7 +21,7 @@ import { notificationError, notificationSuccess } from '../../../components/ui/n
 
 const formStyles = createStyles((theme) => ({
   container: {
-    width: '700px',
+    width: '100%',
   },
   title: {
     fontWeight: 800,
@@ -55,7 +54,7 @@ const countryData = [
 const ProfileEdit = (userData: UserProfile) => {
   const { classes } = formStyles();
   const [isLoading, setIsLoading] = useState(false);
-
+  userService.changeUserData();
   const form = useForm({
     initialValues: {
       email: userData.email,
@@ -119,15 +118,11 @@ const ProfileEdit = (userData: UserProfile) => {
   });
   return (
     <Container className={classes.container}>
-      <Title className={classes.title} order={1} align="center" mb={20}>
-        Your Profile
-      </Title>
       <form
         onSubmit={form.onSubmit(async () => {
           setIsLoading(true);
           console.log(3477734);
           try {
-            console.log(3434);
             notificationSuccess('Account was succesfully updated');
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
@@ -263,13 +258,11 @@ const ProfileEdit = (userData: UserProfile) => {
               />
             </Paper>
           </Flex>
-
-          <Button fullWidth type="submit" loading={isLoading}>
-            Save Changes
-          </Button>
-          <Button variant="outline" fullWidth mt={5} color="red">
-            Cancel
-          </Button>
+          <Flex align="center" justify="center" style={{ padding: '0 24px 0 24px' }}>
+            <Button type="submit" loading={isLoading} style={{ width: '180px', marginTop: '10px' }}>
+              Save Changes
+            </Button>
+          </Flex>
         </Paper>
       </form>
     </Container>
