@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { TextInput, UnstyledButton } from '@mantine/core';
 import { inputStyles } from './inputStyles';
 import { TbX } from 'react-icons/tb';
@@ -12,15 +12,12 @@ type SearchInputProps = {
 const SearchInput = ({ label, placeholder }: SearchInputProps) => {
   const [focused, setFocused] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { classes } = inputStyles({ floating: searchValue.trim().length !== 0 || focused });
 
-  const setSearchQuery = (query?: string) => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('search', query ?? searchValue);
-    navigate('/catalog?' + searchParams.toString());
+  const clearSearchParams = () => {
+    searchParams.delete('search');
+    setSearchParams(searchParams);
   };
 
   useEffect(() => {
@@ -38,7 +35,7 @@ const SearchInput = ({ label, placeholder }: SearchInputProps) => {
         <UnstyledButton
           onClick={() => {
             setSearchValue('');
-            setSearchQuery('');
+            clearSearchParams();
           }}
         >
           <TbX />
@@ -47,7 +44,7 @@ const SearchInput = ({ label, placeholder }: SearchInputProps) => {
       onChange={(event) => setSearchValue(event.currentTarget.value)}
       onKeyDown={(event) => {
         if (event.code === 'Enter') {
-          setSearchQuery();
+          setSearchParams({ search: searchValue });
         }
       }}
       onFocus={() => setFocused(true)}

@@ -17,7 +17,17 @@ export const dropdownStyles = createStyles((theme) => ({
 
   container: {
     maxHeight: '120px',
-    overflow: 'scroll',
+    overflowY: 'auto',
+    scrollbarWidth: 'thin',
+
+    '&::-webkit-scrollbar': {
+      width: '4px',
+      height: 0,
+    },
+
+    '&:hover::-webkit-scrollbar-thumb': {
+      backgroundColor: '#e9ecef',
+    },
   },
 
   item: {
