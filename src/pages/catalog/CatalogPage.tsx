@@ -48,7 +48,7 @@ const CatalogPage = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        let queryParams: QueryArgs = {};
+        const queryParams: QueryArgs = {};
         const searchQuery = searchParams.get('search');
 
         if (category) {
@@ -62,7 +62,8 @@ const CatalogPage = () => {
         }
 
         if (searchQuery) {
-          queryParams = { 'text.en-US': `${searchQuery}`, fuzzy: true };
+          queryParams['text.en-US'] = `${searchQuery}`;
+          queryParams.fuzzy = true;
         }
 
         const res = await productService.getProducts(queryParams);
