@@ -20,18 +20,6 @@ import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '..
 //import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 
-export const defaultData: UserProfile = {
-  email: 'No data',
-  password: 'No data',
-  firstName: 'No data',
-  lastName: 'No data',
-  dateOfBirth: 'No data',
-  shippingAddress: { country: 'No data' },
-  billingAddress: { country: 'No data' },
-  shippingAddressAsDefault: false,
-  billingAddressAsDefault: false,
-};
-
 const formStyles = createStyles((theme) => ({
   container: {
     width: '700px',
@@ -54,19 +42,6 @@ const formStyles = createStyles((theme) => ({
     fontSize: '16px',
     [theme.fn.smallerThan('xs')]: {
       fontSize: '10px',
-    },
-  },
-  text: {
-    fontWeight: 400,
-    fontSize: '15px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '9px',
-    },
-  },
-  avatarContainer: {
-    marginTop: 65,
-    [theme.fn.smallerThan('md')]: {
-      marginTop: 10,
     },
   },
 }));
