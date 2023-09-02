@@ -1,28 +1,81 @@
-import { Button } from '@mantine/core';
-const ProfilePage = () => {
-  return (
-    <div>
-      <h2>
-        <Button>Get profile</Button>
-      </h2>
-    </div>
-  );
-};
+// import { Avatar, Col, Grid, Paper, Text, createStyles, Flex, Button } from '@mantine/core';
+// import { getFirstLetters } from '../../../utils/helpers/getFirstLetters';
+// import { UserProfile } from '../../../utils/types/serviceTypes';
+// import { useState } from 'react';
+// import PropTypes from 'prop-types';
 
-export default ProfilePage;
+// const formStyles = createStyles((theme) => ({
+//   container: {
+//     width: '700px',
+//   },
+//   title: {
+//     fontWeight: 800,
+//     fontSize: '30px',
+//     [theme.fn.smallerThan('xs')]: {
+//       fontSize: '20px',
+//     },
+//   },
+//   formWrapper: {
+//     padding: '1.5rem',
+//     [theme.fn.smallerThan('xs')]: {
+//       padding: '1rem',
+//     },
+//   },
+//   smallTitle: {
+//     fontWeight: 400,
+//     fontSize: '16px',
+//     [theme.fn.smallerThan('xs')]: {
+//       fontSize: '10px',
+//     },
+//   },
+//   text: {
+//     fontWeight: 400,
+//     fontSize: '15px',
+//     [theme.fn.smallerThan('xs')]: {
+//       fontSize: '9px',
+//     },
+//   },
+//   avatarContainer: {
+//     marginTop: 65,
+//     [theme.fn.smallerThan('md')]: {
+//       marginTop: 10,
+//     },
+//   },
+// }));
 
-// const ProfilePage: React.FC = () => {
-//   const aa = async () => await userService.getProfile();
-//   console.log(aa());
+// type ProfileProps = {
+//   userData: UserProfile;
+// };
+
+// const defaultData: UserProfile = {
+//   email: 'No data',
+//   password: 'No data',
+//   firstName: 'No data',
+//   lastName: 'No data',
+//   dateOfBirth: 'No data',
+//   shippingAddress: { country: 'No data' },
+//   billingAddress: { country: 'No data' },
+//   shippingAddressAsDefault: false,
+//   billingAddressAsDefault: false,
+// };
+
+// const Profile: React.FC<ProfileProps> = ({ userData }) => {
+//   // const {
+//   //   email,
+//   //   password,
+//   //   firstName,
+//   //   lastName,
+//   //   dateOfBirth,
+//   //   shippingAddress,
+//   //   billingAddress,
+//   //   shippingAddressAsDefault,
+//   //   billingAddressAsDefault,
+//   // } = userData;
+//   const [isEditMode, setIsEditMode] = useState(false);
 //   const { classes } = formStyles();
-//   //const userData = userService.getCustomerData() as UserProfile;
-//   const avatarLetters = getFirstLetters(userData.firstName, userData.lastName);
-
-//   return (
-//     <Container className={classes.container}>
-//       <Title className={classes.title} order={1} align="center" mb={20}>
-//         Your Profile
-//       </Title>
+//   const avatarLetters = getFirstLetters(userData?.firstName, userData?.lastName);
+//   if (isEditMode === false) {
+//     return (
 //       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
 //         <Grid gutter="md">
 //           <Col span={12} md={3}>
@@ -33,7 +86,7 @@ export default ProfilePage;
 //               <Text align="center" className={classes.smallTitle}>
 //                 {userData?.firstName} {userData?.lastName}
 //               </Text>
-//               <Button type="submit" fullWidth>
+//               <Button type="submit" fullWidth onClick={() => setIsEditMode(true)}>
 //                 Edit
 //               </Button>
 //             </Flex>
@@ -78,12 +131,15 @@ export default ProfilePage;
 //             <Text className={classes.text} color="gray">
 //               {userData?.shippingAddress.city}
 //             </Text>
-//             <Text className={classes.smallTitle}>Street</Text>
+//             <Text className={classes.smallTitle}>Address</Text>
 //             <Text className={classes.text} color="gray">
 //               {userData?.shippingAddress.streetName}
 //             </Text>
 //             <Text className={classes.smallTitle}>Postal Code</Text>
 //             <Text color="gray">{userData?.shippingAddress.postalCode}</Text>
+//             <Text className={classes.text} color="red" align="center">
+//               {userData?.shippingAddressAsDefault ? '* Used as default' : 'Not default'}
+//             </Text>
 //           </Paper>
 //           <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
 //             <Text className={classes.smallTitle} align="center">
@@ -97,7 +153,7 @@ export default ProfilePage;
 //             <Text className={classes.text} color="gray">
 //               {userData?.billingAddress.city}
 //             </Text>
-//             <Text className={classes.smallTitle}>Street</Text>
+//             <Text className={classes.smallTitle}>Address</Text>
 //             <Text className={classes.text} color="gray">
 //               {userData?.billingAddress.streetName}
 //             </Text>
@@ -106,13 +162,37 @@ export default ProfilePage;
 //               {userData?.billingAddress.postalCode}
 //             </Text>
 //             <Text className={classes.text} color="red" align="center">
-//               *Used as default
+//               {userData?.billingAddressAsDefault ? '* Used as default' : 'Not default'}
 //             </Text>
 //           </Paper>
 //         </Flex>
 //       </Paper>
-//     </Container>
-//   );
+//     );
+//   }
 // };
 
-// export default ProfilePage;
+// Profile.propTypes = {
+//   email: PropTypes.string,
+//   password: PropTypes.string,
+//   firstName: PropTypes.string,
+//   lastName: PropTypes.string,
+//   dateOfBirth: PropTypes.string,
+//   shippingAddress: PropTypes.string,
+//   billingAddress: PropTypes.string,
+//   shippingAddressAsDefault: PropTypes.string,
+//   billingAddressAsDefault: PropTypes.string,
+// };
+
+// export default Profile;
+
+import { Button } from '@mantine/core';
+const ProfilePage = () => {
+  return (
+    <div>
+      <h2>
+        <Button>Get profile</Button>
+      </h2>
+    </div>
+  );
+};
+export default ProfilePage;
