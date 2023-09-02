@@ -79,8 +79,8 @@ const CatalogPage = () => {
     getProducts();
   }, [category, subcategory, searchParams, filters]);
 
-  const allCategories = categories.map((categoryID) => {
-    return categoryCache.categories.find((cachedCategory) => cachedCategory.id === categoryID) as CategoryType;
+  const allCategories = categoryCache.categories.filter((cachedCategory) => {
+    return categories.includes(cachedCategory.id);
   });
 
   const currentCategories = categoryCache.categories

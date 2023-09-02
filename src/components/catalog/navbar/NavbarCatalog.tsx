@@ -1,5 +1,5 @@
 import { Button, createStyles } from '@mantine/core';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
@@ -55,6 +55,10 @@ const NavbarCatalog = ({
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
   const { category, subcategory } = useParams();
 
+  useEffect(() => {
+    clearFilterProducts();
+  }, [category, subcategory]);
+
   function getFilterProducts() {
     setFilters([
       category ? `${FilterParams.category}: "${subcategory || category}"` : '',
@@ -65,7 +69,7 @@ const NavbarCatalog = ({
     ]);
   }
 
-  const clearFilterProducts = useCallback(() => {
+  function clearFilterProducts() {
     document.querySelectorAll<HTMLInputElement>('input:checked').forEach((item) => (item.checked = false));
     setMinPrice('');
     setMaxPrice('');
@@ -74,21 +78,7 @@ const NavbarCatalog = ({
     setSelectedSizes([]);
     setSelectedColors([]);
     setFilters([]);
-  }, [
-    setMinPrice,
-    setMaxPrice,
-    setPriceRange,
-    setSelectedBrands,
-    setSelectedSizes,
-    setSelectedColors,
-    setFilters,
-    minProductPrice,
-    maxProductPrice,
-  ]);
-
-  useEffect(() => {
-    clearFilterProducts();
-  }, [clearFilterProducts]);
+  }
 
   return (
     <div className={classes.navbar}>
