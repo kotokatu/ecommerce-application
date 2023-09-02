@@ -23,15 +23,8 @@ const useStyles = createStyles((theme) => ({
     maxWidth: rem(800),
     marginLeft: 'auto',
     marginRight: 'auto',
-    paddingBottom: theme.spacing.xl,
-    paddingTop: theme.spacing.xl,
-    zIndex: 1,
+    padding: theme.spacing.xl,
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
-
-    [theme.fn.smallerThan('xs')]: {
-      paddingTop: rem(80),
-      paddingBottom: rem(50),
-    },
   },
 
   title: {
