@@ -1,10 +1,10 @@
 import { Button } from '@mantine/core';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 const ProfilePage = () => {
   return (
     <div>
       <h2>
-        <Button onClick={() => userService.getProfile()}>Get profile</Button>
+        <Button onClick={() => storeService.getUserProfile()}>Get profile</Button>
       </h2>
     </div>
   );
