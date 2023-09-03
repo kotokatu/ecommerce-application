@@ -125,7 +125,8 @@ class UserService {
     }
   }
 
-  public async changePassword(passwordsData: MyCustomerChangePassword) {
+  public async changePassword(passwordsData: MyCustomerChangePassword, email: string): Promise<string | void> {
+    console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
     try {
       await this.apiRoot
         .me()
@@ -134,7 +135,7 @@ class UserService {
           body: { ...passwordsData },
         })
         .execute();
-      console.log(999, { ...passwordsData });
+      //await this.login(passwordsData.newPassword, email);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
@@ -176,11 +177,6 @@ class UserService {
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
-  }
-
-  private handleUpdateCustomerSuccess(rawCustomer: Customer) {
-    //менять ли токен?
-    //localStorage.setItem('', );
   }
 }
 

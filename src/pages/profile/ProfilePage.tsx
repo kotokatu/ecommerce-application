@@ -2,8 +2,8 @@ import { createStyles, Container, Title, Button, Text, Flex } from '@mantine/cor
 import { userService } from '../../services/UserService/UserService';
 import { UserProfile } from '../../utils/types/serviceTypes';
 import { useEffect, useState } from 'react';
-import ProfileEdit from './profile components/ProfileEditMode';
-import Profile from './profile components/ProfileData';
+import ProfileEdit from './profileModes/ProfileEditMode';
+import Profile from './profileModes/ProfileData';
 import { Link } from 'react-router-dom';
 
 //создать отдельный тип, чтоб не заменить версию случайно

@@ -10,17 +10,17 @@ import {
   Select,
   PasswordInput,
   Modal,
-  Group,
 } from '@mantine/core';
 import { userService } from '../../../services/UserService/UserService';
 import { UserProfile } from '../../../utils/types/serviceTypes';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 //import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { useDisclosure } from '@mantine/hooks';
+import ProfileModal from './profileModalWindow';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -61,7 +61,6 @@ const ProfileEdit = (userData: UserProfile) => {
   const form = useForm({
     initialValues: {
       email: userData.email,
-      //password: userData.password,
       firstName: userData.firstName,
       lastName: userData.lastName,
       dateOfBirth: userData.dateOfBirth,
@@ -84,10 +83,6 @@ const ProfileEdit = (userData: UserProfile) => {
 
     validate: {
       email: (value) => (emailRegex.test(value) ? null : 'Should be a valid email'),
-      // password: (value) =>
-      //   passwordRegex.test(value)
-      //     ? null
-      //     : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
       firstName: (value) =>
         onlyLettersRegex.test(value) ? null : 'First name should only contain letters and cannot be empty',
       lastName: (value) =>
@@ -125,7 +120,6 @@ const ProfileEdit = (userData: UserProfile) => {
       currentPassword: '',
       newPassword: '',
     },
-
     validate: {
       currentPassword: (value) =>
         passwordRegex.test(value)
@@ -144,8 +138,6 @@ const ProfileEdit = (userData: UserProfile) => {
       <form
         onSubmit={form.onSubmit(async (values) => {
           setIsLoading(true);
-          userService.changePassword({ version: userData.version, newPassword: 'f', currentPassword: 'f' });
-          console.log(3477734);
           try {
             notificationSuccess('Account was succesfully updated');
           } catch (err) {
@@ -192,40 +184,7 @@ const ProfileEdit = (userData: UserProfile) => {
                 {...form.getInputProps('email')}
               />
               <Modal opened={opened} onClose={close} title="Change a Password" centered>
-                <form
-                  onSubmit={passwordForm.onSubmit(async (values) => {
-                    setIsLoading(true);
-                    userService.changePassword({ version: userData.version, ...values });
-                    console.log(3477734);
-                    try {
-                      notificationSuccess('Account was succesfully updated');
-                    } catch (err) {
-                      if (err instanceof Error) notificationError(err.message);
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  })}
-                >
-                  <PasswordInput
-                    pt={10}
-                    withAsterisk
-                    autoComplete="current-password"
-                    label="Password"
-                    placeholder="Password"
-                    {...passwordForm.getInputProps('currentPassword')}
-                  />
-                  <PasswordInput
-                    pt={10}
-                    withAsterisk
-                    autoComplete="new-password"
-                    label="New Password"
-                    placeholder="New Password"
-                    {...passwordForm.getInputProps('newPassword')}
-                  />
-                  <Button type="submit" loading={isLoading} fullWidth mt={20}>
-                    Save Changes
-                  </Button>
-                </form>
+                <ProfileModal {...userData} />
               </Modal>
 
               <Flex align="left" mb={10} direction="column">

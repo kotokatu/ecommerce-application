@@ -19,10 +19,15 @@ class TokenCacheHandler implements TokenCache {
     }
     return this.cache;
   }
+
   set(cache: TokenStore) {
     this.cache = cache;
     localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(this.cache));
   }
+
+  // set() {
+  //   localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(this.cache));
+  // }
 
   getAccessToken() {
     return this.cache.token;
