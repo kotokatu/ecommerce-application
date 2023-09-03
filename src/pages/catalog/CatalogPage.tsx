@@ -7,7 +7,7 @@ import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/ProductService/ProductService';
 import { notificationError } from '../../components/ui/notification';
-import { categoryCache, CategoryType } from '../../services/api/CategoryCache';
+import { categoryCache } from '../../services/api/CategoryCache';
 
 const useStyles = createStyles(() => ({
   container: {
@@ -89,12 +89,6 @@ const CatalogPage = () => {
     return categories.includes(cachedCategory.id);
   });
 
-  const currentCategories = categoryCache.categories
-    .filter((cachedCategory) => categories.includes(cachedCategory.id))
-    .filter((cachedCategory) => {
-      return cachedCategory.parentName === category;
-    });
-
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
@@ -103,7 +97,7 @@ const CatalogPage = () => {
       <HeaderCatalog allCategories={allCategories} />
       <div className={classes.content}>
         <NavbarCatalog
-          categories={currentCategories as CategoryType[]}
+          categories={allCategories}
           brands={resources.brands}
           sizes={resources.sizes}
           colors={resources.colors}

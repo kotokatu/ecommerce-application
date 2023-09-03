@@ -86,10 +86,20 @@ const NavbarCatalog = ({
     setFilters([]);
   }
 
+  const getParentCategories = () => {
+    return categories.filter((category) => !category.parentID);
+  };
+
+  const getChildrenCategories = (categoryName: string) => {
+    return categories.filter((category) => category.parentName === categoryName);
+  };
+
   return (
     <div className={classes.navbar}>
       <div>
-        <DropdownLinks name="Category" links={categories} />
+        {getParentCategories().map((category) => (
+          <DropdownLinks name={category.name} key={category.id} links={getChildrenCategories(category.name)} />
+        ))}
       </div>
       <div>
         <DropdownItems
