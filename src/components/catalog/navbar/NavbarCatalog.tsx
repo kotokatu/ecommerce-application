@@ -6,6 +6,7 @@ import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { FilterParams } from '../../../services/ProductService/ProductService';
 import { useParams } from 'react-router-dom';
+import { categoryCache } from '../../../services/api/CategoryCache';
 
 const navbarCatalogStyles = createStyles(() => ({
   navbar: {
@@ -62,7 +63,11 @@ const NavbarCatalog = ({
 
   function getFilterProducts() {
     setFilters([
-      category ? `${FilterParams.category}: "${subcategory || category}"` : '',
+      category
+        ? `${FilterParams.category}: "${
+            subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+          }"`
+        : '',
       selectedBrands.length ? `${FilterParams.brand}: "${selectedBrands.join('", "')}"` : '',
       selectedSizes.length ? `${FilterParams.size}: "${selectedSizes.join('", "')}"` : '',
       selectedColors.length ? `${FilterParams.color}: "${selectedColors.join('", "')}"` : '',

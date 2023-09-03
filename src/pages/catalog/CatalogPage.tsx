@@ -7,10 +7,7 @@ import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/ProductService/ProductService';
 import { notificationError } from '../../components/ui/notification';
-import { CategoryCache } from '../../services/api/CategoryCache';
-import type { CategoryType } from '../../services/api/CategoryCache';
-
-export const categoryCache = new CategoryCache();
+import { categoryCache, CategoryType } from '../../services/api/CategoryCache';
 
 const useStyles = createStyles(() => ({
   container: {
@@ -52,8 +49,16 @@ const CatalogPage = () => {
         const searchQuery = searchParams.get('search');
 
         if (category) {
-          queryParams.filter = [`categories.id: "${subcategory || category}"`];
-          queryParams['filter.facets'] = [`categories.id: "${subcategory || category}"`];
+          queryParams.filter = [
+            `categories.id: "${
+              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+            }"`,
+          ];
+          queryParams['filter.facets'] = [
+            `categories.id: "${
+              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+            }"`,
+          ];
         }
 
         if (filters.length) {
@@ -87,7 +92,7 @@ const CatalogPage = () => {
   const currentCategories = categoryCache.categories
     .filter((cachedCategory) => categories.includes(cachedCategory.id))
     .filter((cachedCategory) => {
-      return cachedCategory.parentID === category;
+      return cachedCategory.parentName === category;
     });
 
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;

@@ -7,7 +7,7 @@ export type CategoryType = {
   parentName?: string;
 };
 
-export class CategoryCache {
+class CategoryCache {
   categories: CategoryType[] = [];
   constructor() {
     this.get();
@@ -24,4 +24,16 @@ export class CategoryCache {
       }));
     }
   }
+
+  public getCategoryName(id: string): string | undefined {
+    return this.categories.find((category) => category.id === id)?.name;
+  }
+
+  public getCategoryID(name: string, parentName?: string): string | undefined {
+    return parentName
+      ? this.categories.find((category) => category.name === name && category.parentName === parentName)?.id
+      : this.categories.find((category) => category.name === name)?.id;
+  }
 }
+
+export const categoryCache = new CategoryCache();

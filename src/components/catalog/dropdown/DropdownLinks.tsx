@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { NavLink, useParams } from 'react-router-dom';
 import { dropdownStyles } from './dropdownStyles';
-import { CategoryType } from '../../../services/api/CategoryCache';
+import { categoryCache, CategoryType } from '../../../services/api/CategoryCache';
 
 type DropdownLinksProps = {
   name: string;
@@ -19,7 +19,7 @@ const DropdownLinks = ({ name, initiallyOpened, links }: DropdownLinksProps) => 
     <NavLink
       className={classes.item}
       key={link.id}
-      to={`/catalog/${category ? category : link.id}/${category ? link.id : ''}`}
+      to={`/catalog/${category ? category : link.name}/${category ? link.name : ''}`}
     >
       {link.name}
     </NavLink>
