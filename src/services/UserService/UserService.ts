@@ -28,14 +28,15 @@ type UserData = {
 };
 
 interface CustomerUpdateDraft {
+  email: string;
   firstName: string;
   lastName: string;
-  address: {
-    street: string;
-    streetNumber: string;
-    zipCode: string;
-    town: string;
-  };
+  dateOfBirth: Date;
+  shippingAddress: Address;
+  billingAddress: Address;
+  setDefaultShippingAddress: boolean;
+  setDefaultBillingAddress: boolean;
+  copyShippingToBilling: boolean;
 }
 
 class UserService {
@@ -143,13 +144,13 @@ class UserService {
     }
   }
 
-  private updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, currentCustomer: UserProfile) {
+  public async updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, version: number) {
     try {
-      this.apiRoot
+      await this.apiRoot
         .me()
         .post({
           body: {
-            version: currentCustomer.version,
+            version,
             actions: [
               {
                 action: 'setFirstName',
@@ -160,17 +161,8 @@ class UserService {
                 lastName: customerUpdateDraft.lastName,
               },
               {
-                action: 'changeAddress',
-                //addressId: currentCustomer.shippingAddress,
-                address: {
-                  firstName: customerUpdateDraft.firstName,
-                  lastName: customerUpdateDraft.lastName,
-                  streetName: customerUpdateDraft.address.street,
-                  streetNumber: customerUpdateDraft.address.streetNumber,
-                  postalCode: customerUpdateDraft.address.zipCode,
-                  city: customerUpdateDraft.address.town,
-                  country: currentCustomer.shippingAddress.country,
-                },
+                action: 'setDateOfBirth',
+                dateOfBirth: formatDate(customerUpdateDraft.dateOfBirth as Date),
               },
             ],
           },

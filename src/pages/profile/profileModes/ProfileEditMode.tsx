@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { emailRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
-//import { getAge } from '../../../utils/helpers/date-helpers';
+import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { useDisclosure } from '@mantine/hooks';
 import ProfileModal from './profileModalWindow';
@@ -52,7 +52,7 @@ const ProfileEdit = (userData: UserProfile) => {
       email: userData.email,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      dateOfBirth: null,
+      dateOfBirth: new Date(userData.dateOfBirth),
       shippingAddress: {
         country: userData.shippingAddress.country || 'No data',
         city: userData.shippingAddress.city || 'No data',
@@ -76,7 +76,7 @@ const ProfileEdit = (userData: UserProfile) => {
         onlyLettersRegex.test(value) ? null : 'First name should only contain letters and cannot be empty',
       lastName: (value) =>
         onlyLettersRegex.test(value) ? null : 'Last name should only contain letters and cannot be empty',
-      dateOfBirth: (value) => (!value ? 'Age must be greater than or equal to 13' : null),
+      dateOfBirth: (value) => (!value || getAge(value) < 13 ? 'Age must be greater than or equal to 13' : null),
       shippingAddress: {
         country: (value) => (value ? null : 'Please choose a country'),
         city: (value) => (onlyLettersRegex.test(value) ? null : 'City should only contain letters and cannot be empty'),
@@ -111,6 +111,8 @@ const ProfileEdit = (userData: UserProfile) => {
           if (!opened) {
             setIsLoading(true);
             try {
+              await userService.updateCurrentCustomer(values, userData.version);
+              console.log('new info', await userService.getProfile());
               notificationSuccess('Account was succesfully updated');
             } catch (err) {
               if (err instanceof Error) notificationError(err.message);
