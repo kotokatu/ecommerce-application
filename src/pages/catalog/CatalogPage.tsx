@@ -61,7 +61,7 @@ const CatalogPage = () => {
           queryParams['filter.facets'] = filters;
         }
 
-        if (searchQuery) {
+        if (searchQuery !== null) {
           queryParams['text.en-US'] = `${searchQuery}`;
           queryParams.fuzzy = true;
         }
