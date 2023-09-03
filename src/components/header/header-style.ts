@@ -45,15 +45,13 @@ export const headerStyle = createStyles((theme) => ({
 
   dropdown: {
     position: 'absolute',
+    zIndex: 5,
     top: 80,
     left: 0,
     right: 0,
     height: '90vh',
     textAlign: 'center',
     fontSize: '25px',
-    borderTopRightRadius: 0,
-    borderTopLeftRadius: 0,
-    borderTopWidth: 0,
     overflow: 'hidden',
 
     [theme.fn.largerThan('sm')]: {
@@ -68,10 +66,6 @@ export const headerStyle = createStyles((theme) => ({
     alignItems: 'center',
     height: '100%',
     padding: 0,
-
-    [theme.fn.smallerThan('md')]: {
-      padding: 0,
-    },
   },
 
   userLinks: {

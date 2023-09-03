@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createStyles, Center, Loader } from '@mantine/core';
+import { createStyles, Center, Loader, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
@@ -12,12 +12,16 @@ import type { CategoryType } from '../../services/api/CategoryCache';
 
 export const categoryCache = new CategoryCache();
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
     padding: '0 1rem',
+
+    [theme.fn.smallerThan('md')]: {
+      alignItems: 'center',
+    },
   },
 
   content: {
@@ -36,13 +40,53 @@ const useStyles = createStyles(() => ({
   center: {
     marginTop: '100px',
   },
+
+  button: {
+    display: 'none',
+
+    [theme.fn.smallerThan('md')]: {
+      display: 'block',
+      margin: '1rem 0',
+      width: '220px',
+      position: 'relative',
+    },
+  },
+
+  navbar: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    marginRight: '10px',
+    borderRight: '0.0625rem solid #e9ecef',
+    width: '260px',
+    minWidth: '260px',
+
+    [theme.fn.smallerThan('md')]: {
+      position: 'absolute',
+      top: 80,
+      left: '-100%',
+      zIndex: 1,
+      backgroundColor: 'white',
+      minHeight: '100vh',
+      width: '100%',
+      padding: '2rem',
+      overflow: 'hidden',
+      transition: 'left .5s ease 0s',
+    },
+
+    '&.active': {
+      left: '0',
+    },
+  },
 }));
 
-const CatalogPage = () => {
+const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
+  const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(false);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
@@ -97,8 +141,12 @@ const CatalogPage = () => {
   return resources ? (
     <div className={classes.container}>
       <HeaderCatalog allCategories={allCategories} />
+      <Button variant="outline" size="md" className={classes.button} onClick={() => setIsOpenNavbar(!isOpenNavbar)}>
+        Filters
+      </Button>
       <div className={classes.content}>
         <NavbarCatalog
+          className={isOpenNavbar && !isOpenBurger ? classes.navbar + ' active' : classes.navbar}
           categories={currentCategories as CategoryType[]}
           brands={resources.brands}
           sizes={resources.sizes}
@@ -106,6 +154,8 @@ const CatalogPage = () => {
           minProductPrice={minProductPrice || 0}
           maxProductPrice={maxProductPrice || 10000}
           setFilters={setFilters}
+          isOpenNavbar={isOpenNavbar}
+          setIsOpenNavbar={setIsOpenNavbar}
         />
         <div className={classes.items}>
           {resources.products.length ? (

@@ -2,11 +2,15 @@ import { Link, useLocation } from 'react-router-dom';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { createStyles } from '@mantine/core';
 
-const breadCrumbsStyles = createStyles(() => ({
+const breadCrumbsStyles = createStyles((theme) => ({
   links: {
     display: 'flex',
     gap: '10px',
     paddingBottom: '10px',
+
+    [theme.fn.smallerThan('md')]: {
+      padding: 0,
+    },
   },
 
   link: {

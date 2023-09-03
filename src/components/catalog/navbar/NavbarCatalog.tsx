@@ -8,17 +8,6 @@ import { FilterParams } from '../../../services/ProductService/ProductService';
 import { useParams } from 'react-router-dom';
 
 const navbarCatalogStyles = createStyles(() => ({
-  navbar: {
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    marginRight: '10px',
-    borderRight: '0.0625rem solid #e9ecef',
-    width: '260px',
-    minWidth: '260px',
-  },
-
   buttons: {
     display: 'flex',
     flexDirection: 'column',
@@ -28,6 +17,7 @@ const navbarCatalogStyles = createStyles(() => ({
 }));
 
 type NavbarCatalogProps = {
+  className: string;
   categories: CategoryType[];
   brands: string[];
   sizes: string[];
@@ -35,9 +25,12 @@ type NavbarCatalogProps = {
   minProductPrice: number;
   maxProductPrice: number;
   setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  isOpenNavbar: boolean;
+  setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const NavbarCatalog = ({
+  className,
   categories,
   brands,
   sizes,
@@ -45,6 +38,8 @@ const NavbarCatalog = ({
   minProductPrice,
   maxProductPrice,
   setFilters,
+  isOpenNavbar,
+  setIsOpenNavbar,
 }: NavbarCatalogProps) => {
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -68,6 +63,7 @@ const NavbarCatalog = ({
       selectedColors.length ? `${FilterParams.color}: "${selectedColors.join('", "')}"` : '',
       minPrice ? `${FilterParams.price}: range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})` : '',
     ]);
+    setIsOpenNavbar(!isOpenNavbar);
   }
 
   function clearFilterProducts() {
@@ -79,10 +75,11 @@ const NavbarCatalog = ({
     setSelectedSizes([]);
     setSelectedColors([]);
     setFilters([]);
+    setIsOpenNavbar(!isOpenNavbar);
   }
 
   return (
-    <div className={classes.navbar}>
+    <div className={className}>
       <div>
         <DropdownLinks name="Category" links={categories} />
       </div>
