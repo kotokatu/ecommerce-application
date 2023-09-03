@@ -109,7 +109,7 @@ const DetailedProductPage = (): JSX.Element => {
   }, [productID, navigate]);
 
   return (
-    <Container w="100%" h="100%" my="md" px={0} size="lg">
+    <Container w="100%" h="100%" my="md" px="1rem" size="lg">
       {product ? (
         <>
           <SimpleGrid cols={2} spacing={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>

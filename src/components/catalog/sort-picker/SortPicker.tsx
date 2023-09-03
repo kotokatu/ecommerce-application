@@ -8,7 +8,6 @@ const useStyles = createStyles((theme) => ({
 
   label: {
     position: 'absolute',
-    zIndex: 2,
     top: rem(-21),
     fontSize: theme.fontSizes.xs,
     fontWeight: 500,

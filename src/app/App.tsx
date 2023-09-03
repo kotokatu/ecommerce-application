@@ -31,6 +31,11 @@ function App() {
       theme={{
         primaryColor: 'dark',
         fontFamily: 'Days-One',
+        breakpoints: {
+          md: '945',
+          sm: '811',
+          xs: '470',
+        },
       }}
       withGlobalStyles
       withNormalizeCSS
@@ -40,7 +45,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout isOpenBurger={isOpenBurger} closeBurger={close} toggleBurger={toggle} />}>
             <Route index element={<MainPage />} />
-            <Route path="catalog" element={<CatalogPage />} />
+            <Route path="catalog" element={<CatalogPage isOpenBurger={isOpenBurger} />} />
             <Route path="about" element={<AboutPage />} />
 
             <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
@@ -52,8 +57,8 @@ function App() {
               <Route path="registration" element={<RegistrationPage />} />
             </Route>
 
-            <Route path="catalog/:category" element={<CatalogPage />} />
-            <Route path="catalog/:category/:subcategory" element={<CatalogPage />} />
+            <Route path="catalog/:category" element={<CatalogPage isOpenBurger={isOpenBurger} />} />
+            <Route path="catalog/:category/:subcategory" element={<CatalogPage isOpenBurger={isOpenBurger} />} />
             <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
 
             <Route path="basket" element={<BasketPage />} />

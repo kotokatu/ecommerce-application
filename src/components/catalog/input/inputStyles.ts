@@ -8,6 +8,7 @@ export const inputStyles = createStyles((theme, { floating }: { floating: boolea
         opacity: 0.7,
       },
     },
+    zIndex: 0,
   },
 
   label: {

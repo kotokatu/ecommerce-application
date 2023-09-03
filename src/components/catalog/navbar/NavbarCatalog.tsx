@@ -9,22 +9,11 @@ import { useParams } from 'react-router-dom';
 import { categoryCache } from '../../../services/api/CategoryCache';
 
 const navbarCatalogStyles = createStyles((theme) => ({
-  navbar: {
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-    marginRight: '10px',
-    borderRight: '0.0625rem solid #e9ecef',
-    width: '260px',
-    minWidth: '260px',
-  },
-
   buttons: {
     display: 'flex',
     flexDirection: 'column',
     gap: '10px',
-    padding: '0 10px',
+    padding: '0 1rem 0 0',
   },
   button: {
     fontWeight: 500,
@@ -42,6 +31,7 @@ const navbarCatalogStyles = createStyles((theme) => ({
 }));
 
 type NavbarCatalogProps = {
+  className: string;
   categories: CategoryType[];
   brands: string[];
   sizes: string[];
@@ -49,9 +39,12 @@ type NavbarCatalogProps = {
   minProductPrice: number;
   maxProductPrice: number;
   setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  isOpenNavbar: boolean;
+  setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const NavbarCatalog = ({
+  className,
   categories,
   brands,
   sizes,
@@ -59,6 +52,8 @@ const NavbarCatalog = ({
   minProductPrice,
   maxProductPrice,
   setFilters,
+  isOpenNavbar,
+  setIsOpenNavbar,
 }: NavbarCatalogProps) => {
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -87,6 +82,7 @@ const NavbarCatalog = ({
       selectedColors.length ? `${FilterParams.color}: "${selectedColors.join('", "')}"` : '',
       minPrice ? `${FilterParams.price}: range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})` : '',
     ]);
+    setIsOpenNavbar(!isOpenNavbar);
   }
 
   function clearFilterProducts() {
@@ -98,6 +94,7 @@ const NavbarCatalog = ({
     setSelectedSizes([]);
     setSelectedColors([]);
     setFilters([]);
+    setIsOpenNavbar(!isOpenNavbar);
   }
 
   const getParentCategories = () => {
@@ -109,7 +106,7 @@ const NavbarCatalog = ({
   };
 
   return (
-    <div className={classes.navbar}>
+    <div className={className}>
       <div>
         <UnstyledButton onClick={() => setOpened((open) => !open)} className={classes.button}>
           {'Category'}
