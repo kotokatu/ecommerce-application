@@ -106,6 +106,7 @@ class UserService {
         })
         .execute();
     } catch (err) {
+      console.log('не вышло');
       this.apiRoot = new CtpClient().getApiRoot();
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
@@ -126,8 +127,8 @@ class UserService {
   }
 
   public async changePassword(passwordsData: MyCustomerChangePassword, email: string): Promise<string | void> {
-    console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
     try {
+      console.log('сначала', tokenCache.getAccessToken());
       await this.apiRoot
         .me()
         .password()
@@ -135,7 +136,8 @@ class UserService {
           body: { ...passwordsData },
         })
         .execute();
-      //await this.login(passwordsData.newPassword, email);
+      this.logout();
+      await this.login(email, passwordsData.newPassword);
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }

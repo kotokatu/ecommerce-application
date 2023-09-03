@@ -1,14 +1,15 @@
 import { Container, Button, PasswordInput } from '@mantine/core';
 import { userService } from '../../../services/UserService/UserService';
-import { UserProfile } from '../../../utils/types/serviceTypes';
 import { useForm } from '@mantine/form';
-//import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { passwordRegex } from '../../../utils/constants/validationRegex';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ProfileModal = (userData: UserProfile) => {
+const ProfileModal = (props: { userVersion: number; userEmail: string }) => {
+  const version = props.userVersion;
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const passwordForm = useForm({
     initialValues: {
@@ -34,8 +35,9 @@ const ProfileModal = (userData: UserProfile) => {
         onSubmit={passwordForm.onSubmit(async (values) => {
           setIsLoading(true);
           try {
-            await userService.changePassword({ version: userData.version, ...values }, userData.email);
+            await userService.changePassword({ version, ...values }, props.userEmail);
             notificationSuccess('Account was succesfully updated');
+            navigate('/profile');
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
           }

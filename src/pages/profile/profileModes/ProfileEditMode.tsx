@@ -137,13 +137,15 @@ const ProfileEdit = (userData: UserProfile) => {
     <Container className={classes.container}>
       <form
         onSubmit={form.onSubmit(async (values) => {
-          setIsLoading(true);
-          try {
-            notificationSuccess('Account was succesfully updated');
-          } catch (err) {
-            if (err instanceof Error) notificationError(err.message);
-          } finally {
-            setIsLoading(false);
+          if (!opened) {
+            setIsLoading(true);
+            try {
+              notificationSuccess('Account was succesfully updated');
+            } catch (err) {
+              if (err instanceof Error) notificationError(err.message);
+            } finally {
+              setIsLoading(false);
+            }
           }
         })}
       >
@@ -184,7 +186,7 @@ const ProfileEdit = (userData: UserProfile) => {
                 {...form.getInputProps('email')}
               />
               <Modal opened={opened} onClose={close} title="Change a Password" centered>
-                <ProfileModal {...userData} />
+                <ProfileModal userVersion={userData.version} userEmail={userData.email} />
               </Modal>
 
               <Flex align="left" mb={10} direction="column">
