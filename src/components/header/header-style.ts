@@ -48,7 +48,6 @@ export const headerStyle = createStyles((theme) => ({
     top: 80,
     left: 0,
     right: 0,
-    zIndex: 0,
     height: '90vh',
     textAlign: 'center',
     fontSize: '25px',
@@ -68,9 +67,14 @@ export const headerStyle = createStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: '100%',
+    [theme.fn.smallerThan('md')]: {
+      padding: 0,
+    },
   },
 
   userLinks: {
+    fontFamily: 'Montserrat',
+    fontWeight: 700,
     minWidth: '270px',
     justifyContent: 'flex-end',
     [theme.fn.smallerThan('sm')]: {

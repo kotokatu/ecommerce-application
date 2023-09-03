@@ -10,7 +10,7 @@ const headerCatalogStyles = createStyles(() => ({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginBottom: '20px',
-    padding: '0 1rem',
+    padding: '.7rem 1rem 0',
   },
 
   inputs: {

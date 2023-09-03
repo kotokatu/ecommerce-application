@@ -31,6 +31,10 @@ function App() {
       theme={{
         primaryColor: 'dark',
         fontFamily: 'Days-One',
+        breakpoints: {
+          md: '945',
+          sm: '811',
+        },
       }}
       withGlobalStyles
       withNormalizeCSS
