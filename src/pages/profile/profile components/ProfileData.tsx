@@ -53,13 +53,15 @@ const ProfilePage = (userData: UserProfile) => {
     <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
       <Grid gutter="md">
         <Col span={12} md={3}>
-          <Flex gap="md" justify="center" align="center" direction="column" className={classes.avatarContainer}>
-            <Avatar variant="filled" radius="xl" size="xl" src={null}>
-              {avatarLetters}
-            </Avatar>
-            <Text align="center" className={classes.smallTitle}>
-              {userData?.firstName} {userData?.lastName}
-            </Text>
+          <Flex gap="sm" justify="center" align="center" direction="column" className={classes.avatarContainer}>
+            <div>
+              <Avatar variant="filled" radius="xl" size="xl" src={null}>
+                {avatarLetters}
+              </Avatar>
+              <Text align="center" className={classes.smallTitle}>
+                {userData?.firstName} {userData?.lastName}
+              </Text>
+            </div>
           </Flex>
         </Col>
         <Col span={12} md={9}>

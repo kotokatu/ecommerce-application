@@ -6,7 +6,9 @@ import ProfileEdit from './profile components/ProfileEditMode';
 import Profile from './profile components/ProfileData';
 import { Link } from 'react-router-dom';
 
+//создать отдельный тип, чтоб не заменить версию случайно
 export const defaultData: UserProfile = {
+  version: 1,
   email: 'Loading...',
   password: 'Loading...',
   firstName: 'Loading...',
@@ -58,14 +60,13 @@ const ProfilePage = () => {
   const [userData, setProfile] = useState<UserProfile>(defaultData);
   const [isEditMode, setIsEditMode] = useState(false);
   const { classes } = formStyles();
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const getProfile = async () => {
+    const profile = async () => {
       const userData = (await userService.getProfile()) as UserProfile;
       setProfile(userData);
     };
-    getProfile();
+    profile();
   }, []);
 
   if (isEditMode === false) {

@@ -9,6 +9,8 @@ import {
   TextInput,
   Select,
   PasswordInput,
+  Modal,
+  Group,
 } from '@mantine/core';
 import { userService } from '../../../services/UserService/UserService';
 import { UserProfile } from '../../../utils/types/serviceTypes';
@@ -18,6 +20,7 @@ import { useForm } from '@mantine/form';
 import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 //import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
+import { useDisclosure } from '@mantine/hooks';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -53,12 +56,12 @@ const countryData = [
 
 const ProfileEdit = (userData: UserProfile) => {
   const { classes } = formStyles();
+  const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
-  userService.changeUserData();
   const form = useForm({
     initialValues: {
       email: userData.email,
-      password: userData.password,
+      //password: userData.password,
       firstName: userData.firstName,
       lastName: userData.lastName,
       dateOfBirth: userData.dateOfBirth,
@@ -81,10 +84,10 @@ const ProfileEdit = (userData: UserProfile) => {
 
     validate: {
       email: (value) => (emailRegex.test(value) ? null : 'Should be a valid email'),
-      password: (value) =>
-        passwordRegex.test(value)
-          ? null
-          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
+      // password: (value) =>
+      //   passwordRegex.test(value)
+      //     ? null
+      //     : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
       firstName: (value) =>
         onlyLettersRegex.test(value) ? null : 'First name should only contain letters and cannot be empty',
       lastName: (value) =>
@@ -116,11 +119,32 @@ const ProfileEdit = (userData: UserProfile) => {
     },
     validateInputOnChange: true,
   });
+
+  const passwordForm = useForm({
+    initialValues: {
+      currentPassword: '',
+      newPassword: '',
+    },
+
+    validate: {
+      currentPassword: (value) =>
+        passwordRegex.test(value)
+          ? null
+          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
+      newPassword: (value) =>
+        passwordRegex.test(value)
+          ? null
+          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
+    },
+    validateInputOnChange: true,
+  });
+
   return (
     <Container className={classes.container}>
       <form
-        onSubmit={form.onSubmit(async () => {
+        onSubmit={form.onSubmit(async (values) => {
           setIsLoading(true);
+          userService.changePassword({ version: userData.version, newPassword: 'f', currentPassword: 'f' });
           console.log(3477734);
           try {
             notificationSuccess('Account was succesfully updated');
@@ -147,14 +171,6 @@ const ProfileEdit = (userData: UserProfile) => {
                 placeholder={userData?.lastName}
                 {...form.getInputProps('lastName')}
               />
-              <PasswordInput
-                pt={10}
-                withAsterisk
-                autoComplete="current-password"
-                label="Password"
-                placeholder="Password"
-                {...form.getInputProps('password')}
-              />
               {/* <DatePickerInput
                 valueFormat="DD.MM.YYYY"
                 label="Date of birth"
@@ -175,6 +191,51 @@ const ProfileEdit = (userData: UserProfile) => {
                 label="Email"
                 {...form.getInputProps('email')}
               />
+              <Modal opened={opened} onClose={close} title="Change a Password" centered>
+                <form
+                  onSubmit={passwordForm.onSubmit(async (values) => {
+                    setIsLoading(true);
+                    userService.changePassword({ version: userData.version, ...values });
+                    console.log(3477734);
+                    try {
+                      notificationSuccess('Account was succesfully updated');
+                    } catch (err) {
+                      if (err instanceof Error) notificationError(err.message);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  })}
+                >
+                  <PasswordInput
+                    pt={10}
+                    withAsterisk
+                    autoComplete="current-password"
+                    label="Password"
+                    placeholder="Password"
+                    {...passwordForm.getInputProps('currentPassword')}
+                  />
+                  <PasswordInput
+                    pt={10}
+                    withAsterisk
+                    autoComplete="new-password"
+                    label="New Password"
+                    placeholder="New Password"
+                    {...passwordForm.getInputProps('newPassword')}
+                  />
+                  <Button type="submit" loading={isLoading} fullWidth mt={20}>
+                    Save Changes
+                  </Button>
+                </form>
+              </Modal>
+
+              <Flex align="left" mb={10} direction="column">
+                <Text color="dimmed" size="sm" align="center" pt={5}>
+                  Do you want to change password?
+                </Text>
+                <Button onClick={open} color="red" style={{ width: '180px', margin: 'auto' }}>
+                  Change password
+                </Button>
+              </Flex>
             </Paper>
           </Flex>
           <Text className={classes.smallTitle} m={20} align="center">

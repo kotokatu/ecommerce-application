@@ -1,7 +1,7 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { ErrorResponse, CustomerDraft, Customer } from '@commercetools/platform-sdk';
+import { ErrorResponse, CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetools/platform-sdk';
 import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { tokenCache } from '../api/TokenCache';
@@ -125,96 +125,62 @@ class UserService {
     }
   }
 
-  public async changeUserData() {
+  public async changePassword(passwordsData: MyCustomerChangePassword) {
     try {
-      const aa = await this.apiRoot.me().password();
-      console.log(999, aa);
+      await this.apiRoot
+        .me()
+        .password()
+        .post({
+          body: { ...passwordsData },
+        })
+        .execute();
+      console.log(999, { ...passwordsData });
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
 
-  // private updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, currentCustomer: UserProfile) {
-  //   this.apiRoot
-  //     .me()
-  //     .post({
-  //       body: {
-  //         version: currentCustomer.version,
-  //         actions: [
-  //           {
-  //             action: 'setFirstName',
-  //             firstName: customerUpdateDraft.firstName,
-  //           },
-  //           {
-  //             action: 'setLastName',
-  //             lastName: customerUpdateDraft.lastName,
-  //           },
-  //           {
-  //             action: 'changeAddress',
-  //             addressId: currentCustomer.address.id,
-  //             address: {
-  //               firstName: customerUpdateDraft.firstName,
-  //               lastName: customerUpdateDraft.lastName,
-  //               streetName: customerUpdateDraft.address.street,
-  //               streetNumber: customerUpdateDraft.address.streetNumber,
-  //               postalCode: customerUpdateDraft.address.zipCode,
-  //               city: customerUpdateDraft.address.town,
-  //               country: currentCustomer.shippingAddress.country,
-  //             },
-  //           },
-  //         ],
-  //       },
-  //     })
-  //     .execute()
-  //     .then(({ body }: ClientResponse<Customer>) => {
-  //       this.handleUpdateCustomerSuccess(body);
-  //     });
-  // }
-
   private updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, currentCustomer: UserProfile) {
-    this.apiRoot
-      .me()
-      .post({
-        body: {
-          version: currentCustomer.version,
-          actions: [
-            {
-              action: 'setFirstName',
-              firstName: customerUpdateDraft.firstName,
-            },
-            {
-              action: 'setLastName',
-              lastName: customerUpdateDraft.lastName,
-            },
-            {
-              action: 'changeAddress',
-              addressId: currentCustomer.shippingAddress,
-              address: {
+    try {
+      this.apiRoot
+        .me()
+        .post({
+          body: {
+            version: currentCustomer.version,
+            actions: [
+              {
+                action: 'setFirstName',
                 firstName: customerUpdateDraft.firstName,
-                lastName: customerUpdateDraft.lastName,
-                streetName: customerUpdateDraft.address.street,
-                streetNumber: customerUpdateDraft.address.streetNumber,
-                postalCode: customerUpdateDraft.address.zipCode,
-                city: customerUpdateDraft.address.town,
-                country: currentCustomer.shippingAddress.country,
               },
-            },
-          ],
-        },
-      })
-      .execute()
-      .then(({ body }: ClientResponse<Customer>) => {
-        this.handleUpdateCustomerSuccess(body);
-      });
+              {
+                action: 'setLastName',
+                lastName: customerUpdateDraft.lastName,
+              },
+              {
+                action: 'changeAddress',
+                //addressId: currentCustomer.shippingAddress,
+                address: {
+                  firstName: customerUpdateDraft.firstName,
+                  lastName: customerUpdateDraft.lastName,
+                  streetName: customerUpdateDraft.address.street,
+                  streetNumber: customerUpdateDraft.address.streetNumber,
+                  postalCode: customerUpdateDraft.address.zipCode,
+                  city: customerUpdateDraft.address.town,
+                  country: currentCustomer.shippingAddress.country,
+                },
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
   }
 
   private handleUpdateCustomerSuccess(rawCustomer: Customer) {
-    const updatedCustomer = this.createCustomer(rawCustomer);
-    const customerInSession = JSON.parse(localStorage.getItem(CURRENT_CUSTOMER));
-    updatedCustomer.password = customerInSession.password;
-    localStorage.setItem(CURRENT_CUSTOMER, JSON.stringify(updatedCustomer));
-    this.currentCustomerSubject.next(updatedCustomer);
-    this.customerUpdateSuccessSubject.next(true);
+    //менять ли токен?
+    //localStorage.setItem('', );
   }
 }
 
