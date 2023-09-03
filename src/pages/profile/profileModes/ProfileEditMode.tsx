@@ -32,7 +32,7 @@ const formStyles = createStyles((theme) => ({
     fontWeight: 400,
     fontSize: '16px',
     [theme.fn.smallerThan('xs')]: {
-      fontSize: '10px',
+      fontSize: '14px',
     },
   },
 }));
@@ -43,6 +43,13 @@ const ProfileEdit = (userData: UserProfile) => {
   const [isLoading, setIsLoading] = useState(false);
   const shippingAddress = userData.shippingAddress as Address;
   const billingAddress = userData.billingAddress as Address;
+  // const [updatedShippingAddress, setUpdatedShippingAddress] = useState(shippingAddress);
+
+  const [value, setValue] = useState('');
+  const handleChange = (value: string) => {
+    console.log('я родитель', value);
+    setValue(value);
+  };
 
   const form = useForm({
     initialValues: {
@@ -66,8 +73,10 @@ const ProfileEdit = (userData: UserProfile) => {
   return (
     <Container className={classes.container}>
       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
+        <Text className={classes.smallTitle} align="left" m={20}>
+          Personal information
+        </Text>
         <Flex gap="md" justify="center" align="center" direction="column">
-          <Text className={classes.smallTitle}>Personal information</Text>
           <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
             <form
               onSubmit={form.onSubmit(async (values) => {
@@ -109,22 +118,31 @@ const ProfileEdit = (userData: UserProfile) => {
                 label="Email"
                 {...form.getInputProps('email')}
               />
-            </form>
-            <Modal opened={opened} onClose={close} title="Change a Password" centered>
-              <ProfileModal userVersion={userData.version} userEmail={userData.email} />
-            </Modal>
 
-            <Flex align="left" mb={10} direction="column">
-              <Text color="dimmed" size="sm" align="center" pt={5}>
-                Do you want to change password?
-              </Text>
-              <Button onClick={open} color="red" style={{ width: '180px', margin: 'auto' }}>
-                Change password
-              </Button>
-            </Flex>
+              <Flex align="center" mb={20} justify="space-between">
+                <Text color="dimmed" size="sm" pt={5}>
+                  Do you want to update personal info?
+                </Text>
+                <Button type="submit" loading={isLoading} style={{ width: '180px' }}>
+                  Save
+                </Button>
+              </Flex>
+
+              <Modal opened={opened} onClose={close} title="Change a Password" centered>
+                <ProfileModal userVersion={userData.version} userEmail={userData.email} />
+              </Modal>
+            </form>
           </Paper>
         </Flex>
-        <Text className={classes.smallTitle} m={20} align="center">
+        <Flex align="center" m={20} direction="column">
+          <Text color="black" size="sm" pt={5}>
+            Do you want to change password?
+          </Text>
+          <Button onClick={open} color="red" style={{ width: '180px' }}>
+            Change password
+          </Button>
+        </Flex>
+        <Text className={classes.smallTitle} m={20} align="left">
           Addresses
         </Text>
         <Flex gap="sm" justify="center" align="start" direction="column" style={{ width: '100%' }} mb={15}>
@@ -135,6 +153,7 @@ const ProfileEdit = (userData: UserProfile) => {
               userEmail: userData.email,
               isDefault: userData.shippingAddressAsDefault,
             }}
+            onChange={handleChange}
           />
           <ProfileAddress
             data={{
@@ -143,6 +162,7 @@ const ProfileEdit = (userData: UserProfile) => {
               userEmail: userData.email,
               isDefault: userData.billingAddressAsDefault,
             }}
+            onChange={handleChange}
           />
           <Flex align="center" justify="center" gap="sm" style={{ paddingLeft: '24px' }}>
             <Text className={classes.smallTitle} align="center">
@@ -154,7 +174,12 @@ const ProfileEdit = (userData: UserProfile) => {
           </Flex>
         </Flex>
         <Flex align="center" justify="center" style={{ padding: '0 24px 0 24px' }}>
-          <Button type="submit" loading={isLoading} style={{ width: '180px', marginTop: '10px' }}>
+          <Button
+            type="submit"
+            loading={isLoading}
+            style={{ width: '180px', marginTop: '10px' }}
+            onClick={() => console.log(78787, value)}
+          >
             Save Changes
           </Button>
         </Flex>

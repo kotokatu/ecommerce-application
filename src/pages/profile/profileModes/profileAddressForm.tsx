@@ -25,8 +25,9 @@ const formStyles = createStyles((theme) => ({
   smallTitle: {
     fontWeight: 400,
     fontSize: '16px',
+    marginTop: '10px',
     [theme.fn.smallerThan('xs')]: {
-      fontSize: '10px',
+      fontSize: '14px',
     },
   },
 }));
@@ -51,7 +52,7 @@ const newAddress: Address = {
   postalCode: '',
 };
 
-const ProfileAddress = (props: { data: Data }) => {
+const ProfileAddress = (props: { data: Data; onChange: (v: string) => void }) => {
   //const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: Address = props.data.addressData || newAddress;
@@ -75,43 +76,51 @@ const ProfileAddress = (props: { data: Data }) => {
     validateInputOnChange: true,
   });
 
+  const getFormValues = () => addressform.values as Address;
+
+  const handleChange = (values: Address | undefined) => {
+    return console.log('я ребенок');
+  };
+
   return (
     <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-      <Text className={classes.smallTitle} align="center">
-        {props.data.name} Address
-      </Text>
-      <Text className={classes.smallTitle} color="red" align="right">
-        {props.data.isDefault ? '* Used as default' : 'Not default'}
-      </Text>
-      <Select
-        withAsterisk
-        label="Country"
-        data={countryData}
-        placeholder="Choose country"
-        {...addressform.getInputProps('country')}
-      />
-      <TextInput withAsterisk pt={10} label="City" placeholder="City" {...addressform.getInputProps('city')} />
-      <TextInput
-        withAsterisk
-        pt={10}
-        label="Address"
-        placeholder="Address"
-        {...addressform.getInputProps('streetName')}
-      />
-      <TextInput
-        withAsterisk
-        pt={10}
-        label="Postal Code"
-        placeholder="Postal Code"
-        {...addressform.getInputProps('postalCode')}
-      />
-      <Checkbox
-        m={10}
-        label="Set as default address"
-        {...addressform.getInputProps('setDefault')}
-        checked={checked}
-        onChange={() => setChecked(!checked)}
-      />
+      <form>
+        <Text className={classes.smallTitle} align="center">
+          {props.data.name} Address
+        </Text>
+        <Text className={classes.smallTitle} color="red" align="right">
+          {props.data.isDefault ? '* Used as default' : 'Not default'}
+        </Text>
+        <Select
+          withAsterisk
+          label="Country"
+          data={countryData}
+          placeholder="Choose country"
+          {...addressform.getInputProps('country')}
+        />
+        <TextInput withAsterisk pt={10} label="City" placeholder="City" {...addressform.getInputProps('city')} />
+        <TextInput
+          withAsterisk
+          pt={10}
+          label="Address"
+          placeholder="Address"
+          {...addressform.getInputProps('streetName')}
+        />
+        <TextInput
+          withAsterisk
+          pt={10}
+          label="Postal Code"
+          placeholder="Postal Code"
+          {...addressform.getInputProps('postalCode')}
+        />
+        <Checkbox
+          m={10}
+          label="Set as default address"
+          {...addressform.getInputProps('setDefault')}
+          checked={checked}
+          onChange={() => setChecked(!checked)}
+        />
+      </form>
     </Paper>
   );
 };
