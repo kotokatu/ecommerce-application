@@ -4,7 +4,7 @@ export const headerStyle = createStyles((theme) => ({
   header: {
     position: 'relative',
     zIndex: 1,
-    padding: '20px 0',
+    padding: '20px 1rem',
   },
 
   title: {
@@ -67,6 +67,8 @@ export const headerStyle = createStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: '100%',
+    padding: 0,
+
     [theme.fn.smallerThan('md')]: {
       padding: 0,
     },

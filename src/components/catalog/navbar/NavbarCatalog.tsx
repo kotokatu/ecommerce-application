@@ -23,7 +23,7 @@ const navbarCatalogStyles = createStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '10px',
-    padding: '0 10px',
+    padding: '0 1rem 0 0',
   },
 }));
 
