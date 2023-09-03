@@ -164,6 +164,10 @@ class UserService {
                 action: 'setDateOfBirth',
                 dateOfBirth: formatDate(customerUpdateDraft.dateOfBirth as Date),
               },
+              {
+                action: 'changeEmail',
+                email: customerUpdateDraft.email,
+              },
             ],
           },
         })
