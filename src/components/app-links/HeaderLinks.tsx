@@ -13,6 +13,16 @@ const HeaderLinks = () => {
 
   const headerItems = [
     {
+      name: 'Catalog',
+      routePath: '/catalog',
+      isDisplay: true,
+    },
+    {
+      name: 'About',
+      routePath: '/about',
+      isDisplay: true,
+    },
+    {
       name: 'Login',
       routePath: '/login',
       isDisplay: !userLoggedIn,
