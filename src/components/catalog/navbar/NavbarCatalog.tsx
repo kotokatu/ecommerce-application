@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
-import { CategoryType } from '../../../pages/catalog/CatalogPage';
+import { CategoryType } from '../../../services/api/CategoryCache';
 import { FilterParams } from '../../../services/ProductService/ProductService';
 import { useParams } from 'react-router-dom';
 

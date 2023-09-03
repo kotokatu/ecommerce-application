@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { NavLink, useParams } from 'react-router-dom';
 import { dropdownStyles } from './dropdownStyles';
-import { CategoryType } from '../../../pages/catalog/CatalogPage';
+import { CategoryType } from '../../../services/api/CategoryCache';
 
 type DropdownLinksProps = {
   name: string;

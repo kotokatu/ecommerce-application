@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CategoryType } from '../../../pages/catalog/CatalogPage';
+import { CategoryType } from '../../../services/api/CategoryCache';
 import { createStyles } from '@mantine/core';
 
 const breadCrumbsStyles = createStyles(() => ({
