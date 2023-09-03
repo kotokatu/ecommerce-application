@@ -120,7 +120,7 @@ const DetailedProductPage = (): JSX.Element => {
               <Grid.Col>
                 <Paper>
                   <Title order={4}>
-                    {product.masterVariant.attributes?.find((attribute) => attribute.name === 'brand')?.value.label}
+                    {product.masterVariant.attributes?.find((attribute) => attribute.name === 'brand')?.value}
                   </Title>
                   <Title order={6} ff="Montserrat">
                     {product.name['en-US']}

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Category, ProductVariant } from '@commercetools/platform-sdk';
-import { createStyles, Button, Center, Loader } from '@mantine/core';
+import { Category } from '@commercetools/platform-sdk';
+import { createStyles, Center, Loader } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { FilterParams, productService } from '../../services/ProductService/ProductService';
+import { productService } from '../../services/ProductService/ProductService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';

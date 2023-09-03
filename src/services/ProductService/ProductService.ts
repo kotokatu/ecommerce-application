@@ -1,6 +1,6 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
-import { ProductProjection, ProductType, TermFacetResult, FacetTerm } from '@commercetools/platform-sdk';
+import { ProductProjection, ProductType, TermFacetResult } from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 
 export const FilterParams = {
