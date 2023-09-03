@@ -30,6 +30,7 @@ const countryData = [
 const useStyles = createStyles((theme) => ({
   container: {
     width: '450px',
+    paddingTop: theme.spacing.md,
   },
   title: {
     fontWeight: 800,
