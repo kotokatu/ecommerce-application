@@ -13,11 +13,11 @@ type DropdownLinksProps = {
 const DropdownLinks = ({ name, initiallyOpened, links }: DropdownLinksProps) => {
   const { classes } = dropdownStyles();
   const [opened, setOpened] = useState(initiallyOpened || false);
-  const { category } = useParams();
+  const { category, subcategory } = useParams();
 
   const linkItems = links.map((link) => (
     <NavLink
-      className={classes.item}
+      className={link.id === subcategory ? `${classes.item} ${classes.active}` : classes.item}
       key={link.id}
       to={`/catalog/${category ? category : link.id}/${category ? link.id : ''}`}
     >

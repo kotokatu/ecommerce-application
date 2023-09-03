@@ -47,6 +47,10 @@ export const dropdownStyles = createStyles((theme) => ({
     },
   },
 
+  active: {
+    backgroundColor: theme.colors.gray[0],
+  },
+
   pricedropdown: {
     padding: '0 10px',
   },
