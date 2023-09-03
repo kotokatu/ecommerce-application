@@ -67,6 +67,8 @@ const useStyles = createStyles(() => ({
   },
 
   title: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     fontSize: '15px',
     fontWeight: 600,
     lineHeight: '1.2',
