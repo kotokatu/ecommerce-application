@@ -40,5 +40,3 @@ export class TokenCacheHandler implements TokenCache {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
 }
-
-// export const tokenCache = new TokenCacheHandler();
