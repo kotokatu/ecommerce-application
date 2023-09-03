@@ -26,6 +26,11 @@ const useStyles = createStyles(() => ({
     ref: getStylesRef('carouselControls'),
     transition: 'opacity 150ms ease',
     opacity: 0,
+    '& [data-inactive]': {
+      opacity: 0,
+      visibility: 'hidden',
+      cursor: 'default',
+    },
   },
 
   carouselIndicator: {
