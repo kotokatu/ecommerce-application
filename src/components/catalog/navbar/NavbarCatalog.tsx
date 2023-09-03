@@ -102,7 +102,7 @@ const NavbarCatalog = ({
   };
 
   const getChildrenCategories = (categoryName: string) => {
-    return categories.filter((category) => category.parentName === categoryName);
+    return categories.filter((category) => category.parentName === categoryName).sort((a, b) => +a.order - +b.order);
   };
 
   return (

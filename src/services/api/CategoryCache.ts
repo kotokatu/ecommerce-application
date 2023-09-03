@@ -3,6 +3,7 @@ import { storeService } from '../StoreService/StoreService';
 export type CategoryType = {
   id: string;
   name: string;
+  order: string;
   parentID?: string;
   parentName?: string;
 };
@@ -19,6 +20,7 @@ class CategoryCache {
       this.categories = categories.map((category) => ({
         id: category.id,
         name: category.name['en-US'],
+        order: category.orderHint,
         parentID: category.parent?.obj?.id,
         parentName: category.parent?.obj?.name['en-US'],
       }));
