@@ -1,4 +1,4 @@
-import { createStyles, getStylesRef, rem } from '@mantine/core';
+import { createStyles, rem } from '@mantine/core';
 
 export const dropdownStyles = createStyles((theme) => ({
   button: {
@@ -23,6 +23,10 @@ export const dropdownStyles = createStyles((theme) => ({
     '&::-webkit-scrollbar': {
       width: '4px',
       height: 0,
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#e9ecef',
     },
   },
 
