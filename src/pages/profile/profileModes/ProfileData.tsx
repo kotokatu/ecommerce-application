@@ -1,7 +1,6 @@
 import { getFirstLetters } from '../../../utils/helpers/getFirstLetters';
 import { UserProfile } from '../../../utils/types/serviceTypes';
-import { useState } from 'react';
-import { Avatar, Col, Grid, Paper, Text, createStyles, Flex, Button } from '@mantine/core';
+import { Avatar, Col, Grid, Paper, Text, createStyles, Flex } from '@mantine/core';
 
 const formStyles = createStyles((theme) => ({
   container: {

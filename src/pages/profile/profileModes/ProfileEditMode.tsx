@@ -1,16 +1,4 @@
-import {
-  Paper,
-  Text,
-  createStyles,
-  Checkbox,
-  Container,
-  Flex,
-  Button,
-  TextInput,
-  Select,
-  PasswordInput,
-  Modal,
-} from '@mantine/core';
+import { Paper, Text, createStyles, Checkbox, Container, Flex, Button, TextInput, Select, Modal } from '@mantine/core';
 import { userService } from '../../../services/UserService/UserService';
 import { UserProfile } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
@@ -58,12 +46,13 @@ const ProfileEdit = (userData: UserProfile) => {
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm({
     initialValues: {
       email: userData.email,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      dateOfBirth: userData.dateOfBirth,
+      dateOfBirth: null,
       shippingAddress: {
         country: userData.shippingAddress.country || 'No data',
         city: userData.shippingAddress.city || 'No data',
@@ -147,17 +136,10 @@ const ProfileEdit = (userData: UserProfile) => {
                 placeholder={userData?.lastName}
                 {...form.getInputProps('lastName')}
               />
-              {/* <DatePickerInput
-                valueFormat="DD.MM.YYYY"
+              <DatePickerInput
+                valueFormat="YYYY MMM DD"
                 label="Date of birth"
-                placeholder={userData?.dateOfBirth}
-                {...form.getInputProps('dateOfBirth')}
-              /> */}
-              <TextInput
-                className={classes.smallTitle}
-                placeholder={userData?.dateOfBirth}
-                mb={10}
-                label="Date of birth"
+                placeholder={userData.dateOfBirth}
                 {...form.getInputProps('dateOfBirth')}
               />
               <TextInput
