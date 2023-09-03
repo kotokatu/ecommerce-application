@@ -24,10 +24,6 @@ export const dropdownStyles = createStyles((theme) => ({
       width: '4px',
       height: 0,
     },
-
-    '&:hover::-webkit-scrollbar-thumb': {
-      backgroundColor: '#e9ecef',
-    },
   },
 
   item: {

@@ -7,12 +7,11 @@ import { CategoryType } from '../../../services/api/CategoryCache';
 type DropdownLinksProps = {
   name: string;
   links: CategoryType[];
-  initiallyOpened?: boolean;
 };
 
-const DropdownLinks = ({ name, initiallyOpened, links }: DropdownLinksProps) => {
+const DropdownLinks = ({ name, links }: DropdownLinksProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const [opened, setOpened] = useState(true);
   const { category, subcategory } = useParams();
 
   const linkItems = links.map((link) => (

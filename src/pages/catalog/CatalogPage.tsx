@@ -86,7 +86,7 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
-  const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(false);
+  const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(true);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
