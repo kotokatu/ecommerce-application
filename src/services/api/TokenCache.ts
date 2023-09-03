@@ -1,6 +1,6 @@
 import { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 const TOKEN_STORAGE_KEY = 'ct-token-30fingers';
-class TokenCacheHandler implements TokenCache {
+export class TokenCacheHandler implements TokenCache {
   cache: TokenStore;
   constructor() {
     this.cache = {
@@ -40,5 +40,3 @@ class TokenCacheHandler implements TokenCache {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
 }
-
-export const tokenCache = new TokenCacheHandler();

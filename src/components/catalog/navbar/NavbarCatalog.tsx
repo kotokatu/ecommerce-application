@@ -4,7 +4,7 @@ import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { FilterParams } from '../../../services/ProductService/ProductService';
+import { FilterParams } from '../../../services/StoreService/StoreService';
 import { useParams } from 'react-router-dom';
 import { categoryCache } from '../../../services/api/CategoryCache';
 

@@ -1,4 +1,4 @@
-import { productService } from '../ProductService/ProductService';
+import { storeService } from '../StoreService/StoreService';
 
 export type CategoryType = {
   id: string;
@@ -14,7 +14,7 @@ class CategoryCache {
   }
 
   async get() {
-    const categories = await productService.getCategories();
+    const categories = await storeService.getCategories();
     if (categories) {
       this.categories = categories.map((category) => ({
         id: category.id,

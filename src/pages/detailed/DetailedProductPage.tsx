@@ -19,7 +19,7 @@ import {
 import { Carousel } from '@mantine/carousel';
 import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
 import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { productService } from '../../services/ProductService/ProductService';
+import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
 import parse from 'html-react-parser';
@@ -97,7 +97,7 @@ const DetailedProductPage = (): JSX.Element => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await productService.getProduct(productID as string);
+        const data = await storeService.getProduct(productID as string);
         setProduct(data);
       } catch (err) {
         if (err && typeof err === 'object' && 'statusCode' in err && err.statusCode === ErrorCodes.NotFound) {

@@ -13,7 +13,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 import { notificationSuccess, notificationError } from '../../components/ui/notification';
 import { successfullLoginMessage } from './../../utils/constants/messages';
 import { emailRegex, passwordRegex } from '../../utils/constants/validationRegex';
@@ -67,8 +67,8 @@ const LoginPage = () => {
             <form
               onSubmit={form.onSubmit(async (userData) => {
                 setIsLoading(true);
-                await userService
-                  .login(userData.email, userData.password)
+                await storeService
+                  .loginUser(userData.email, userData.password)
                   .then(() => {
                     setUserLoggedIn(true);
                     navigate('/');

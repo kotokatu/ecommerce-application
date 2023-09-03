@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 import { linksStyle } from './links-style';
 import useAuth from '../../utils/hooks/useAuth';
 
@@ -58,7 +58,7 @@ const HeaderLinks = () => {
         onClick={() => {
           if (link.name === 'Logout') {
             setUserLoggedIn(false);
-            userService.logout();
+            storeService.logoutUser();
           }
         }}
       >
