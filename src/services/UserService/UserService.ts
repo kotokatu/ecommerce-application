@@ -27,18 +27,25 @@ type UserData = {
   copyShippingToBilling: boolean;
 };
 
-interface CustomerUpdateDraft {
+interface CustomerUpdatePersonalDraft {
   email: string;
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
-  shippingAddress: Address;
-  billingAddress: Address;
-  address?: Address;
-  setDefaultShippingAddress: boolean;
-  setDefaultBillingAddress: boolean;
-  copyShippingToBilling: boolean;
 }
+
+// interface CustomerUpdatePersonalDraft {
+//   email: string;
+//   firstName: string;
+//   lastName: string;
+//   dateOfBirth: Date;
+//   shippingAddress: Address;
+//   billingAddress: Address;
+//   address?: Address;
+//   setDefaultShippingAddress: boolean;
+//   setDefaultBillingAddress: boolean;
+//   copyShippingToBilling: boolean;
+// }
 
 class UserService {
   private apiRoot: ByProjectKeyRequestBuilder;
@@ -145,7 +152,7 @@ class UserService {
     }
   }
 
-  public async updateCurrentCustomer(customerUpdateDraft: CustomerUpdateDraft, version: number) {
+  public async updateCurrentCustomer(customerUpdateDraft: CustomerUpdatePersonalDraft, version: number) {
     try {
       await this.apiRoot
         .me()

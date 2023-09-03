@@ -1,8 +1,9 @@
 import { Paper, Text, createStyles, Checkbox, TextInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
-//import { useState } from 'react';
+import { useState } from 'react';
 import { Address } from '../../../services/UserService/UserService';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
+import { userService } from '../../../services/UserService/UserService';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -36,25 +37,33 @@ const countryData = [
   { value: 'FR', label: 'France' },
 ];
 
-type Props = {
+type Data = {
   name?: string;
-  addressData: Address;
+  addressData?: Address;
   userEmail: string;
   isDefault: boolean;
 };
 
-const ProfileAddress = (props: Props) => {
+const newAddress: Address = {
+  country: '',
+  city: '',
+  streetName: '',
+  postalCode: '',
+};
+
+const ProfileAddress = (props: { data: Data }) => {
   //const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
-  const address: Address = props.addressData;
+  const address: Address = props.data.addressData || newAddress;
 
-  const form = useForm({
+  const [checked, setChecked] = useState(props.data.isDefault);
+
+  const addressform = useForm({
     initialValues: {
-      country: address.country || 'No data',
-      city: address.city || 'No data',
-      streetName: address.streetName || 'No data',
-      postalCode: address.postalCode || 'No data',
-      isDefault: props.isDefault,
+      country: address.country,
+      city: address.city,
+      streetName: address.streetName,
+      postalCode: address.postalCode,
     },
 
     validate: {
@@ -69,25 +78,40 @@ const ProfileAddress = (props: Props) => {
   return (
     <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
       <Text className={classes.smallTitle} align="center">
-        {props.name} Address
+        {props.data.name} Address
+      </Text>
+      <Text className={classes.smallTitle} color="red" align="right">
+        {props.data.isDefault ? '* Used as default' : 'Not default'}
       </Text>
       <Select
         withAsterisk
         label="Country"
         data={countryData}
         placeholder="Choose country"
-        {...form.getInputProps('country')}
+        {...addressform.getInputProps('country')}
       />
-      <TextInput withAsterisk pt={10} label="City" placeholder="City" {...form.getInputProps('billingAddress.city')} />
-      <TextInput withAsterisk pt={10} label="Address" placeholder="Address" {...form.getInputProps('streetName')} />
+      <TextInput withAsterisk pt={10} label="City" placeholder="City" {...addressform.getInputProps('city')} />
+      <TextInput
+        withAsterisk
+        pt={10}
+        label="Address"
+        placeholder="Address"
+        {...addressform.getInputProps('streetName')}
+      />
       <TextInput
         withAsterisk
         pt={10}
         label="Postal Code"
         placeholder="Postal Code"
-        {...form.getInputProps('postalCode')}
+        {...addressform.getInputProps('postalCode')}
       />
-      <Checkbox m={10} label="Set as default address" {...form.getInputProps('setDefault')} />
+      <Checkbox
+        m={10}
+        label="Set as default address"
+        {...addressform.getInputProps('setDefault')}
+        checked={checked}
+        onChange={() => setChecked(!checked)}
+      />
     </Paper>
   );
 };
