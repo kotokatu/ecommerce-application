@@ -3,6 +3,7 @@ import { createStyles, rem } from '@mantine/core';
 export const inputStyles = createStyles((theme, { floating }: { floating: boolean }) => ({
   root: {
     position: 'relative',
+    zIndex: 0,
   },
 
   label: {

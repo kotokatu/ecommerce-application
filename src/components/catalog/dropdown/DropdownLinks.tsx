@@ -7,17 +7,16 @@ import { CategoryType } from '../../../services/api/CategoryCache';
 type DropdownLinksProps = {
   name: string;
   links: CategoryType[];
-  initiallyOpened?: boolean;
 };
 
-const DropdownLinks = ({ name, initiallyOpened, links }: DropdownLinksProps) => {
+const DropdownLinks = ({ name, links }: DropdownLinksProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(initiallyOpened || false);
-  const { category } = useParams();
+  const [opened, setOpened] = useState(true);
+  const { category, subcategory } = useParams();
 
   const linkItems = links.map((link) => (
     <NavLink
-      className={classes.item}
+      className={link.id === subcategory ? `${classes.item} ${classes.active}` : classes.item}
       key={link.id}
       to={`/catalog/${category ? category : link.id}/${category ? link.id : ''}`}
     >
