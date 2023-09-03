@@ -1,8 +1,13 @@
-import { createStyles, rem } from '@mantine/core';
+import { createStyles, getStylesRef, rem } from '@mantine/core';
 
 export const inputStyles = createStyles((theme, { floating }: { floating: boolean }) => ({
   root: {
     position: 'relative',
+    '&:hover': {
+      [`& .${getStylesRef('rightSection')}`]: {
+        opacity: 0.7,
+      },
+    },
   },
 
   label: {
@@ -28,5 +33,11 @@ export const inputStyles = createStyles((theme, { floating }: { floating: boolea
       transition: 'color 150ms ease',
       color: !floating ? 'transparent' : undefined,
     },
+  },
+
+  rightSection: {
+    ref: getStylesRef('rightSection'),
+    opacity: 0,
+    transition: '300ms ease',
   },
 }));
