@@ -18,14 +18,12 @@ import {
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
-import { ErrorResponse, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
+import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { productService } from '../../services/ProductService/ProductService';
-import { ErrorCodes } from '../../services/api/handleErrorResponse';
-import { getErrorMessage } from '../../services/api/handleErrorResponse';
+import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
 import parse from 'html-react-parser';
 import './detailed-product-page.scss';
-import { ClientResponse } from '@commercetools/sdk-client-v2';
 
 const carouselStyles = createStyles((theme) => ({
   root: {
@@ -100,11 +98,11 @@ const DetailedProductPage = (): JSX.Element => {
     const fetchData = async () => {
       try {
         const data = await productService.getProduct(productID as string);
-        if (data) setProduct(data);
+        setProduct(data);
       } catch (err) {
-        if ((err as ClientResponse<ErrorResponse>).statusCode === ErrorCodes.NotFound) {
+        if (err && typeof err === 'object' && 'statusCode' in err && err.statusCode === ErrorCodes.NotFound) {
           navigate('/*', { replace: true });
-        } else notificationError(getErrorMessage(err as ClientResponse<ErrorResponse> | Error));
+        } else notificationError(getErrorMessage(err));
       }
     };
     fetchData();
@@ -122,7 +120,7 @@ const DetailedProductPage = (): JSX.Element => {
               <Grid.Col>
                 <Paper>
                   <Title order={4}>
-                    {product.masterVariant.attributes?.find((attribute) => attribute.name === 'brand')?.value.label}
+                    {product.masterVariant.attributes?.find((attribute) => attribute.name === 'brand')?.value}
                   </Title>
                   <Title order={6} ff="Montserrat">
                     {product.name['en-US']}

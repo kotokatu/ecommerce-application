@@ -57,6 +57,7 @@ const NavbarCatalog = ({
 
   useEffect(() => {
     clearFilterProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, subcategory]);
 
   function getFilterProducts() {

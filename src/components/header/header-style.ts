@@ -4,7 +4,6 @@ export const headerStyle = createStyles((theme) => ({
   header: {
     position: 'relative',
     zIndex: 1,
-    marginBottom: '10px',
     padding: '20px 0',
   },
 
