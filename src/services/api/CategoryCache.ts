@@ -9,13 +9,10 @@ export type CategoryType = {
   parentName?: string;
 };
 
-class CategoryCache {
+export class CategoryCache {
   categories: CategoryType[] = [];
-  constructor() {
-    this.get();
-  }
 
-  async get() {
+  public async get() {
     try {
       const categories = await storeService.getCategories();
       if (categories) {
@@ -43,4 +40,4 @@ class CategoryCache {
   }
 }
 
-export const categoryCache = new CategoryCache();
+// export const categoryCache = new CategoryCache();

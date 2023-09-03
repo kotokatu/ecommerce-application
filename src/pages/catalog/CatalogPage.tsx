@@ -7,7 +7,9 @@ import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
-import { categoryCache } from '../../services/api/CategoryCache';
+import { CategoryCache } from '../../services/api/CategoryCache';
+
+export const categoryCache = new CategoryCache();
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -92,6 +94,7 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
       try {
         const queryParams: QueryArgs = {};
         const searchQuery = searchParams.get('search');
+        await categoryCache.get();
 
         if (category) {
           queryParams.filter = [

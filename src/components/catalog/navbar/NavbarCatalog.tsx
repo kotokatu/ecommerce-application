@@ -6,7 +6,7 @@ import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { FilterParams } from '../../../services/StoreService/StoreService';
 import { useParams } from 'react-router-dom';
-import { categoryCache } from '../../../services/api/CategoryCache';
+import { categoryCache } from '../../../pages/catalog/CatalogPage';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -15,6 +15,7 @@ const navbarCatalogStyles = createStyles((theme) => ({
     gap: '10px',
     padding: '0 1rem 0 0',
   },
+
   button: {
     fontWeight: 500,
     display: 'block',
