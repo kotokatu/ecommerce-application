@@ -7,7 +7,7 @@ import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { tokenCache } from '../api/TokenCache';
 import { UserProfile } from '../../utils/types/serviceTypes';
 
-type Address = {
+export type Address = {
   country: string;
   city: string;
   streetName: string;
@@ -34,6 +34,7 @@ interface CustomerUpdateDraft {
   dateOfBirth: Date;
   shippingAddress: Address;
   billingAddress: Address;
+  address?: Address;
   setDefaultShippingAddress: boolean;
   setDefaultBillingAddress: boolean;
   copyShippingToBilling: boolean;
@@ -167,6 +168,26 @@ class UserService {
               {
                 action: 'changeEmail',
                 email: customerUpdateDraft.email,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+  public async addAdress(address: Address, version: number) {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addAddress',
+                address: address,
               },
             ],
           },

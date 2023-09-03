@@ -1,5 +1,5 @@
 import { Paper, Text, createStyles, Checkbox, Container, Flex, Button, TextInput, Select, Modal } from '@mantine/core';
-import { userService } from '../../../services/UserService/UserService';
+import { userService, Address } from '../../../services/UserService/UserService';
 import { UserProfile } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
@@ -46,6 +46,7 @@ const ProfileEdit = (userData: UserProfile) => {
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [addresses, setAddresses] = useState([]);
 
   const form = useForm({
     initialValues: {
@@ -245,6 +246,14 @@ const ProfileEdit = (userData: UserProfile) => {
                 {...form.getInputProps('setDefaultBillingAddress')}
               />
             </Paper>
+            <Flex align="center" justify="center" gap="sm" style={{ paddingLeft: '24px' }}>
+              <Text className={classes.smallTitle} align="center">
+                Add new address
+              </Text>
+              <Button color="green" size="xs">
+                +
+              </Button>
+            </Flex>
           </Flex>
           <Flex align="center" justify="center" style={{ padding: '0 24px 0 24px' }}>
             <Button type="submit" loading={isLoading} style={{ width: '180px', marginTop: '10px' }}>
