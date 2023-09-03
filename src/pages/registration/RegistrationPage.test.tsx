@@ -7,12 +7,12 @@ import { BrowserRouter } from 'react-router-dom';
 import RegistrationPage from './RegistrationPage';
 import ResizeObserver from 'resize-observer-polyfill';
 import userEvent from '@testing-library/user-event';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 global.ResizeObserver = ResizeObserver;
 jest.setTimeout(35000);
-jest.mock('../../services/UserService/UserService', () => ({
-  userService: {
-    signup: jest.fn(),
+jest.mock('../../services/storeService/storeService', () => ({
+  storeService: {
+    signupUser: jest.fn(),
   },
 }));
 
@@ -110,7 +110,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should submit the form when all required fields are filled out correctly', async () => {
-    const mockSignup = jest.spyOn(userService, 'signup');
+    const mockSignup = jest.spyOn(storeService, 'signupUser');
     const { container } = render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });

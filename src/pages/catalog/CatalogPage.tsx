@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { createStyles, Center, Loader } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { productService } from '../../services/ProductService/ProductService';
+import { storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
-import type { GetProductsReturnType, QueryArgs } from '../../services/ProductService/ProductService';
+import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
 import { CategoryCache } from '../../services/api/CategoryCache';
 import type { CategoryType } from '../../services/api/CategoryCache';
@@ -66,7 +66,7 @@ const CatalogPage = () => {
           queryParams.fuzzy = true;
         }
 
-        const res = await productService.getProducts(queryParams);
+        const res = await storeService.getProducts(queryParams);
 
         if (!res) return;
 
