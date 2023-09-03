@@ -16,7 +16,7 @@ import { UserProfile } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { emailRegex, passwordRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
+import { emailRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 //import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { useDisclosure } from '@mantine/hooks';
@@ -111,24 +111,6 @@ const ProfileEdit = (userData: UserProfile) => {
             ? null
             : 'Should be a valid postal code (5 digits)',
       },
-    },
-    validateInputOnChange: true,
-  });
-
-  const passwordForm = useForm({
-    initialValues: {
-      currentPassword: '',
-      newPassword: '',
-    },
-    validate: {
-      currentPassword: (value) =>
-        passwordRegex.test(value)
-          ? null
-          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
-      newPassword: (value) =>
-        passwordRegex.test(value)
-          ? null
-          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
     },
     validateInputOnChange: true,
   });
