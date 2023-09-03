@@ -42,7 +42,7 @@ const useStyles = createStyles(() => ({
 const CatalogPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [resources, setResources] = useState<GetProductsReturnType>();
-  // const [filters, setFilters] = useState<string[]>([]);
+  const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
@@ -58,6 +58,7 @@ const CatalogPage = () => {
     };
 
     const getProducts = async () => {
+      console.log(filters);
       try {
         let queryParams: QueryArgs = {};
         const searchQuery = searchParams.get('search');
@@ -67,10 +68,10 @@ const CatalogPage = () => {
           queryParams['filter.facets'] = [`categories.id: "${subcategory || category}"`];
         }
 
-        // if (filters) {
-        //   queryParams.filter = filters;
-        //   queryParams['filter.facets'] = filters;
-        // }
+        if (filters.length) {
+          queryParams.filter = filters;
+          queryParams['filter.facets'] = filters;
+        }
 
         if (searchQuery) {
           queryParams = { 'text.en-US': `${searchQuery}`, fuzzy: true };
@@ -88,7 +89,7 @@ const CatalogPage = () => {
 
     getProducts();
     getCategories();
-  }, [category, subcategory, searchParams /* filters */]);
+  }, [category, subcategory, searchParams, filters]);
 
   const currentCategories: CategoryType[] = [];
   const allCategories: CategoryType[] = [];
@@ -122,6 +123,7 @@ const CatalogPage = () => {
           colors={resources.colors}
           minProductPrice={minProductPrice || 0}
           maxProductPrice={maxProductPrice || 10000}
+          setFilters={setFilters}
         />
         <div className={classes.items}>
           {resources.products.length ? (

@@ -23,7 +23,7 @@ const DropdownItems = ({ name, items, initiallyOpened, selectedItems, setSelecte
         if (event.target.checked) {
           setSelectedItems([...selectedItems, item]);
         } else {
-          setSelectedItems(selectedItems.filter((brand) => brand !== item));
+          setSelectedItems(selectedItems.filter((selectedItem) => selectedItem !== item));
         }
       }}
     />

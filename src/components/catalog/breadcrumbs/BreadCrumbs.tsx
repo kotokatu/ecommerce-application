@@ -39,7 +39,11 @@ const breadCrumbsStyles = createStyles(() => ({
   },
 }));
 
-const BreadCrumbs = ({ allCategories }: { allCategories: CategoryType[] }) => {
+type BreadCrumbsProps = {
+  allCategories: CategoryType[];
+};
+
+const BreadCrumbs = ({ allCategories }: BreadCrumbsProps) => {
   const location = useLocation();
   const { classes } = breadCrumbsStyles();
   let currentLink = '';
