@@ -180,11 +180,6 @@ const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) =
             +
           </Button>
         </Flex>
-        {/* <Flex align="center" justify="center" style={{ padding: '0 24px 0 24px' }}>
-<Button type="submit" loading={isLoading} style={{ width: '180px', marginTop: '10px' }}>
-  Save Changes
-</Button>
-</Flex> */}
       </Paper>
     </Container>
   );

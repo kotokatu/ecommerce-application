@@ -49,10 +49,10 @@ const ProfileAddress = (props: Props) => {
     props.needUpdate();
   };
 
-  const updateAddress = async () => {
-    props.remove(address);
-    await userService.updateAdress(props.address.id, props.version);
-    props.needUpdate();
+  const updateAddress = async (version: number, address: FullAddressInfo, type: string) => {
+    //props.remove(address);
+    //await userService.updateAddress(version, address, type);
+    //props.needUpdate();
   };
 
   const addressform = useForm({
@@ -141,7 +141,16 @@ const ProfileAddress = (props: Props) => {
               type="button"
               onClick={async () => {
                 try {
-                  updateAddress(addressform.values);
+                  updateAddress(
+                    props.version,
+                    {
+                      ...addressform.values,
+                      id: address.id,
+                      name: address.name,
+                      key: address.key,
+                    },
+                    addressform.values.addressType,
+                  );
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
