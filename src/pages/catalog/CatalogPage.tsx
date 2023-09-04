@@ -71,12 +71,12 @@ const useStyles = createStyles((theme) => ({
       width: '390px',
       padding: '3rem 2rem 2rem',
       transition: 'left .5s ease 0s',
-    },
 
-    '&.active': {
-      left: '0',
-      height: '80%',
-      overflow: 'scroll',
+      '&.active': {
+        left: '0',
+        height: '80%',
+        overflow: 'scroll',
+      },
     },
   },
 }));
