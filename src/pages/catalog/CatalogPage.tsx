@@ -87,7 +87,6 @@ type CatalogPageProps = {
 };
 
 const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
-  const [categories, setCategories] = useState<string[]>([]);
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
@@ -105,7 +104,6 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     const getProducts = async () => {
       try {
         const queryParams: QueryArgs = {};
-        const searchQuery = searchParams.get('search');
         await categoryCache.get();
 
         if (category) {
@@ -126,9 +124,15 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
           queryParams['filter.facets'] = filters;
         }
 
+        const searchQuery = searchParams.get('search');
         if (searchQuery !== null) {
           queryParams['text.en-US'] = `${searchQuery}`;
           queryParams.fuzzy = true;
+        }
+
+        const sortOrder = searchParams.get('sort');
+        if (sortOrder) {
+          queryParams.sort = sortOrder;
         }
 
         const res = await storeService.getProducts(queryParams);
@@ -136,7 +140,6 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
         if (!res) return;
 
         setResources(res);
-        setCategories(res.categories);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
       }
@@ -145,23 +148,19 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     getProducts();
   }, [category, subcategory, searchParams, filters]);
 
-  const allCategories = categoryCache.categories.filter((cachedCategory) => {
-    return categories.includes(cachedCategory.id);
-  });
-
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
   return resources ? (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={allCategories} />
+      <HeaderCatalog allCategories={categoryCache.categories} />
       <Button variant="outline" size="md" className={classes.button} onClick={toggleScroll}>
         Filters
       </Button>
       <div className={classes.content}>
         <NavbarCatalog
           className={isOpenNavbar ? classes.navbar + ' active' : classes.navbar}
-          categories={allCategories}
+          categories={categoryCache.categories}
           brands={resources.brands}
           sizes={resources.sizes}
           colors={resources.colors}
