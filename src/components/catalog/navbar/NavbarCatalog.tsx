@@ -14,6 +14,10 @@ const navbarCatalogStyles = createStyles((theme) => ({
     flexDirection: 'column',
     gap: '10px',
     padding: '0 1rem 0 0',
+
+    [theme.fn.smallerThan('md')]: {
+      padding: 0,
+    },
   },
 
   button: {
@@ -40,8 +44,7 @@ type NavbarCatalogProps = {
   minProductPrice: number;
   maxProductPrice: number;
   setFilters: React.Dispatch<React.SetStateAction<string[]>>;
-  isOpenNavbar: boolean;
-  setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleScroll: () => void;
 };
 
 const NavbarCatalog = ({
@@ -53,8 +56,7 @@ const NavbarCatalog = ({
   minProductPrice,
   maxProductPrice,
   setFilters,
-  isOpenNavbar,
-  setIsOpenNavbar,
+  toggleScroll,
 }: NavbarCatalogProps) => {
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -83,7 +85,6 @@ const NavbarCatalog = ({
       selectedColors.length ? `${FilterParams.color}: "${selectedColors.join('", "')}"` : '',
       minPrice ? `${FilterParams.price}: range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})` : '',
     ]);
-    setIsOpenNavbar(!isOpenNavbar);
   }
 
   function clearFilterProducts() {
@@ -95,7 +96,6 @@ const NavbarCatalog = ({
     setSelectedSizes([]);
     setSelectedColors([]);
     setFilters([]);
-    setIsOpenNavbar(!isOpenNavbar);
   }
 
   const getParentCategories = () => {
@@ -150,10 +150,23 @@ const NavbarCatalog = ({
         />
       </div>
       <div className={classes.buttons}>
-        <Button fullWidth onClick={getFilterProducts}>
+        <Button
+          fullWidth
+          onClick={() => {
+            getFilterProducts();
+            toggleScroll();
+          }}
+        >
           Show
         </Button>
-        <Button fullWidth variant="outline" onClick={clearFilterProducts}>
+        <Button
+          fullWidth
+          variant="outline"
+          onClick={() => {
+            clearFilterProducts();
+            toggleScroll();
+          }}
+        >
           Clear all
         </Button>
       </div>
