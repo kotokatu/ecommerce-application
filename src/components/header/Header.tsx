@@ -14,7 +14,7 @@ export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
 
   function toggleScroll() {
     if (wrapper) {
-      wrapper.style.overflow = isOpenBurger ? 'hidden' : 'unset';
+      wrapper.className = isOpenBurger ? 'wrapper lock' : 'wrapper';
     }
   }
 

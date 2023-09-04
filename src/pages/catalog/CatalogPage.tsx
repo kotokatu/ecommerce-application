@@ -97,7 +97,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     const wrapper = document.querySelector('.wrapper') as HTMLElement;
 
     setIsOpenNavbar(!isOpenNavbar);
-    wrapper.className = !isOpenNavbar ? 'wrapper hidden' : 'wrapper';
+    wrapper.className = !isOpenNavbar ? 'wrapper lock blackout' : 'wrapper';
   };
 
   useEffect(() => {

@@ -23,7 +23,7 @@ const Layout = ({ isOpenBurger, closeBurger, toggleBurger, isOpenNavbar, setIsOp
 
     if (e.target === wrapper) {
       setIsOpenNavbar(!isOpenNavbar);
-      wrapper.className = !isOpenNavbar ? 'wrapper hidden' : 'wrapper';
+      wrapper.className = !isOpenNavbar ? 'wrapper lock blackout' : 'wrapper';
     }
   }
 

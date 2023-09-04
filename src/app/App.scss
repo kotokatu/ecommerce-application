@@ -26,9 +26,11 @@ html::-webkit-scrollbar-thumb {
   position: relative;
 
   @media (max-width: 945px) {
-    &.hidden {
+    &.lock {
       overflow: hidden;
+    }
 
+    &.blackout {
       &::before {
         content: '';
         position: absolute;
