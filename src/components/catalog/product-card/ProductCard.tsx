@@ -2,13 +2,12 @@ import { createStyles, Image, Card, Text, Group, Button, getStylesRef, rem } fro
 import { Carousel } from '@mantine/carousel';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import { Link } from 'react-router-dom';
+import parse from 'html-react-parser';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   card: {
     width: '300px',
     height: 'fit-content',
-    cursor: 'pointer',
-    padding: '0 1rem',
 
     '&:hover': {
       boxShadow: '1px 0px 30px -3px rgba(34, 60, 80, 0.21)',
@@ -27,6 +26,11 @@ const useStyles = createStyles((theme) => ({
     ref: getStylesRef('carouselControls'),
     transition: 'opacity 150ms ease',
     opacity: 0,
+    '& [data-inactive]': {
+      opacity: 0,
+      visibility: 'hidden',
+      cursor: 'default',
+    },
   },
 
   carouselIndicator: {
@@ -42,16 +46,37 @@ const useStyles = createStyles((theme) => ({
   cardinfo: {
     paddingTop: '10px',
     display: 'flex',
-    flexDirection: 'column',
-    height: '150px',
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    height: '170px',
+    gap: '16px',
   },
 
   brand: {
+    display: '-webkit-box',
     width: '100%',
-    fontSize: '13px',
+    fontSize: '12px',
+    lineHeight: '1.1',
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    margin: 0,
+
+    '& p:first-of-type': {
+      margin: 0,
+    },
+
+    '& :not(p:first-of-type)': {
+      display: 'none',
+    },
   },
 
   title: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    fontSize: '15px',
+    fontWeight: 600,
+    lineHeight: '1.2',
     width: '100%',
     flex: '1 1 auto',
   },
@@ -72,10 +97,9 @@ const useStyles = createStyles((theme) => ({
 
 type ProductCardProps = {
   product: ProductProjection;
-  title: string;
 };
 
-const ProductCard = ({ product, title }: ProductCardProps) => {
+const ProductCard = ({ product }: ProductCardProps) => {
   const { classes } = useStyles();
 
   const slides = product.masterVariant.images?.map((image) => (
@@ -86,7 +110,7 @@ const ProductCard = ({ product, title }: ProductCardProps) => {
 
   return (
     <>
-      <Card radius="md" withBorder p="xs" className={classes.card}>
+      <Card radius="md" withBorder className={classes.card}>
         <Card.Section>
           <Carousel
             withIndicators
@@ -102,20 +126,30 @@ const ProductCard = ({ product, title }: ProductCardProps) => {
         </Card.Section>
 
         <Group className={classes.cardinfo}>
-          <Text className={classes.brand}>
-            {product.masterVariant.attributes?.map((attribute) =>
-              attribute.name === 'brand' ? attribute.value.label : '',
-            )}
+          <Group className={classes.title} spacing={0}>
+            <Text ff="Montserrat" size="14px" mb="5px" lh={1} fw={400}>{`${product.masterVariant.attributes?.find(
+              (attribute) => attribute.name === 'brand',
+            )?.value}`}</Text>
+            <Text ff="Montserrat" lh={1} fw={600}>{`${product.name['en-US']}`}</Text>
+          </Group>
+
+          <Text className={classes.brand} ff="Montserrat">
+            {product.description?.['en-US'] && parse(product.description['en-US'])}
           </Text>
 
-          <Text className={classes.title}>{title}</Text>
-
-          <div className={classes.footer}>
-            <Text>{`${product.masterVariant.prices?.map((price) => price.value.centAmount / 100)} €`}</Text>
+          <Group className={classes.footer}>
+            <Group spacing="xs">
+              {product.masterVariant.prices?.[0].discounted && (
+                <Text color="red">{`${product.masterVariant.prices[0].discounted.value.centAmount / 100} €`}</Text>
+              )}
+              <Text strikethrough={!!product.masterVariant.prices?.[0].discounted}>
+                {`${product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100} €`}
+              </Text>
+            </Group>
             <Button className={classes.button} radius="md" component={Link} to={`/catalog/product/${product.id}`}>
               View
             </Button>
-          </div>
+          </Group>
         </Group>
       </Card>
     </>

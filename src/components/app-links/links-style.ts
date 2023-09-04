@@ -2,7 +2,6 @@ import { createStyles, rem } from '@mantine/core';
 
 export const linksStyle = createStyles((theme) => ({
   link: {
-    fontFamily: 'Arial',
     fontSize: 'initial',
     display: 'block',
     lineHeight: 1,
@@ -25,19 +24,6 @@ export const linksStyle = createStyles((theme) => ({
     '&, &:hover': {
       backgroundColor: theme.fn.variant({ variant: 'dark', color: theme.primaryColor }).background,
       color: theme.fn.variant({ variant: 'dark', color: theme.primaryColor }).color,
-    },
-  },
-
-  mainLink: {
-    fontFamily: 'Arial',
-    display: 'block',
-    width: '110px',
-    lineHeight: 1,
-    padding: `${rem(8)} ${rem(12)}`,
-    textDecoration: 'none',
-
-    '&:hover': {
-      backgroundColor: theme.colors.gray[2],
     },
   },
 }));

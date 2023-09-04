@@ -10,8 +10,10 @@ import {
 } from '@commercetools/sdk-client-v2';
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { tokenCache } from './TokenCache';
+import { TokenCacheHandler } from './TokenCache';
+import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 
+export const tokenCache = new TokenCacheHandler();
 class CtpClient {
   private projectKey = process.env.REACT_APP_PROJECT_KEY as string;
   private authURL = process.env.REACT_APP_AUTH_URL as string;
@@ -31,13 +33,11 @@ class CtpClient {
       return new ClientBuilder()
         .withPasswordFlow(this.getUserAuthOptions())
         .withHttpMiddleware(this.getHttpMiddlewareOptions())
-        .withLoggerMiddleware()
         .build();
     } else if (tokenCache.getRefreshToken()) {
       return new ClientBuilder()
         .withRefreshTokenFlow(this.getRefreshTokenOptions())
         .withHttpMiddleware(this.getHttpMiddlewareOptions())
-        .withLoggerMiddleware()
         .build();
     }
     return new ClientBuilder()
@@ -72,18 +72,18 @@ class CtpClient {
     };
   }
 
-  getRefreshTokenOptions(): RefreshAuthMiddlewareOptions {
+  private getRefreshTokenOptions(): RefreshAuthMiddlewareOptions {
     return {
       host: this.apiURL,
       projectKey: this.projectKey,
       credentials: this.credentials,
-      refreshToken: 'bXvTyxc5yuebdvwTwyXn==',
+      refreshToken: tokenCache.getRefreshToken() || '',
       tokenCache: tokenCache,
       fetch,
     };
   }
 
-  public getApiRoot() {
+  public getApiRoot(): ByProjectKeyRequestBuilder {
     return createApiBuilderFromCtpClient(this.getClient()).withProjectKey({ projectKey: this.projectKey });
   }
 }

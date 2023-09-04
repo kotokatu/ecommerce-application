@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Category, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { createStyles } from '@mantine/core';
+import { createStyles, Center, Loader, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { productService } from '../../services/ProductService/ProductService';
+import { storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
+import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
+import { notificationError } from '../../components/ui/notification';
+import { CategoryCache } from '../../services/api/CategoryCache';
 
-export type CategoryType = {
-  name: string;
-  id: string;
-};
+export const categoryCache = new CategoryCache();
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
+    padding: '0 1rem',
+
+    [theme.fn.smallerThan('md')]: {
+      alignItems: 'center',
+    },
   },
 
   content: {
@@ -35,113 +39,129 @@ const useStyles = createStyles(() => ({
   center: {
     marginTop: '100px',
   },
+
+  button: {
+    display: 'none',
+
+    [theme.fn.smallerThan('md')]: {
+      display: 'block',
+      margin: '1rem 0',
+      width: '220px',
+      position: 'relative',
+    },
+  },
+
+  navbar: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    marginRight: '10px',
+    borderRight: '0.0625rem solid #e9ecef',
+    width: '260px',
+    minWidth: '260px',
+
+    [theme.fn.smallerThan('md')]: {
+      position: 'absolute',
+      top: 80,
+      left: '-100%',
+      zIndex: 1,
+      backgroundColor: 'white',
+      minHeight: '100vh',
+      width: '100%',
+      padding: '2rem',
+      overflow: 'hidden',
+      transition: 'left .5s ease 0s',
+    },
+
+    '&.active': {
+      left: '0',
+    },
+  },
 }));
 
-const CatalogPage = () => {
-  const [products, setProducts] = useState<ProductProjection[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
+  const [resources, setResources] = useState<GetProductsReturnType>();
+  const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
+  const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(true);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
 
   useEffect(() => {
-    const getCategories = async () => {
-      const categories = (await productService.getCategories()) as Category[];
-      setCategories(categories);
-    };
-
     const getProducts = async () => {
-      let params = {};
-      const searchQuery = searchParams.get('search');
+      try {
+        const queryParams: QueryArgs = {};
+        await categoryCache.get();
 
-      if (category) {
-        params = {
-          filter: `categories.id: "${subcategory || category}"`,
-        };
+        if (category) {
+          queryParams.filter = [
+            `categories.id: "${
+              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+            }"`,
+          ];
+          queryParams['filter.facets'] = [
+            `categories.id: "${
+              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+            }"`,
+          ];
+        }
+
+        if (filters.length) {
+          queryParams.filter = filters;
+          queryParams['filter.facets'] = filters;
+        }
+
+        const searchQuery = searchParams.get('search');
+        if (searchQuery !== null) {
+          queryParams['text.en-US'] = `${searchQuery}`;
+          queryParams.fuzzy = true;
+        }
+
+        const sortOrder = searchParams.get('sort');
+        if (sortOrder) {
+          queryParams.sort = sortOrder;
+        }
+
+        const res = await storeService.getProducts(queryParams);
+
+        if (!res) return;
+
+        setResources(res);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
       }
-
-      if (searchQuery) {
-        params = { 'text.en-US': `${searchQuery}` };
-      }
-
-      const products = (await productService.searchProducts(params)) as ProductProjection[];
-      setProducts(products);
     };
 
     getProducts();
-    getCategories();
-  }, [category, subcategory, searchParams]);
+  }, [category, subcategory, searchParams, filters]);
 
-  const brands: string[] = [];
-  const sizes: string[] = [];
-  const colors: string[] = [];
-  const prices: number[] = [0, 10000];
-  const currentCategories: CategoryType[] = [];
-  const allCategories: CategoryType[] = [];
+  const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
+  const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
-  categories.forEach((categoryFromAPI) => {
-    allCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
-  });
-
-  categories.forEach((categoryFromAPI) => {
-    if (!categoryFromAPI.parent && !category) {
-      currentCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
-    }
-    if (categoryFromAPI.parent && category) {
-      if (categoryFromAPI.parent.obj?.id === category) {
-        currentCategories.push({ name: categoryFromAPI.name['en-US'], id: categoryFromAPI.id });
-      }
-    }
-  });
-
-  function fillAtributeArrays(array: ProductVariant) {
-    array.attributes?.forEach((attribute) => {
-      switch (attribute.name) {
-        case 'brand':
-          if (!brands.includes(attribute.value.label)) brands.push(attribute.value.label);
-          break;
-        case 'size':
-          if (!sizes.includes(attribute.value.label)) sizes.push(attribute.value.label);
-          break;
-        case 'color':
-          if (!colors.includes(attribute.value.label)) colors.push(attribute.value.label);
-          break;
-      }
-    });
-  }
-
-  products.forEach((product) => {
-    fillAtributeArrays(product.masterVariant);
-    product.variants.forEach((product) => {
-      fillAtributeArrays(product);
-    });
-  });
-
-  products.forEach((product) => {
-    product.masterVariant.prices?.forEach((price) => {
-      if (!prices.includes(price.value.centAmount / 100)) prices.push(price.value.centAmount / 100);
-    });
-  });
-
-  const minProductPrice = Math.min(...prices);
-  const maxProductPrice = Math.max(...prices);
-
-  return (
+  return resources ? (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={allCategories} setProducts={setProducts} />
+      <HeaderCatalog allCategories={categoryCache.categories} />
+      <Button variant="outline" size="md" className={classes.button} onClick={() => setIsOpenNavbar(!isOpenNavbar)}>
+        Filters
+      </Button>
       <div className={classes.content}>
         <NavbarCatalog
-          categories={currentCategories}
-          brands={brands}
-          sizes={sizes}
-          colors={colors}
-          minProductPrice={minProductPrice}
-          maxProductPrice={maxProductPrice}
+          className={isOpenNavbar && !isOpenBurger ? classes.navbar + ' active' : classes.navbar}
+          categories={categoryCache.categories}
+          brands={resources.brands}
+          sizes={resources.sizes}
+          colors={resources.colors}
+          minProductPrice={minProductPrice || 0}
+          maxProductPrice={maxProductPrice || 10000}
+          setFilters={setFilters}
+          isOpenNavbar={isOpenNavbar}
+          setIsOpenNavbar={setIsOpenNavbar}
         />
         <div className={classes.items}>
-          {products.length ? (
-            products.map((product) => {
-              return <ProductCard key={product.id} product={product} title={product.name['en-US']} />;
+          {resources.products.length ? (
+            resources.products.map((product) => {
+              return <ProductCard key={product.id} product={product} />;
             })
           ) : (
             <h2 className={classes.center}>Product not found</h2>
@@ -149,6 +169,10 @@ const CatalogPage = () => {
         </div>
       </div>
     </div>
+  ) : (
+    <Center h="100%">
+      <Loader variant="bars" size="xl" display="block" mx="auto" />
+    </Center>
   );
 };
 

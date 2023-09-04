@@ -17,7 +17,17 @@ export const dropdownStyles = createStyles((theme) => ({
 
   container: {
     maxHeight: '120px',
-    overflow: 'scroll',
+    overflowY: 'auto',
+    scrollbarWidth: 'thin',
+
+    '&::-webkit-scrollbar': {
+      width: '4px',
+      height: 0,
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#e9ecef',
+    },
   },
 
   item: {
@@ -35,6 +45,10 @@ export const dropdownStyles = createStyles((theme) => ({
       backgroundColor: theme.colors.gray[0],
       color: theme.black,
     },
+  },
+
+  active: {
+    backgroundColor: theme.colors.gray[0],
   },
 
   pricedropdown: {

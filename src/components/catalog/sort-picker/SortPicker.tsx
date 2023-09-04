@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { createStyles, rem, Select } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
@@ -8,7 +9,6 @@ const useStyles = createStyles((theme) => ({
 
   label: {
     position: 'absolute',
-    zIndex: 2,
     top: rem(-21),
     fontSize: theme.fontSizes.xs,
     fontWeight: 500,
@@ -28,17 +28,44 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+const sortData = [
+  {
+    value: 'price asc',
+    label: 'Price: low to high',
+  },
+  {
+    value: 'price desc',
+    label: 'Price: high to low',
+  },
+  {
+    value: 'name.en-us asc',
+    label: 'Name: alphabetically',
+  },
+];
+
 const SortPicker = () => {
   const { classes } = useStyles();
-  const [value, setValue] = useState<string | null>(null);
+  const [sortValue, setSortValue] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const sortValue = searchParams.get('sort');
+    setSortValue(sortValue);
+  }, [searchParams]);
 
   return (
     <div className={classes.container}>
-      {value ? <span className={classes.label}>Sort by</span> : null}
+      {sortValue ? <span className={classes.label}>Sort by</span> : null}
       <Select
         placeholder="Sort by"
-        data={['Price: high to low', 'Price: low to high', 'Name: alphabetically']}
-        onChange={setValue}
+        data={sortData}
+        value={sortValue}
+        onChange={(value: string) => {
+          setSearchParams(() => {
+            searchParams.set('sort', value);
+            return searchParams;
+          });
+        }}
         className={classes.item}
       />
     </div>

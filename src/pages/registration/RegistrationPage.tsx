@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 import {
   TextInput,
   Checkbox,
@@ -30,6 +30,7 @@ const countryData = [
 const useStyles = createStyles((theme) => ({
   container: {
     width: '450px',
+    paddingTop: theme.spacing.md,
   },
   title: {
     fontWeight: 800,
@@ -122,7 +123,7 @@ const RegistrationPage = () => {
         onSubmit={form.onSubmit(async (values) => {
           setIsLoading(true);
           try {
-            await userService.signup(values);
+            await storeService.signupUser(values);
             setUserLoggedIn(true);
             notificationSuccess('Account was succesfully created');
             navigate('/', { replace: true });

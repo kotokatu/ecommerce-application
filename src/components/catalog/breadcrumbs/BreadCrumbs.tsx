@@ -1,12 +1,16 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CategoryType } from '../../../pages/catalog/CatalogPage';
+import { CategoryType } from '../../../services/api/CategoryCache';
 import { createStyles } from '@mantine/core';
 
-const breadCrumbsStyles = createStyles(() => ({
+const breadCrumbsStyles = createStyles((theme) => ({
   links: {
     display: 'flex',
     gap: '10px',
     paddingBottom: '10px',
+
+    [theme.fn.smallerThan('md')]: {
+      padding: 0,
+    },
   },
 
   link: {
@@ -39,7 +43,11 @@ const breadCrumbsStyles = createStyles(() => ({
   },
 }));
 
-const BreadCrumbs = ({ allCategories }: { allCategories: CategoryType[] }) => {
+type BreadCrumbsProps = {
+  allCategories: CategoryType[];
+};
+
+const BreadCrumbs = ({ allCategories }: BreadCrumbsProps) => {
   const location = useLocation();
   const { classes } = breadCrumbsStyles();
   let currentLink = '';
@@ -52,7 +60,7 @@ const BreadCrumbs = ({ allCategories }: { allCategories: CategoryType[] }) => {
 
       return (
         <Link key={crumb} className={classes.link} to={currentLink}>
-          {allCategories.find((item) => item.id === crumb)?.name || 'Catalog'}
+          {allCategories.find((item) => item.name === crumb)?.name || 'Catalog'}
         </Link>
       );
     });

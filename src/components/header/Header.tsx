@@ -37,7 +37,7 @@ export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
           <HeaderLinks />
         </Group>
 
-        <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
+        <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="md" />
 
         <Transition
           transition="slide-left"

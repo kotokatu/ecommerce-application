@@ -18,14 +18,12 @@ import {
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
-import { ErrorResponse, ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
-import { productService } from '../../services/ProductService/ProductService';
-import { ErrorCodes } from '../../services/api/handleErrorResponse';
-import { getErrorMessage } from '../../services/api/handleErrorResponse';
+import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
+import { storeService } from '../../services/StoreService/StoreService';
+import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
 import parse from 'html-react-parser';
 import './detailed-product-page.scss';
-import { ClientResponse } from '@commercetools/sdk-client-v2';
 
 const carouselStyles = createStyles((theme) => ({
   root: {
@@ -78,12 +76,16 @@ const DetailedProductPage = (): JSX.Element => {
   const { classes } = carouselStyles();
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
+  const [initialSlide, setInitialSlide] = useState(0);
 
   const slides = (product: ProductProjection): JSX.Element[] | null => {
     if (product.masterVariant.images) {
       return product.masterVariant.images.map((image, ind) => (
         <Carousel.Slide
-          onClick={() => !opened && setOpened(true)}
+          onClick={() => {
+            !opened && setOpened(true);
+            setInitialSlide(ind);
+          }}
           key={'slide' + ind}
           sx={{ backgroundImage: `url(${image.url})` }}
         ></Carousel.Slide>
@@ -95,19 +97,19 @@ const DetailedProductPage = (): JSX.Element => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await productService.getProduct(productID as string);
-        if (data) setProduct(data);
+        const data = await storeService.getProduct(productID as string);
+        setProduct(data);
       } catch (err) {
-        if ((err as ClientResponse<ErrorResponse>).statusCode === ErrorCodes.NotFound) {
+        if (err && typeof err === 'object' && 'statusCode' in err && err.statusCode === ErrorCodes.NotFound) {
           navigate('/*', { replace: true });
-        } else notificationError(getErrorMessage(err as ClientResponse<ErrorResponse> | Error));
+        } else notificationError(getErrorMessage(err));
       }
     };
     fetchData();
   }, [productID, navigate]);
 
   return (
-    <Container w="100%" h="100%" my="md" px={0} size="lg">
+    <Container w="100%" h="100%" my="md" px="1rem" size="lg">
       {product ? (
         <>
           <SimpleGrid cols={2} spacing={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
@@ -118,7 +120,7 @@ const DetailedProductPage = (): JSX.Element => {
               <Grid.Col>
                 <Paper>
                   <Title order={4}>
-                    {product.masterVariant.attributes?.find((attribute) => attribute.name === 'brand')?.value.label}
+                    {product.masterVariant.attributes?.find((attribute) => attribute.name === 'brand')?.value}
                   </Title>
                   <Title order={6} ff="Montserrat">
                     {product.name['en-US']}
@@ -147,7 +149,12 @@ const DetailedProductPage = (): JSX.Element => {
               </Grid.Col>
             </Grid>
           </SimpleGrid>
-          <ModalCarousel slides={slides(product)} opened={opened} setOpened={setOpened}></ModalCarousel>
+          <ModalCarousel
+            slides={slides(product)}
+            opened={opened}
+            setOpened={setOpened}
+            initialSlide={initialSlide}
+          ></ModalCarousel>
         </>
       ) : (
         <Center h="100%">
