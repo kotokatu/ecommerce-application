@@ -81,7 +81,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
-  const [categories, setCategories] = useState<string[]>([]);
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
@@ -129,7 +128,6 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
         if (!res) return;
 
         setResources(res);
-        setCategories(res.categories);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
       }
@@ -138,23 +136,19 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
     getProducts();
   }, [category, subcategory, searchParams, filters]);
 
-  const allCategories = categoryCache.categories.filter((cachedCategory) => {
-    return categories.includes(cachedCategory.id);
-  });
-
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
   return resources ? (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={allCategories} />
+      <HeaderCatalog allCategories={categoryCache.categories} />
       <Button variant="outline" size="md" className={classes.button} onClick={() => setIsOpenNavbar(!isOpenNavbar)}>
         Filters
       </Button>
       <div className={classes.content}>
         <NavbarCatalog
           className={isOpenNavbar && !isOpenBurger ? classes.navbar + ' active' : classes.navbar}
-          categories={allCategories}
+          categories={categoryCache.categories}
           brands={resources.brands}
           sizes={resources.sizes}
           colors={resources.colors}
