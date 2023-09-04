@@ -64,7 +64,7 @@ export const formStyles = createStyles((theme) => ({
 }));
 
 const ProfilePage = () => {
-  const [userData, setProfile] = useState<UserProfile>(defaultData);
+  const [profile, setProfile] = useState<UserProfile>(defaultData);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
   const { classes } = formStyles();
@@ -87,7 +87,7 @@ const ProfilePage = () => {
         <Title className={classes.title} order={1} align="center" mb={20}>
           Your Profile
         </Title>
-        <Profile {...userData} />
+        <Profile {...profile} />
         <Text color="dimmed" size="sm" align="center" pt={5}>
           Do you want to edit Profile?
         </Text>
@@ -105,7 +105,7 @@ const ProfilePage = () => {
       <Title className={classes.title} order={1} align="center" mb={20}>
         Your Profile
       </Title>
-      <ProfileEdit userData={userData} updatePage={isNeedToUpdate} />
+      <ProfileEdit profile={profile} updatePage={isNeedToUpdate} />
       <Flex align="center" justify="center" mt={15}>
         <Button style={{ width: '180px' }} mt={5} onClick={() => setIsEditMode(false)} component={Link} to="/profile">
           Go to profile

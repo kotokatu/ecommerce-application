@@ -1,7 +1,7 @@
 import { Paper, Text, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { UserProfile, FullAddressInfo } from '../../../utils/types/serviceTypes';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { emailRegex, onlyLettersRegex } from '../../../utils/constants/validationRegex';
@@ -23,12 +23,17 @@ export const newAddress: FullAddressInfo = {
   key: 999,
 };
 
-const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) => {
-  const { userData, updatePage } = props;
+const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) => {
+  const { profile, updatePage } = props;
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [addresses, setAddresses] = useState([...userData.addresses]);
+  const [addresses, setAddresses] = useState([...profile.addresses]);
+  const [userData, setUserData] = useState({ ...profile });
+
+  useEffect(() => {
+    setUserData({ ...profile });
+  }, [profile]);
 
   const addNewAddress = () => {
     newAddress.key = Math.floor(Math.random() * 999999);

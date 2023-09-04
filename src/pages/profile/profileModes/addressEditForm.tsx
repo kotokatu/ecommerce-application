@@ -30,8 +30,8 @@ const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
-  const isNewAddress = address.id === '';
   const [checked, setChecked] = useState(props.address.isDefault);
+  const isNewAddress = address.id === '';
 
   const removeAddress = async () => {
     props.remove(address);
@@ -71,7 +71,7 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           try {
             await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
-            notificationSuccess('Address was succesfully updated');
+            notificationSuccess('Address was succesfully saved');
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
           } finally {
