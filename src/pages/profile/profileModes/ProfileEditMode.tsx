@@ -1,5 +1,5 @@
 import { Paper, Text, createStyles, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
-import { userService } from '../../../services/UserService/UserService';
+import { storeService } from '../../../services/StoreService/StoreService';
 import { UserProfile, FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
@@ -96,7 +96,7 @@ const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) =
                 if (!opened) {
                   setIsLoading(true);
                   try {
-                    await userService.updateCurrentCustomer(values, userData.version);
+                    await storeService.updateCurrentCustomer(values, userData.version);
                     notificationSuccess('Account was succesfully updated');
                   } catch (err) {
                     if (err instanceof Error) notificationError(err.message);

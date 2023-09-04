@@ -1,5 +1,5 @@
 import { FullAddressInfo } from '../types/serviceTypes';
-import { AddressUpdated } from '../../services/UserService/UserService';
+import { AddressUpdated } from '../../services/StoreService/StoreService';
 import { Customer, Address } from '@commercetools/platform-sdk';
 
 export const createAddress = (userData: Customer, addressData: Address): FullAddressInfo => {

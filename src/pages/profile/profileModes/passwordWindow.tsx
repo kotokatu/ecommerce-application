@@ -1,5 +1,5 @@
 import { Container, Button, PasswordInput } from '@mantine/core';
-import { userService } from '../../../services/UserService/UserService';
+import { storeService } from '../../../services/StoreService/StoreService';
 import { useForm } from '@mantine/form';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { passwordRegex } from '../../../utils/constants/validationRegex';
@@ -39,7 +39,7 @@ const ProfileModal = (props: { userVersion: number; userEmail: string }) => {
           if (values.repeatNewPassword === values.newPassword) {
             setIsLoading(true);
             try {
-              await userService.changePassword({ version, ...values }, props.userEmail);
+              await storeService.changePassword({ version, ...values }, props.userEmail);
               notificationSuccess('Account was succesfully updated');
               window.location.reload();
             } catch (err) {

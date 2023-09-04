@@ -1,5 +1,5 @@
 import { createStyles, Container, Title, Button, Text, Flex } from '@mantine/core';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 import { UserProfile } from '../../utils/types/serviceTypes';
 import { useEffect, useState } from 'react';
 import ProfileEdit from './profileModes/ProfileEditMode';
@@ -62,7 +62,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const profile = async () => {
-      const userData = (await userService.getProfile()) as UserProfile;
+      const userData = (await storeService.getUserProfile()) as UserProfile;
       setProfile(userData);
     };
     profile();

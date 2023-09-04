@@ -1,10 +1,33 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { CustomerDraft } from '@commercetools/platform-sdk';
+import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, ProductType, TermFacetResult } from '@commercetools/platform-sdk';
 import { tokenCache } from '../api/BuildClient';
+import { ClientResponse } from '@commercetools/sdk-client-v2';
+import { UserProfile } from '../../utils/types/serviceTypes';
+import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
+
+interface CustomerUpdatePersonalDraft {
+  email: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+}
+
+export type AddressUpdated = {
+  country: string;
+  city: string;
+  streetName: string;
+  postalCode: string;
+  id: string;
+};
+
+const addressType = {
+  shipping: 'Shipping',
+  billing: 'Billing',
+};
 
 export const FilterParams = {
   category: 'categories.id',
@@ -76,6 +99,22 @@ class StoreService {
     return customerDraft;
   }
 
+  public createCustomerProfile(userData: Customer): UserProfile {
+    const addresses = userData.addresses.map((address) => createAddress(userData, address));
+    const customerProfile: UserProfile = {
+      version: userData.version,
+      email: userData.email,
+      password: userData.password || 'no data',
+      firstName: userData.firstName || 'no data',
+      lastName: userData.lastName || 'no data',
+      addresses: addresses || [],
+      dateOfBirth: userData.dateOfBirth || 'no data',
+      shippingAddress: handleAddressArray(addresses, 'Shipping'),
+      billingAddress: handleAddressArray(addresses, 'Billing'),
+    };
+    return customerProfile;
+  }
+
   public async signupUser(userData: UserData): Promise<string | void> {
     try {
       await this.apiRoot
@@ -116,7 +155,193 @@ class StoreService {
 
   public async getUserProfile() {
     try {
-      await this.apiRoot.me().get().execute();
+      const customerData = await this.apiRoot.me().get().execute();
+      return this.createCustomerProfile(customerData.body);
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async changePassword(passwordsData: MyCustomerChangePassword, email: string): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .password()
+        .post({
+          body: { ...passwordsData },
+        })
+        .execute();
+      this.logoutUser();
+      await this.loginUser(email, passwordsData.newPassword);
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async updateCurrentCustomer(
+    customerUpdateDraft: CustomerUpdatePersonalDraft,
+    version: number,
+  ): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'setFirstName',
+                firstName: customerUpdateDraft.firstName,
+              },
+              {
+                action: 'setLastName',
+                lastName: customerUpdateDraft.lastName,
+              },
+              {
+                action: 'setDateOfBirth',
+                dateOfBirth: formatDate(customerUpdateDraft.dateOfBirth as Date),
+              },
+              {
+                action: 'changeEmail',
+                email: customerUpdateDraft.email,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async addAdress(address: Address, version: number, type: string, isDefault: boolean): Promise<string | void> {
+    try {
+      const addAddress = await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addAddress',
+                address,
+              },
+            ],
+          },
+        })
+        .execute();
+      const newAddress = addAddress.body.addresses[addAddress.body.addresses.length - 1];
+      const newVersion = addAddress.body.version;
+      if (type === addressType.shipping) {
+        this.addShippingAddress(newAddress.id, newVersion, isDefault);
+      } else {
+        this.addBillingAddress(newAddress.id, newVersion, isDefault);
+      }
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async removeAdress(addressId: string, version: number): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'removeAddress',
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  private async addShippingAddress(
+    addressId: string | undefined,
+    version: number,
+    isDefault: boolean,
+  ): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addShippingAddressId',
+                addressId,
+              },
+              {
+                action: 'setDefaultShippingAddress',
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  private async addBillingAddress(
+    addressId: string | undefined,
+    version: number,
+    isDefault: boolean,
+  ): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addBillingAddressId',
+                addressId,
+              },
+              {
+                action: 'setDefaultBillingAddress',
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async updateAdress(version: number, address: Address, addressId: string): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'changeAddress',
+                address: {
+                  country: address.country,
+                  streetName: address.streetName,
+                  city: address.city,
+                },
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }

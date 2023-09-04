@@ -2,7 +2,7 @@ import { Paper, Text, createStyles, Checkbox, TextInput, Select, Button, Flex } 
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
-import { userService } from '../../../services/UserService/UserService';
+import { storeService } from '../../../services/StoreService/StoreService';
 import { FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 
@@ -45,12 +45,12 @@ const ProfileAddress = (props: Props) => {
 
   const removeAddress = async () => {
     props.remove(address);
-    await userService.removeAdress(props.address.id, props.version);
+    await storeService.removeAdress(props.address.id, props.version);
     props.needUpdate();
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await userService.updateAdress(version, address, address.id);
+    await storeService.updateAdress(version, address, address.id);
     props.needUpdate();
   };
 
@@ -80,7 +80,7 @@ const ProfileAddress = (props: Props) => {
         onSubmit={addressform.onSubmit(async (values) => {
           setIsLoading(true);
           try {
-            await userService.addAdress(values, props.version, values.addressType, values.isDefault);
+            await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
             notificationSuccess('Address was succesfully updated');
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
@@ -146,6 +146,7 @@ const ProfileAddress = (props: Props) => {
                     name: address.name,
                     key: address.key,
                   });
+                  notificationSuccess('Address was succesfully updated');
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
