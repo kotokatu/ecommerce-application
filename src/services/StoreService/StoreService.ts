@@ -5,7 +5,6 @@ import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetool
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, ProductType, TermFacetResult } from '@commercetools/platform-sdk';
 import { tokenCache } from '../api/BuildClient';
-import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { UserProfile } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
 

@@ -1,4 +1,4 @@
-import { Paper, Text, createStyles, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
+import { Paper, Text, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { UserProfile, FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
