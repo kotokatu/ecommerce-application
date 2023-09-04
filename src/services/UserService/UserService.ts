@@ -295,7 +295,7 @@ class UserService {
     }
   }
 
-  private async setAddressAsDefault(addressId: string | undefined, version: number): Promise<string | void> {
+  public async updateAdress(version: number, address): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -304,8 +304,8 @@ class UserService {
             version,
             actions: [
               {
-                action: 'setDefaultBillingAddress',
-                addressId,
+                action: 'updateItemShippingAddress',
+                address,
               },
             ],
           },

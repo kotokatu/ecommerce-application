@@ -43,6 +43,18 @@ const ProfileAddress = (props: Props) => {
   const isNewAddress = address.id === '';
   const [checked, setChecked] = useState(props.address.isDefault);
 
+  const removeAddress = async () => {
+    props.remove(address);
+    await userService.removeAdress(props.address.id, props.version);
+    props.needUpdate();
+  };
+
+  const updateAddress = async () => {
+    props.remove(address);
+    await userService.updateAdress(props.address.id, props.version);
+    props.needUpdate();
+  };
+
   const addressform = useForm({
     initialValues: {
       country: address.country,
@@ -123,7 +135,18 @@ const ProfileAddress = (props: Props) => {
         />
         {!isNewAddress && (
           <Flex align="center" justify="space-around" m={20}>
-            <Button type="submit" style={{ width: '100px' }} loading={isLoading}>
+            <Button
+              style={{ width: '100px' }}
+              loading={isLoading}
+              type="button"
+              onClick={async () => {
+                try {
+                  updateAddress(addressform.values);
+                } catch (err) {
+                  if (err instanceof Error) notificationError(err.message);
+                }
+              }}
+            >
               Update
             </Button>
             <Button
@@ -131,9 +154,11 @@ const ProfileAddress = (props: Props) => {
               style={{ width: '100px' }}
               color="red"
               onClick={async () => {
-                props.remove(address);
-                await userService.removeAdress(props.address.id, props.version);
-                props.needUpdate();
+                try {
+                  removeAddress();
+                } catch (err) {
+                  if (err instanceof Error) notificationError(err.message);
+                }
               }}
             >
               Remove
@@ -150,9 +175,11 @@ const ProfileAddress = (props: Props) => {
               style={{ width: '100px' }}
               color="red"
               onClick={async () => {
-                props.remove(address);
-                await userService.removeAdress(props.address.id, props.version);
-                props.needUpdate();
+                try {
+                  removeAddress();
+                } catch (err) {
+                  if (err instanceof Error) notificationError(err.message);
+                }
               }}
             >
               Remove address
