@@ -80,7 +80,7 @@ const ProfileAddress = (props: Props) => {
           }
         })}
       >
-        <Text className={classes.smallTitle} align="center">
+        <Text className={classes.smallTitle} align="center" m={10}>
           {props.address.name} Address
         </Text>
         <Text className={classes.smallTitle} color="red" align="right">
@@ -130,7 +130,7 @@ const ProfileAddress = (props: Props) => {
               type="button"
               onClick={async () => {
                 try {
-                  updateAddresses(props.version, {
+                  await updateAddresses(props.version, {
                     ...addressform.values,
                     id: address.id,
                     name: address.name,
@@ -150,7 +150,7 @@ const ProfileAddress = (props: Props) => {
               color="red"
               onClick={async () => {
                 try {
-                  removeAddress();
+                  await removeAddress();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
@@ -171,7 +171,7 @@ const ProfileAddress = (props: Props) => {
               color="red"
               onClick={async () => {
                 try {
-                  removeAddress();
+                  await removeAddress();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }

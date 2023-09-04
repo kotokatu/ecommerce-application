@@ -61,7 +61,7 @@ const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) =
   return (
     <Container className={classes.container}>
       <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
-        <Text className={classes.smallTitle} align="left" m={20}>
+        <Text className={classes.smallTitle} align="left" m={10}>
           Personal information
         </Text>
         <Flex gap="md" justify="center" align="center" direction="column">

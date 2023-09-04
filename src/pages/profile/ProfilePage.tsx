@@ -21,7 +21,7 @@ export const defaultData: UserProfile = {
 export const formStyles = createStyles((theme) => ({
   container: {
     width: '80%',
-    [theme.fn.smallerThan('xs')]: {
+    [theme.fn.smallerThan('sm')]: {
       width: '95%',
     },
   },

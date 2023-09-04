@@ -1,6 +1,6 @@
 import { getFirstLetters } from '../../../utils/helpers/getFirstLetters';
 import { UserProfile } from '../../../utils/types/serviceTypes';
-import { Avatar, Col, Grid, Paper, Text, createStyles, Flex } from '@mantine/core';
+import { Avatar, Col, Grid, Paper, Text, Flex } from '@mantine/core';
 import ProfileDataAddress from './addressData';
 import { formStyles } from '../ProfilePage';
 
@@ -52,7 +52,7 @@ const ProfilePage = (userData: UserProfile) => {
       </Text>
       <Flex gap="sm" justify="center" align="start" direction="row" style={{ width: '100%' }}>
         <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-          <Text className={classes.smallTitle} align="center">
+          <Text className={classes.smallTitle} align="center" m={10}>
             Shipping Addresses
           </Text>
           {userData.shippingAddress.map((address, i) => (
@@ -60,7 +60,7 @@ const ProfilePage = (userData: UserProfile) => {
           ))}
         </Paper>
         <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-          <Text className={classes.smallTitle} align="center">
+          <Text className={classes.smallTitle} align="center" m={10}>
             Billing Addresses
           </Text>
           {userData.billingAddress.map((address, i) => (
