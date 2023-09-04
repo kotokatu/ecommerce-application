@@ -129,6 +129,7 @@ const ProfileAddress = (props: Props) => {
               loading={isLoading}
               type="button"
               onClick={async () => {
+                setIsLoading(true);
                 try {
                   await updateAddresses(props.version, {
                     ...addressform.values,
@@ -137,23 +138,29 @@ const ProfileAddress = (props: Props) => {
                     key: address.key,
                   });
                   notificationSuccess('Address was succesfully updated');
+                  props.needUpdate();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
+                setIsLoading(false);
               }}
             >
               Update
             </Button>
             <Button
+              loading={isLoading}
               type="button"
               style={{ width: '100px' }}
               color="red"
               onClick={async () => {
+                setIsLoading(true);
                 try {
                   await removeAddress();
+                  props.needUpdate();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
+                setIsLoading(false);
               }}
             >
               Remove
@@ -164,20 +171,6 @@ const ProfileAddress = (props: Props) => {
           <Flex align="center" justify="space-around" m={20}>
             <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading}>
               Save
-            </Button>
-            <Button
-              type="button"
-              style={{ width: '100px' }}
-              color="red"
-              onClick={async () => {
-                try {
-                  await removeAddress();
-                } catch (err) {
-                  if (err instanceof Error) notificationError(err.message);
-                }
-              }}
-            >
-              Remove address
             </Button>
           </Flex>
         )}
