@@ -116,7 +116,6 @@ class UserService {
         })
         .execute();
     } catch (err) {
-      console.log('не вышло');
       this.apiRoot = new CtpClient().getApiRoot();
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
@@ -295,7 +294,7 @@ class UserService {
     }
   }
 
-  public async updateAdress(version: number, address): Promise<string | void> {
+  public async updateAdress(version: number, address: Address, addressId: string): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -304,8 +303,13 @@ class UserService {
             version,
             actions: [
               {
-                action: 'updateItemShippingAddress',
-                address,
+                action: 'changeAddress',
+                address: {
+                  country: address.country,
+                  streetName: address.streetName,
+                  city: address.city,
+                },
+                addressId,
               },
             ],
           },

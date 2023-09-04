@@ -48,8 +48,6 @@ const formStyles = createStyles((theme) => ({
 const ProfilePage = (userData: UserProfile) => {
   const { classes } = formStyles();
   const avatarLetters = getFirstLetters(userData?.firstName, userData?.lastName);
-  console.log(userData.shippingAddress);
-  console.log(userData);
 
   return (
     <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>
