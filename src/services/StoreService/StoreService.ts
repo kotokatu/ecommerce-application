@@ -335,6 +335,7 @@ class StoreService {
                   country: address.country,
                   streetName: address.streetName,
                   city: address.city,
+                  postalCode: address.postalCode,
                 },
                 addressId,
               },
