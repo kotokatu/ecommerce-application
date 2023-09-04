@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Address } from '../../../services/UserService/UserService';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 import { userService } from '../../../services/UserService/UserService';
-import { UserAddress } from '../../../utils/types/serviceTypes';
+import { FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { newAddress } from './ProfileEditMode';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 
@@ -43,15 +43,15 @@ const countryData = [
 
 type Props = {
   key: number;
-  address: UserAddress;
+  address: FullAddressInfo;
   version: number;
-  remove: (address: UserAddress) => void;
+  remove: (address: FullAddressInfo) => void;
 };
 
 const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
-  const address: UserAddress = props.address;
+  const address: FullAddressInfo = props.address;
 
   const [checked, setChecked] = useState(props.address.isDefault);
 

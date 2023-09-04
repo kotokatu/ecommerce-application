@@ -68,16 +68,17 @@ class UserService {
   }
 
   public createCustomerProfile(userData: Customer): UserProfile {
+    const addresses = userData.addresses as AddressUpdated[];
     const customerProfile: UserProfile = {
       version: userData.version,
       email: userData.email,
       password: userData.password || 'no data',
       firstName: userData.firstName || 'no data',
       lastName: userData.lastName || 'no data',
-      addresses: userData.addresses.map((address) => createAddress(userData, 'Shipping')) || [],
+      addresses: addresses.map((address) => createAddress(userData, address)) || [],
       dateOfBirth: userData.dateOfBirth || 'no data',
-      shippingAddress: createAddress(userData, 'Shipping'),
-      billingAddress: createAddress(userData, 'Billing'),
+      shippingAddress: createAddress(userData, addresses[0]),
+      billingAddress: createAddress(userData, addresses[1]),
       shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
       billingAddressAsDefault: userData.defaultBillingAddressId ? true : false,
     };

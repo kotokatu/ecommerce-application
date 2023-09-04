@@ -1,6 +1,6 @@
 import { Paper, Text, createStyles, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
 import { userService } from '../../../services/UserService/UserService';
-import { UserProfile, UserAddress } from '../../../utils/types/serviceTypes';
+import { UserProfile, FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -37,7 +37,7 @@ const formStyles = createStyles((theme) => ({
   },
 }));
 
-export const newAddress: UserAddress = {
+export const newAddress: FullAddressInfo = {
   country: '',
   city: '',
   streetName: '',
@@ -52,8 +52,6 @@ const ProfileEdit = (userData: UserProfile) => {
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
-  const shippingAddress = userData.shippingAddress as UserAddress;
-  const billingAddress = userData.billingAddress as UserAddress;
   const [addresses, setAddresses] = useState([...userData.addresses]);
 
   const addNewAddress = () => {
@@ -61,7 +59,7 @@ const ProfileEdit = (userData: UserProfile) => {
     setAddresses([...addresses, newAddress]);
   };
 
-  const removeAddress = (address: UserAddress) => {
+  const removeAddress = (address: FullAddressInfo) => {
     console.log(addresses, address);
     setAddresses(addresses.filter((a) => a.key !== address.key));
   };

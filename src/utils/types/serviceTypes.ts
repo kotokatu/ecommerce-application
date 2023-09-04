@@ -1,5 +1,3 @@
-import { Address } from '@commercetools/platform-sdk';
-
 export type UserProfile = {
   version: number;
   email: string;
@@ -7,14 +5,14 @@ export type UserProfile = {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  addresses: UserAddress[];
-  shippingAddress: UserAddress;
-  billingAddress: UserAddress;
+  addresses: FullAddressInfo[];
+  shippingAddress: FullAddressInfo;
+  billingAddress: FullAddressInfo;
   shippingAddressAsDefault: boolean;
   billingAddressAsDefault: boolean;
 };
 
-export type UserAddress = {
+export type FullAddressInfo = {
   id: string;
   name: string;
   country: string;
