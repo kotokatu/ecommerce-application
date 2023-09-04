@@ -20,6 +20,7 @@ export type QueryArgs = {
   facet?: string | string[];
   ['filter.facets']?: string | string[];
   fuzzy?: boolean;
+  sort?: string | string[];
 };
 
 export type GetProductsReturnType = {
