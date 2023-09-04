@@ -1,6 +1,7 @@
 import { getFirstLetters } from '../../../utils/helpers/getFirstLetters';
 import { UserProfile } from '../../../utils/types/serviceTypes';
 import { Avatar, Col, Grid, Paper, Text, createStyles, Flex } from '@mantine/core';
+import ProfileDataAddress from './profileAddressDataForm';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -95,49 +96,17 @@ const ProfilePage = (userData: UserProfile) => {
           <Text className={classes.smallTitle} align="center">
             Shipping Address
           </Text>
-          <Text className={classes.smallTitle}>Country</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.shippingAddress.country}
-          </Text>
-          <Text className={classes.smallTitle}>City</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.shippingAddress.city}
-          </Text>
-          <Text className={classes.smallTitle}>Address</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.shippingAddress.streetName}
-          </Text>
-          <Text className={classes.smallTitle}>Postal Code</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.shippingAddress.postalCode}
-          </Text>
-          <Text className={classes.text} color="red" align="center">
-            {userData?.shippingAddressAsDefault ? '* Used as default' : 'Not default'}
-          </Text>
+          {userData.shippingAddress.map((address) => (
+            <ProfileDataAddress address={address} key={+address.id} />
+          ))}
         </Paper>
         <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
           <Text className={classes.smallTitle} align="center">
             Billing Address
           </Text>
-          <Text className={classes.smallTitle}>Country</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.billingAddress.country}
-          </Text>
-          <Text className={classes.smallTitle}>City</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.billingAddress.city}
-          </Text>
-          <Text className={classes.smallTitle}>Address</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.billingAddress.streetName}
-          </Text>
-          <Text className={classes.smallTitle}>Postal Code</Text>
-          <Text className={classes.text} color="gray">
-            {userData?.billingAddress.postalCode}
-          </Text>
-          <Text className={classes.text} color="red" align="center">
-            {userData?.billingAddressAsDefault ? '* Used as default' : 'Not default'}
-          </Text>
+          {userData.shippingAddress.map((address) => (
+            <ProfileDataAddress address={address} key={+address.id} />
+          ))}
         </Paper>
       </Flex>
     </Paper>

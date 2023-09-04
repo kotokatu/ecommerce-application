@@ -6,8 +6,8 @@ export type UserProfile = {
   lastName: string;
   dateOfBirth: string;
   addresses: FullAddressInfo[];
-  shippingAddress: FullAddressInfo;
-  billingAddress: FullAddressInfo;
+  shippingAddress: FullAddressInfo[];
+  billingAddress: FullAddressInfo[];
   shippingAddressAsDefault: boolean;
   billingAddressAsDefault: boolean;
 };

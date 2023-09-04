@@ -6,7 +6,7 @@ import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { tokenCache } from '../api/TokenCache';
 import { UserProfile } from '../../utils/types/serviceTypes';
-import { createAddress } from '../../utils/helpers/handleAddresses';
+import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
 
 export type Address = {
   country: string;
@@ -68,17 +68,17 @@ class UserService {
   }
 
   public createCustomerProfile(userData: Customer): UserProfile {
-    const addresses = userData.addresses as AddressUpdated[];
+    const addresses = userData.addresses.map((address) => createAddress(userData, address));
     const customerProfile: UserProfile = {
       version: userData.version,
       email: userData.email,
       password: userData.password || 'no data',
       firstName: userData.firstName || 'no data',
       lastName: userData.lastName || 'no data',
-      addresses: addresses.map((address) => createAddress(userData, address)) || [],
+      addresses: addresses || [],
       dateOfBirth: userData.dateOfBirth || 'no data',
-      shippingAddress: createAddress(userData, addresses[0]),
-      billingAddress: createAddress(userData, addresses[1]),
+      shippingAddress: handleAddressArray(addresses, 'Shipping'),
+      billingAddress: handleAddressArray(addresses, 'Billing'),
       shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
       billingAddressAsDefault: userData.defaultBillingAddressId ? true : false,
     };
@@ -135,7 +135,6 @@ class UserService {
 
   public async changePassword(passwordsData: MyCustomerChangePassword, email: string): Promise<string | void> {
     try {
-      console.log('сначала', tokenCache.getAccessToken());
       await this.apiRoot
         .me()
         .password()
@@ -193,6 +192,27 @@ class UserService {
               {
                 action: 'addAddress',
                 address: address,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+
+  public async removeAdress(addressId: string, version: number) {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'removeAddress',
+                addressId,
               },
             ],
           },

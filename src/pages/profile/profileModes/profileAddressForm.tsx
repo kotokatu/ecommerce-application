@@ -52,7 +52,6 @@ const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
-
   const [checked, setChecked] = useState(props.address.isDefault);
 
   const addressform = useForm({
@@ -83,6 +82,7 @@ const ProfileAddress = (props: Props) => {
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
           } finally {
+            window.location.reload();
             setIsLoading(false);
           }
         })}
@@ -123,10 +123,19 @@ const ProfileAddress = (props: Props) => {
           onChange={() => setChecked(!checked)}
         />
         <Flex align="center" justify="space-around" m={20}>
-          <Button type="submit" style={{ width: '100px' }} color="green">
+          <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading}>
             Save
           </Button>
-          <Button type="button" style={{ width: '100px' }} color="red" onClick={() => props.remove(address)}>
+          <Button
+            type="button"
+            style={{ width: '100px' }}
+            color="red"
+            onClick={async () => {
+              props.remove(address);
+              await userService.removeAdress(props.address.id, props.version);
+              window.location.reload();
+            }}
+          >
             Remove address
           </Button>
         </Flex>
