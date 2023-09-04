@@ -8,6 +8,7 @@ import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
 import { CategoryCache } from '../../services/api/CategoryCache';
+import { FilterParams } from '../../services/StoreService/StoreService';
 
 export const categoryCache = new CategoryCache();
 
@@ -83,7 +84,7 @@ const useStyles = createStyles((theme) => ({
 const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(true);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
@@ -92,24 +93,24 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
     const getProducts = async () => {
       try {
         const queryParams: QueryArgs = {};
+        const filterParams = [];
         await categoryCache.get();
 
         if (category) {
-          queryParams.filter = [
+          filterParams.push(
             `categories.id: "${
               subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
             }"`,
-          ];
-          queryParams['filter.facets'] = [
-            `categories.id: "${
-              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
-            }"`,
-          ];
+          );
         }
 
-        if (filters.length) {
-          queryParams.filter = filters;
-          queryParams['filter.facets'] = filters;
+        Object.entries(FilterParams).forEach((param) => {
+          if (searchParams.get(param[0])) filterParams.push(`${param[1]}:${searchParams.get(param[0])}`);
+        });
+
+        if (filterParams.length) {
+          queryParams.filter = filterParams;
+          queryParams['filter.facets'] = filterParams;
         }
 
         const searchQuery = searchParams.get('search');

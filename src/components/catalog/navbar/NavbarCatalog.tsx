@@ -5,7 +5,7 @@ import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { FilterParams } from '../../../services/StoreService/StoreService';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { categoryCache } from '../../../pages/catalog/CatalogPage';
 
 const navbarCatalogStyles = createStyles((theme) => ({
@@ -64,25 +64,26 @@ const NavbarCatalog = ({
   const [maxPrice, setMaxPrice] = useState('');
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
   const [opened, setOpened] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { category, subcategory } = useParams();
 
-  useEffect(() => {
-    clearFilterProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory]);
+  // useEffect(() => {
+  // const brands = searchParams.get('brand');
+  // console.log(brands);
+  // if (brands) {
+  //   const newbrands = brands.split(', ').map((brand) => brand.slice(1, -1));
+  //   console.log(newbrands);
+  //   setSelectedBrands(newbrands);
+  // }
+  // }, [searchParams]);
 
-  function getFilterProducts() {
-    setFilters([
-      category
-        ? `${FilterParams.category}: "${
-            subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
-          }"`
-        : '',
-      selectedBrands.length ? `${FilterParams.brand}: "${selectedBrands.join('", "')}"` : '',
-      selectedSizes.length ? `${FilterParams.size}: "${selectedSizes.join('", "')}"` : '',
-      selectedColors.length ? `${FilterParams.color}: "${selectedColors.join('", "')}"` : '',
-      minPrice ? `${FilterParams.price}: range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})` : '',
-    ]);
+  function getFilterQuery() {
+    console.log(selectedBrands);
+    if (selectedBrands.length) searchParams.set('brand', `"${selectedBrands.join('", "')}"`);
+    if (selectedSizes.length) searchParams.set('size', `"${selectedSizes.join('", "')}"`);
+    if (selectedColors.length) searchParams.set('color', `"${selectedColors.join('", "')}"`);
+    if (minPrice) searchParams.set('price', `(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
+    setSearchParams(searchParams);
     setIsOpenNavbar(!isOpenNavbar);
   }
 
@@ -94,7 +95,12 @@ const NavbarCatalog = ({
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
+    searchParams.delete('brand');
+    searchParams.delete('size');
+    searchParams.delete('color');
+    searchParams.delete('price');
     setFilters([]);
+    setSearchParams(searchParams);
     setIsOpenNavbar(!isOpenNavbar);
   }
 
@@ -150,7 +156,7 @@ const NavbarCatalog = ({
         />
       </div>
       <div className={classes.buttons}>
-        <Button fullWidth onClick={getFilterProducts}>
+        <Button fullWidth onClick={getFilterQuery}>
           Show
         </Button>
         <Button fullWidth variant="outline" onClick={clearFilterProducts}>
