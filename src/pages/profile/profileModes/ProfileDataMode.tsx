@@ -2,48 +2,7 @@ import { getFirstLetters } from '../../../utils/helpers/getFirstLetters';
 import { UserProfile } from '../../../utils/types/serviceTypes';
 import { Avatar, Col, Grid, Paper, Text, createStyles, Flex } from '@mantine/core';
 import ProfileDataAddress from './addressData';
-
-const formStyles = createStyles((theme) => ({
-  container: {
-    width: '700px',
-  },
-  title: {
-    fontWeight: 800,
-    fontSize: '30px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '20px',
-    },
-  },
-  formWrapper: {
-    padding: '1.5rem',
-    [theme.fn.smallerThan('xs')]: {
-      padding: '1rem',
-    },
-  },
-  smallTitle: {
-    fontWeight: 400,
-    fontSize: '16px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '10px',
-    },
-  },
-  text: {
-    fontWeight: 400,
-    fontSize: '15px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '9px',
-    },
-  },
-  avatarContainer: {
-    margin: 'auto',
-    height: '100%',
-    marginTop: '20px',
-    [theme.fn.smallerThan('md')]: {
-      marginTop: '10px',
-      height: 'auto',
-    },
-  },
-}));
+import { formStyles } from '../ProfilePage';
 
 const ProfilePage = (userData: UserProfile) => {
   const { classes } = formStyles();

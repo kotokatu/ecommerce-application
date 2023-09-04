@@ -1,21 +1,11 @@
-import { Paper, Text, createStyles, Checkbox, TextInput, Select, Button, Flex } from '@mantine/core';
+import { Paper, Text, Checkbox, TextInput, Select, Button, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
-
-const formStyles = createStyles((theme) => ({
-  smallTitle: {
-    fontWeight: 400,
-    fontSize: '16px',
-    marginTop: '10px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '14px',
-    },
-  },
-}));
+import { formStyles } from '../ProfilePage';
 
 const countryData = [
   { value: 'IT', label: 'Italy' },

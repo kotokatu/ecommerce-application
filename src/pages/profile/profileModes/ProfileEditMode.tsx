@@ -10,32 +10,7 @@ import { notificationError, notificationSuccess } from '../../../components/ui/n
 import { useDisclosure } from '@mantine/hooks';
 import ProfileModal from './passwordWindow';
 import ProfileAddress from './addressEditForm';
-
-const formStyles = createStyles((theme) => ({
-  container: {
-    width: '100%',
-  },
-  title: {
-    fontWeight: 800,
-    fontSize: '30px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '20px',
-    },
-  },
-  formWrapper: {
-    padding: '1.5rem',
-    [theme.fn.smallerThan('xs')]: {
-      padding: '1rem',
-    },
-  },
-  smallTitle: {
-    fontWeight: 400,
-    fontSize: '16px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '14px',
-    },
-  },
-}));
+import { formStyles } from '../ProfilePage';
 
 export const newAddress: FullAddressInfo = {
   country: '',
@@ -45,7 +20,7 @@ export const newAddress: FullAddressInfo = {
   id: '',
   isDefault: false,
   name: '',
-  key: 2,
+  key: 999,
 };
 
 const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) => {

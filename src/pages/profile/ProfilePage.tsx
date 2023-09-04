@@ -18,7 +18,7 @@ export const defaultData: UserProfile = {
   billingAddress: [],
 };
 
-const formStyles = createStyles((theme) => ({
+export const formStyles = createStyles((theme) => ({
   container: {
     width: '80%',
     [theme.fn.smallerThan('xs')]: {
@@ -50,6 +50,15 @@ const formStyles = createStyles((theme) => ({
     fontSize: '15px',
     [theme.fn.smallerThan('xs')]: {
       fontSize: '9px',
+    },
+  },
+  avatarContainer: {
+    margin: 'auto',
+    height: '100%',
+    marginTop: '20px',
+    [theme.fn.smallerThan('md')]: {
+      marginTop: '10px',
+      height: 'auto',
     },
   },
 }));

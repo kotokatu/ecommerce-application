@@ -1,22 +1,6 @@
-import { Text, createStyles } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { FullAddressInfo } from '../../../utils/types/serviceTypes';
-
-const formStyles = createStyles((theme) => ({
-  smallTitle: {
-    fontWeight: 400,
-    fontSize: '16px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '10px',
-    },
-  },
-  text: {
-    fontWeight: 400,
-    fontSize: '15px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '9px',
-    },
-  },
-}));
+import { formStyles } from '../ProfilePage';
 
 const ProfileDataAddress = (props: { address: FullAddressInfo; key: number }) => {
   const { classes } = formStyles();
