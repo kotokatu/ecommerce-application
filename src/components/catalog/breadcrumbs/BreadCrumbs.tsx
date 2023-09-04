@@ -60,7 +60,7 @@ const BreadCrumbs = ({ allCategories }: BreadCrumbsProps) => {
 
       return (
         <Link key={crumb} className={classes.link} to={currentLink}>
-          {allCategories.find((item) => item.id === crumb)?.name || 'Catalog'}
+          {allCategories.find((item) => item.name === crumb)?.name || 'Catalog'}
         </Link>
       );
     });

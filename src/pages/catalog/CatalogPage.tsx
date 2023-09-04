@@ -8,7 +8,6 @@ import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
 import { CategoryCache } from '../../services/api/CategoryCache';
-import type { CategoryType } from '../../services/api/CategoryCache';
 
 export const categoryCache = new CategoryCache();
 
@@ -95,10 +94,19 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
       try {
         const queryParams: QueryArgs = {};
         const searchQuery = searchParams.get('search');
+        await categoryCache.get();
 
         if (category) {
-          queryParams.filter = [`categories.id: "${subcategory || category}"`];
-          queryParams['filter.facets'] = [`categories.id: "${subcategory || category}"`];
+          queryParams.filter = [
+            `categories.id: "${
+              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+            }"`,
+          ];
+          queryParams['filter.facets'] = [
+            `categories.id: "${
+              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
+            }"`,
+          ];
         }
 
         if (filters.length) {
@@ -129,12 +137,6 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
     return categories.includes(cachedCategory.id);
   });
 
-  const currentCategories = categoryCache.categories
-    .filter((cachedCategory) => categories.includes(cachedCategory.id))
-    .filter((cachedCategory) => {
-      return cachedCategory.parentID === category;
-    });
-
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
@@ -147,7 +149,7 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
       <div className={classes.content}>
         <NavbarCatalog
           className={isOpenNavbar && !isOpenBurger ? classes.navbar + ' active' : classes.navbar}
-          categories={currentCategories as CategoryType[]}
+          categories={allCategories}
           brands={resources.brands}
           sizes={resources.sizes}
           colors={resources.colors}
