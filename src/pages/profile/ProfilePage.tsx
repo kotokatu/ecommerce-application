@@ -57,6 +57,7 @@ const formStyles = createStyles((theme) => ({
 const ProfilePage = () => {
   const [userData, setProfile] = useState<UserProfile>(defaultData);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
   const { classes } = formStyles();
 
   useEffect(() => {
@@ -65,7 +66,11 @@ const ProfilePage = () => {
       setProfile(userData);
     };
     profile();
-  }, []);
+  }, [isUpdated]);
+
+  const isNeedToUpdate = () => {
+    setIsUpdated(true);
+  };
 
   if (isEditMode === false) {
     return (
@@ -91,7 +96,7 @@ const ProfilePage = () => {
       <Title className={classes.title} order={1} align="center" mb={20}>
         Your Profile
       </Title>
-      <ProfileEdit {...userData} />
+      <ProfileEdit userData={userData} updatePage={isNeedToUpdate} />
       <Text color="dimmed" size="sm" align="center" pt={5}>
         Do not want to save changes?
       </Text>

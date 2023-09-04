@@ -48,7 +48,8 @@ export const newAddress: FullAddressInfo = {
   key: 2,
 };
 
-const ProfileEdit = (userData: UserProfile) => {
+const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) => {
+  const { userData, updatePage } = props;
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +61,6 @@ const ProfileEdit = (userData: UserProfile) => {
   };
 
   const removeAddress = (address: FullAddressInfo) => {
-    console.log(addresses, address);
     setAddresses(addresses.filter((a) => a.key !== address.key));
   };
 
@@ -102,6 +102,7 @@ const ProfileEdit = (userData: UserProfile) => {
                     if (err instanceof Error) notificationError(err.message);
                   } finally {
                     setIsLoading(false);
+                    updatePage();
                   }
                 }
               })}
