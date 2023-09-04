@@ -94,18 +94,18 @@ const ProfilePage = (userData: UserProfile) => {
       <Flex gap="sm" justify="center" align="start" direction="row" style={{ width: '100%' }}>
         <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
           <Text className={classes.smallTitle} align="center">
-            Shipping Address
+            Shipping Addresses
           </Text>
-          {userData.shippingAddress.map((address) => (
-            <ProfileDataAddress address={address} key={+address.id} />
+          {userData.shippingAddress.map((address, i) => (
+            <ProfileDataAddress address={address} key={i} />
           ))}
         </Paper>
         <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
           <Text className={classes.smallTitle} align="center">
-            Billing Address
+            Billing Addresses
           </Text>
-          {userData.billingAddress.map((address) => (
-            <ProfileDataAddress address={address} key={+address.id} />
+          {userData.billingAddress.map((address, i) => (
+            <ProfileDataAddress address={address} key={i} />
           ))}
         </Paper>
       </Flex>

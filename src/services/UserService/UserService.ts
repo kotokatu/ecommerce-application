@@ -43,6 +43,11 @@ export type AddressUpdated = {
   id: string;
 };
 
+const addressType = {
+  shipping: 'Shipping',
+  billing: 'Billing',
+};
+
 class UserService {
   private apiRoot: ByProjectKeyRequestBuilder;
   constructor() {
@@ -179,9 +184,10 @@ class UserService {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
-  public async addAdress(address: Address, version: number) {
+
+  public async addAdress(address: Address, version: number, type: string) {
     try {
-      await this.apiRoot
+      const addAddress = await this.apiRoot
         .me()
         .post({
           body: {
@@ -195,6 +201,13 @@ class UserService {
           },
         })
         .execute();
+      const newAddress = addAddress.body.addresses[addAddress.body.addresses.length - 1];
+      const newVersion = addAddress.body.version;
+      if (type === addressType.shipping) {
+        this.addShippingAddress(newAddress.id, newVersion);
+      } else {
+        this.addBillingAddress(newAddress.id, newVersion);
+      }
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
@@ -210,6 +223,48 @@ class UserService {
             actions: [
               {
                 action: 'removeAddress',
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+
+  private async addShippingAddress(addressId: string | undefined, version: number) {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addShippingAddressId',
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+
+  private async addBillingAddress(addressId: string | undefined, version: number) {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addBillingAddressId',
                 addressId,
               },
             ],

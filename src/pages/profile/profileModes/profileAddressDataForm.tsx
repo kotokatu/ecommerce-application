@@ -31,6 +31,9 @@ const ProfileDataAddress = (props: { address: FullAddressInfo; key: number }) =>
 
   return (
     <div>
+      <Text className={classes.smallTitle} align="center">
+        Address:
+      </Text>
       <Text className={classes.smallTitle}>Country</Text>
       <Text className={classes.text} color="gray">
         {address.country}
@@ -47,7 +50,7 @@ const ProfileDataAddress = (props: { address: FullAddressInfo; key: number }) =>
       <Text className={classes.text} color="gray">
         {address.postalCode}
       </Text>
-      <Text className={classes.text} color="red" align="center">
+      <Text className={classes.text} color="red" align="center" mb={20}>
         {address.isDefault ? '* Used as default' : 'Not default'}
       </Text>
     </div>

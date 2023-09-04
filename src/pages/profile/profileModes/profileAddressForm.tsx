@@ -1,11 +1,9 @@
 import { Paper, Text, createStyles, Checkbox, TextInput, Select, Button, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { Address } from '../../../services/UserService/UserService';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 import { userService } from '../../../services/UserService/UserService';
 import { FullAddressInfo } from '../../../utils/types/serviceTypes';
-import { newAddress } from './ProfileEditMode';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 
 const formStyles = createStyles((theme) => ({
@@ -41,6 +39,11 @@ const countryData = [
   { value: 'FR', label: 'France' },
 ];
 
+const addressTypeData = [
+  { value: 'Shipping', label: 'Shipping' },
+  { value: 'Billing', label: 'Billing' },
+];
+
 type Props = {
   key: number;
   address: FullAddressInfo;
@@ -52,7 +55,7 @@ const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
-  const [isNewAddress, setIsNewAddress] = useState(address.id === '');
+  const isNewAddress = address.id === '';
   const [checked, setChecked] = useState(props.address.isDefault);
 
   const addressform = useForm({
@@ -61,6 +64,7 @@ const ProfileAddress = (props: Props) => {
       city: address.city,
       streetName: address.streetName,
       postalCode: address.postalCode,
+      addressType: address.name,
     },
 
     validate: {
@@ -68,6 +72,7 @@ const ProfileAddress = (props: Props) => {
       city: (value) => (onlyLettersRegex.test(value) ? null : 'City should only contain letters and cannot be empty'),
       streetName: (value) => (value.trim() ? null : 'Address cannot be empty'),
       postalCode: (value) => (postalCodeRegex.test(value) ? null : 'Should be a valid postal code (5 digits)'),
+      addressType: (value) => (value ? null : 'Please choose a type'),
     },
     validateInputOnChange: true,
   });
@@ -78,7 +83,7 @@ const ProfileAddress = (props: Props) => {
         onSubmit={addressform.onSubmit(async (values) => {
           setIsLoading(true);
           try {
-            await userService.addAdress(values, props.version);
+            await userService.addAdress(values, props.version, values.addressType);
             notificationSuccess('Address was succesfully updated');
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
@@ -94,6 +99,13 @@ const ProfileAddress = (props: Props) => {
         <Text className={classes.smallTitle} color="red" align="right">
           {props.address.isDefault ? '* Used as default' : 'Not default'}
         </Text>
+        <Select
+          withAsterisk
+          label="Type of address"
+          data={addressTypeData}
+          placeholder="Choose address type"
+          {...addressform.getInputProps('addressType')}
+        />
         <Select
           withAsterisk
           label="Country"
