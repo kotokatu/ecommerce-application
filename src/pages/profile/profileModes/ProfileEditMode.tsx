@@ -1,10 +1,10 @@
 import { Paper, Text, createStyles, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
-import { userService, Address } from '../../../services/UserService/UserService';
-import { UserProfile } from '../../../utils/types/serviceTypes';
+import { userService } from '../../../services/UserService/UserService';
+import { UserProfile, UserAddress } from '../../../utils/types/serviceTypes';
 import { useState } from 'react';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
-import { emailRegex, onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
+import { emailRegex, onlyLettersRegex } from '../../../utils/constants/validationRegex';
 import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { useDisclosure } from '@mantine/hooks';
@@ -37,18 +37,36 @@ const formStyles = createStyles((theme) => ({
   },
 }));
 
+export const newAddress: UserAddress = {
+  country: '',
+  city: '',
+  streetName: '',
+  postalCode: '',
+  id: '',
+  isDefault: false,
+  name: '',
+  key: 2,
+};
+
 const ProfileEdit = (userData: UserProfile) => {
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState(false);
-  const shippingAddress = userData.shippingAddress as Address;
-  const billingAddress = userData.billingAddress as Address;
-  // const [updatedShippingAddress, setUpdatedShippingAddress] = useState(shippingAddress);
+  const shippingAddress = userData.shippingAddress as UserAddress;
+  const billingAddress = userData.billingAddress as UserAddress;
 
-  const [value, setValue] = useState('');
-  const handleChange = (value: string) => {
-    console.log('я родитель', value);
-    setValue(value);
+  const [shipAddress, setShipAddress] = useState([shippingAddress]);
+  const [addresses, setAddresses] = useState([shippingAddress, billingAddress]);
+
+  const addNewAddress = () => {
+    console.log(99999999, newAddress.key);
+    newAddress.key = Math.floor(Math.random() * 999999);
+    setAddresses([...addresses, newAddress]);
+  };
+
+  const removeAddress = (address: UserAddress) => {
+    console.log(addresses, address);
+    setAddresses(addresses.filter((a) => a.key !== address.key));
   };
 
   const form = useForm({
@@ -145,46 +163,29 @@ const ProfileEdit = (userData: UserProfile) => {
         <Text className={classes.smallTitle} m={20} align="left">
           Addresses
         </Text>
+
         <Flex gap="sm" justify="center" align="start" direction="column" style={{ width: '100%' }} mb={15}>
-          <ProfileAddress
-            data={{
-              name: 'Shipping',
-              addressData: shippingAddress,
-              userEmail: userData.email,
-              isDefault: userData.shippingAddressAsDefault,
-            }}
-            onChange={handleChange}
-          />
-          <ProfileAddress
-            data={{
-              name: 'Billing',
-              addressData: billingAddress,
-              userEmail: userData.email,
-              isDefault: userData.billingAddressAsDefault,
-            }}
-            onChange={handleChange}
-          />
-          <Flex align="center" justify="center" gap="sm" style={{ paddingLeft: '24px' }}>
-            <Text className={classes.smallTitle} align="center">
-              Add new address
-            </Text>
-            <Button color="green" size="xs">
-              +
-            </Button>
-          </Flex>
+          {addresses.map((address, i) => (
+            <ProfileAddress address={address} key={i} remove={removeAddress} />
+          ))}
         </Flex>
-        <Flex align="center" justify="center" style={{ padding: '0 24px 0 24px' }}>
-          <Button
-            type="submit"
-            loading={isLoading}
-            style={{ width: '180px', marginTop: '10px' }}
-            onClick={() => console.log(78787, value)}
-          >
-            Save Changes
+
+        <Flex align="center" justify="center" gap="sm" style={{ paddingLeft: '24px' }}>
+          <Text className={classes.smallTitle} align="center">
+            Add new address
+          </Text>
+          <Button color="green" size="xs" onClick={addNewAddress}>
+            +
           </Button>
         </Flex>
+        {/* <Flex align="center" justify="center" style={{ padding: '0 24px 0 24px' }}>
+<Button type="submit" loading={isLoading} style={{ width: '180px', marginTop: '10px' }}>
+  Save Changes
+</Button>
+</Flex> */}
       </Paper>
     </Container>
   );
 };
+
 export default ProfileEdit;

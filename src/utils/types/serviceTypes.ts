@@ -7,8 +7,20 @@ export type UserProfile = {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  shippingAddress: Address;
-  billingAddress: Address;
+  addresses: Address[];
+  shippingAddress: UserAddress;
+  billingAddress: UserAddress;
   shippingAddressAsDefault: boolean;
   billingAddressAsDefault: boolean;
+};
+
+export type UserAddress = {
+  id: string;
+  name: string;
+  country: string;
+  city: string;
+  streetName: string;
+  postalCode: string;
+  isDefault: boolean;
+  key: number;
 };

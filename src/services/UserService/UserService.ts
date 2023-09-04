@@ -6,6 +6,7 @@ import { handleErrorResponse } from '../api/handleErrorResponse';
 import { ClientResponse } from '@commercetools/sdk-client-v2';
 import { tokenCache } from '../api/TokenCache';
 import { UserProfile } from '../../utils/types/serviceTypes';
+import { createAddress } from '../../utils/helpers/handleAddresses';
 
 export type Address = {
   country: string;
@@ -34,18 +35,13 @@ interface CustomerUpdatePersonalDraft {
   dateOfBirth: Date;
 }
 
-// interface CustomerUpdatePersonalDraft {
-//   email: string;
-//   firstName: string;
-//   lastName: string;
-//   dateOfBirth: Date;
-//   shippingAddress: Address;
-//   billingAddress: Address;
-//   address?: Address;
-//   setDefaultShippingAddress: boolean;
-//   setDefaultBillingAddress: boolean;
-//   copyShippingToBilling: boolean;
-// }
+export type AddressUpdated = {
+  country: string;
+  city: string;
+  streetName: string;
+  postalCode: string;
+  id: string;
+};
 
 class UserService {
   private apiRoot: ByProjectKeyRequestBuilder;
@@ -78,9 +74,10 @@ class UserService {
       password: userData.password || 'no data',
       firstName: userData.firstName || 'no data',
       lastName: userData.lastName || 'no data',
+      addresses: userData.addresses || [],
       dateOfBirth: userData.dateOfBirth || 'no data',
-      shippingAddress: userData.addresses[0],
-      billingAddress: userData.addresses[1],
+      shippingAddress: createAddress(userData, 'Shipping'),
+      billingAddress: createAddress(userData, 'Billing'),
       shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
       billingAddressAsDefault: userData.defaultBillingAddressId ? true : false,
     };

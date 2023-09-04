@@ -1,9 +1,11 @@
-import { Paper, Text, createStyles, Checkbox, TextInput, Select } from '@mantine/core';
+import { Paper, Text, createStyles, Checkbox, TextInput, Select, Button, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Address } from '../../../services/UserService/UserService';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
 import { userService } from '../../../services/UserService/UserService';
+import { UserAddress } from '../../../utils/types/serviceTypes';
+import { newAddress } from './ProfileEditMode';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -38,26 +40,18 @@ const countryData = [
   { value: 'FR', label: 'France' },
 ];
 
-type Data = {
-  name?: string;
-  addressData?: Address;
-  userEmail: string;
-  isDefault: boolean;
+type Props = {
+  key: number;
+  address: UserAddress;
+  remove: (address: UserAddress) => void;
 };
 
-const newAddress: Address = {
-  country: '',
-  city: '',
-  streetName: '',
-  postalCode: '',
-};
-
-const ProfileAddress = (props: { data: Data; onChange: (v: string) => void }) => {
+const ProfileAddress = (props: Props) => {
   //const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
-  const address: Address = props.data.addressData || newAddress;
+  const address: UserAddress = props.address;
 
-  const [checked, setChecked] = useState(props.data.isDefault);
+  const [checked, setChecked] = useState(props.address.isDefault);
 
   const addressform = useForm({
     initialValues: {
@@ -76,20 +70,18 @@ const ProfileAddress = (props: { data: Data; onChange: (v: string) => void }) =>
     validateInputOnChange: true,
   });
 
-  const getFormValues = () => addressform.values as Address;
-
-  const handleChange = (values: Address | undefined) => {
-    return console.log('я ребенок');
-  };
-
   return (
     <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
-      <form>
+      <form
+        onSubmit={addressform.onSubmit(async (values) => {
+          console.log('save');
+        })}
+      >
         <Text className={classes.smallTitle} align="center">
-          {props.data.name} Address
+          {props.address.name} Address
         </Text>
         <Text className={classes.smallTitle} color="red" align="right">
-          {props.data.isDefault ? '* Used as default' : 'Not default'}
+          {props.address.isDefault ? '* Used as default' : 'Not default'}
         </Text>
         <Select
           withAsterisk
@@ -120,6 +112,14 @@ const ProfileAddress = (props: { data: Data; onChange: (v: string) => void }) =>
           checked={checked}
           onChange={() => setChecked(!checked)}
         />
+        <Flex align="center" justify="space-around" m={20}>
+          <Button type="submit" style={{ width: '100px' }} color="green">
+            Save
+          </Button>
+          <Button type="button" style={{ width: '100px' }} color="red" onClick={() => props.remove(address)}>
+            Remove address
+          </Button>
+        </Flex>
       </form>
     </Paper>
   );

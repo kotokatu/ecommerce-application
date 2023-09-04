@@ -6,16 +6,34 @@ import ProfileEdit from './profileModes/ProfileEditMode';
 import Profile from './profileModes/ProfileData';
 import { Link } from 'react-router-dom';
 
-//создать отдельный тип, чтоб не заменить версию случайно
 export const defaultData: UserProfile = {
-  version: 1,
+  version: 0,
   email: 'Loading...',
   password: 'Loading...',
   firstName: 'Loading...',
   lastName: 'Loading...',
   dateOfBirth: 'Loading...',
-  shippingAddress: { country: 'Loading...', streetName: 'Loading...', postalCode: 'Loading...', city: 'Loading...' },
-  billingAddress: { country: 'Loading...', streetName: 'Loading...', postalCode: 'Loading...', city: 'Loading...' },
+  addresses: [],
+  shippingAddress: {
+    country: 'Loading...',
+    streetName: 'Loading...',
+    postalCode: 'Loading...',
+    city: 'Loading...',
+    id: '',
+    name: '',
+    isDefault: false,
+    key: 999,
+  },
+  billingAddress: {
+    country: 'Loading...',
+    streetName: 'Loading...',
+    postalCode: 'Loading...',
+    city: 'Loading...',
+    id: '',
+    name: '',
+    isDefault: false,
+    key: 999,
+  },
   shippingAddressAsDefault: false,
   billingAddressAsDefault: false,
 };
