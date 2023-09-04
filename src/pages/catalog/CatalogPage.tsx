@@ -93,7 +93,6 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
     const getProducts = async () => {
       try {
         const queryParams: QueryArgs = {};
-        const searchQuery = searchParams.get('search');
         await categoryCache.get();
 
         if (category) {
@@ -114,9 +113,15 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
           queryParams['filter.facets'] = filters;
         }
 
+        const searchQuery = searchParams.get('search');
         if (searchQuery !== null) {
           queryParams['text.en-US'] = `${searchQuery}`;
           queryParams.fuzzy = true;
+        }
+
+        const sortOrder = searchParams.get('sort');
+        if (sortOrder) {
+          queryParams.sort = sortOrder;
         }
 
         const res = await storeService.getProducts(queryParams);

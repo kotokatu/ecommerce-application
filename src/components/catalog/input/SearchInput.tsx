@@ -44,7 +44,10 @@ const SearchInput = ({ label, placeholder }: SearchInputProps) => {
       onChange={(event) => setSearchValue(event.currentTarget.value)}
       onKeyDown={(event) => {
         if (event.code === 'Enter') {
-          setSearchParams({ search: searchValue });
+          setSearchParams(() => {
+            searchParams.set('search', searchValue);
+            return searchParams;
+          });
         }
       }}
       onFocus={() => setFocused(true)}
