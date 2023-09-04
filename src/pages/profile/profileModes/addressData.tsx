@@ -2,13 +2,6 @@ import { Text, createStyles } from '@mantine/core';
 import { FullAddressInfo } from '../../../utils/types/serviceTypes';
 
 const formStyles = createStyles((theme) => ({
-  title: {
-    fontWeight: 800,
-    fontSize: '30px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '20px',
-    },
-  },
   smallTitle: {
     fontWeight: 400,
     fontSize: '16px',

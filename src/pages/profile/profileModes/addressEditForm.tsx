@@ -7,22 +7,6 @@ import { FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 
 const formStyles = createStyles((theme) => ({
-  container: {
-    width: '100%',
-  },
-  title: {
-    fontWeight: 800,
-    fontSize: '30px',
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: '20px',
-    },
-  },
-  formWrapper: {
-    padding: '1.5rem',
-    [theme.fn.smallerThan('xs')]: {
-      padding: '1rem',
-    },
-  },
   smallTitle: {
     fontWeight: 400,
     fontSize: '16px',
@@ -49,6 +33,7 @@ type Props = {
   address: FullAddressInfo;
   version: number;
   remove: (address: FullAddressInfo) => void;
+  needUpdate: () => void;
 };
 
 const ProfileAddress = (props: Props) => {
@@ -65,6 +50,7 @@ const ProfileAddress = (props: Props) => {
       streetName: address.streetName,
       postalCode: address.postalCode,
       addressType: address.name,
+      isDefault: checked,
     },
 
     validate: {
@@ -83,12 +69,12 @@ const ProfileAddress = (props: Props) => {
         onSubmit={addressform.onSubmit(async (values) => {
           setIsLoading(true);
           try {
-            await userService.addAdress(values, props.version, values.addressType);
+            await userService.addAdress(values, props.version, values.addressType, values.isDefault);
             notificationSuccess('Address was succesfully updated');
           } catch (err) {
             if (err instanceof Error) notificationError(err.message);
           } finally {
-            window.location.reload();
+            props.needUpdate();
             setIsLoading(false);
           }
         })}
@@ -147,7 +133,7 @@ const ProfileAddress = (props: Props) => {
               onClick={async () => {
                 props.remove(address);
                 await userService.removeAdress(props.address.id, props.version);
-                window.location.reload();
+                props.needUpdate();
               }}
             >
               Remove
@@ -166,7 +152,7 @@ const ProfileAddress = (props: Props) => {
               onClick={async () => {
                 props.remove(address);
                 await userService.removeAdress(props.address.id, props.version);
-                window.location.reload();
+                props.needUpdate();
               }}
             >
               Remove address

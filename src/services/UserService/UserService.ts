@@ -152,7 +152,10 @@ class UserService {
     }
   }
 
-  public async updateCurrentCustomer(customerUpdateDraft: CustomerUpdatePersonalDraft, version: number) {
+  public async updateCurrentCustomer(
+    customerUpdateDraft: CustomerUpdatePersonalDraft,
+    version: number,
+  ): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -185,7 +188,7 @@ class UserService {
     }
   }
 
-  public async addAdress(address: Address, version: number, type: string) {
+  public async addAdress(address: Address, version: number, type: string, isDefault: boolean): Promise<string | void> {
     try {
       const addAddress = await this.apiRoot
         .me()
@@ -195,7 +198,7 @@ class UserService {
             actions: [
               {
                 action: 'addAddress',
-                address: address,
+                address,
               },
             ],
           },
@@ -204,16 +207,16 @@ class UserService {
       const newAddress = addAddress.body.addresses[addAddress.body.addresses.length - 1];
       const newVersion = addAddress.body.version;
       if (type === addressType.shipping) {
-        this.addShippingAddress(newAddress.id, newVersion);
+        this.addShippingAddress(newAddress.id, newVersion, isDefault);
       } else {
-        this.addBillingAddress(newAddress.id, newVersion);
+        this.addBillingAddress(newAddress.id, newVersion, isDefault);
       }
     } catch (err) {
       handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
     }
   }
 
-  public async removeAdress(addressId: string, version: number) {
+  public async removeAdress(addressId: string, version: number): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -234,7 +237,11 @@ class UserService {
     }
   }
 
-  private async addShippingAddress(addressId: string | undefined, version: number) {
+  private async addShippingAddress(
+    addressId: string | undefined,
+    version: number,
+    isDefault: boolean,
+  ): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -246,6 +253,10 @@ class UserService {
                 action: 'addShippingAddressId',
                 addressId,
               },
+              {
+                action: 'setDefaultShippingAddress',
+                addressId,
+              },
             ],
           },
         })
@@ -255,7 +266,11 @@ class UserService {
     }
   }
 
-  private async addBillingAddress(addressId: string | undefined, version: number) {
+  private async addBillingAddress(
+    addressId: string | undefined,
+    version: number,
+    isDefault: boolean,
+  ): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -265,6 +280,31 @@ class UserService {
             actions: [
               {
                 action: 'addBillingAddressId',
+                addressId,
+              },
+              {
+                action: 'setDefaultBillingAddress',
+                addressId,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      handleErrorResponse(err as ClientResponse<ErrorResponse> | Error);
+    }
+  }
+
+  private async setAddressAsDefault(addressId: string | undefined, version: number): Promise<string | void> {
+    try {
+      await this.apiRoot
+        .me()
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'setDefaultBillingAddress',
                 addressId,
               },
             ],

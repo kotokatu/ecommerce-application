@@ -20,10 +20,10 @@ export const createAddress = (userData: Customer, addressData: Address): FullAdd
 
   if (userData.shippingAddressIds && isShipping) {
     address.name = 'Shipping';
-    address.isDefault = !!userData.defaultShippingAddressId;
+    address.isDefault = userData.defaultShippingAddressId === addressData.id;
   } else if (userData.billingAddressIds && isBilling) {
     address.name = 'Billing';
-    address.isDefault = !!userData.defaultBillingAddressId;
+    address.isDefault = userData.defaultBillingAddressId === addressData.id;
   }
   return address;
 };

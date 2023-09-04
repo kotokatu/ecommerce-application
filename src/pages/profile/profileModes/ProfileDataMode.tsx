@@ -1,7 +1,7 @@
 import { getFirstLetters } from '../../../utils/helpers/getFirstLetters';
 import { UserProfile } from '../../../utils/types/serviceTypes';
 import { Avatar, Col, Grid, Paper, Text, createStyles, Flex } from '@mantine/core';
-import ProfileDataAddress from './profileAddressDataForm';
+import ProfileDataAddress from './addressData';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -48,6 +48,8 @@ const formStyles = createStyles((theme) => ({
 const ProfilePage = (userData: UserProfile) => {
   const { classes } = formStyles();
   const avatarLetters = getFirstLetters(userData?.firstName, userData?.lastName);
+  console.log(userData.shippingAddress);
+  console.log(userData);
 
   return (
     <Paper withBorder shadow="md" radius="md" className={classes.formWrapper}>

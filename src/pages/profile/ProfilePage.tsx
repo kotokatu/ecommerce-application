@@ -3,7 +3,7 @@ import { userService } from '../../services/UserService/UserService';
 import { UserProfile } from '../../utils/types/serviceTypes';
 import { useEffect, useState } from 'react';
 import ProfileEdit from './profileModes/ProfileEditMode';
-import Profile from './profileModes/ProfileData';
+import Profile from './profileModes/ProfileDataMode';
 import { Link } from 'react-router-dom';
 
 export const defaultData: UserProfile = {
@@ -69,7 +69,7 @@ const ProfilePage = () => {
   }, [isUpdated]);
 
   const isNeedToUpdate = () => {
-    setIsUpdated(true);
+    setIsUpdated(!isUpdated);
   };
 
   if (isEditMode === false) {
@@ -97,19 +97,9 @@ const ProfilePage = () => {
         Your Profile
       </Title>
       <ProfileEdit userData={userData} updatePage={isNeedToUpdate} />
-      <Text color="dimmed" size="sm" align="center" pt={5}>
-        Do not want to save changes?
-      </Text>
-      <Flex align="center" justify="center">
-        <Button
-          style={{ width: '180px' }}
-          mt={5}
-          color="red"
-          onClick={() => setIsEditMode(false)}
-          component={Link}
-          to="/profile"
-        >
-          Cancel
+      <Flex align="center" justify="center" mt={15}>
+        <Button style={{ width: '180px' }} mt={5} onClick={() => setIsEditMode(false)} component={Link} to="/profile">
+          Go to profile
         </Button>
       </Flex>
     </Container>

@@ -8,8 +8,8 @@ import { emailRegex, onlyLettersRegex } from '../../../utils/constants/validatio
 import { getAge } from '../../../utils/helpers/date-helpers';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { useDisclosure } from '@mantine/hooks';
-import ProfileModal from './profileModalWindow';
-import ProfileAddress from './profileAddressForm';
+import ProfileModal from './passwordWindow';
+import ProfileAddress from './addressEditForm';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -162,7 +162,13 @@ const ProfileEdit = (props: { userData: UserProfile; updatePage: () => void }) =
 
         <Flex gap="sm" justify="center" align="start" direction="column" style={{ width: '100%' }} mb={15}>
           {addresses.map((address, i) => (
-            <ProfileAddress address={address} key={i} remove={removeAddress} version={userData.version} />
+            <ProfileAddress
+              address={address}
+              key={i}
+              remove={removeAddress}
+              version={userData.version}
+              needUpdate={updatePage}
+            />
           ))}
         </Flex>
 
