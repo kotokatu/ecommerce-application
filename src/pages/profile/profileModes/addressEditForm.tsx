@@ -50,7 +50,7 @@ const ProfileAddress = (props: Props) => {
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await userService.updateAddress(version, address);
+    await userService.updateUserAddress(version, address);
     props.needUpdate();
   };
 
