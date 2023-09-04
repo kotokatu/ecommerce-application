@@ -3,7 +3,7 @@ import { createStyles } from '@mantine/core';
 export const headerStyle = createStyles((theme) => ({
   header: {
     position: 'relative',
-    zIndex: 1,
+    zIndex: 3,
     padding: '20px 1rem',
   },
 

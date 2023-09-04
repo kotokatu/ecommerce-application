@@ -63,31 +63,43 @@ const useStyles = createStyles((theme) => ({
 
     [theme.fn.smallerThan('md')]: {
       position: 'absolute',
-      top: 80,
+      top: 0,
       left: '-100%',
-      zIndex: 1,
+      zIndex: 5,
       backgroundColor: 'white',
       minHeight: '100vh',
-      width: '100%',
-      padding: '2rem',
-      overflow: 'hidden',
+      width: '390px',
+      padding: '3rem 2rem 2rem',
       transition: 'left .5s ease 0s',
     },
 
     '&.active': {
       left: '0',
+      height: '80%',
+      overflow: 'scroll',
     },
   },
 }));
 
-const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
+type CatalogPageProps = {
+  isOpenNavbar: boolean;
+  setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
   const [searchParams] = useSearchParams();
-  const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(true);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
+
+  const toggleScroll = () => {
+    const wrapper = document.querySelector('.wrapper') as HTMLElement;
+
+    setIsOpenNavbar(!isOpenNavbar);
+    wrapper.className = !isOpenNavbar ? 'wrapper hidden' : 'wrapper';
+  };
 
   useEffect(() => {
     const getProducts = async () => {
@@ -143,12 +155,12 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
   return resources ? (
     <div className={classes.container}>
       <HeaderCatalog allCategories={allCategories} />
-      <Button variant="outline" size="md" className={classes.button} onClick={() => setIsOpenNavbar(!isOpenNavbar)}>
+      <Button variant="outline" size="md" className={classes.button} onClick={toggleScroll}>
         Filters
       </Button>
       <div className={classes.content}>
         <NavbarCatalog
-          className={isOpenNavbar && !isOpenBurger ? classes.navbar + ' active' : classes.navbar}
+          className={isOpenNavbar ? classes.navbar + ' active' : classes.navbar}
           categories={allCategories}
           brands={resources.brands}
           sizes={resources.sizes}
@@ -156,8 +168,7 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
           minProductPrice={minProductPrice || 0}
           maxProductPrice={maxProductPrice || 10000}
           setFilters={setFilters}
-          isOpenNavbar={isOpenNavbar}
-          setIsOpenNavbar={setIsOpenNavbar}
+          toggleScroll={toggleScroll}
         />
         <div className={classes.items}>
           {resources.products.length ? (

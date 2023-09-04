@@ -21,6 +21,7 @@ function App() {
   const loginState = localStorage.getItem('userLoggedIn');
   const [userLoggedIn, setUserLoggedIn] = useState(loginState ? JSON.parse(loginState) : false);
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
+  const [isOpenNavbar, setIsOpenNavbar] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
@@ -43,9 +44,23 @@ function App() {
       <Notifications position="top-center" />
       <AuthProvider userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}>
         <Routes>
-          <Route path="/" element={<Layout isOpenBurger={isOpenBurger} closeBurger={close} toggleBurger={toggle} />}>
+          <Route
+            path="/"
+            element={
+              <Layout
+                isOpenBurger={isOpenBurger}
+                closeBurger={close}
+                toggleBurger={toggle}
+                isOpenNavbar={isOpenNavbar}
+                setIsOpenNavbar={setIsOpenNavbar}
+              />
+            }
+          >
             <Route index element={<MainPage />} />
-            <Route path="catalog" element={<CatalogPage isOpenBurger={isOpenBurger} />} />
+            <Route
+              path="catalog"
+              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+            />
             <Route path="about" element={<AboutPage />} />
 
             <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
@@ -57,8 +72,14 @@ function App() {
               <Route path="registration" element={<RegistrationPage />} />
             </Route>
 
-            <Route path="catalog/:category" element={<CatalogPage isOpenBurger={isOpenBurger} />} />
-            <Route path="catalog/:category/:subcategory" element={<CatalogPage isOpenBurger={isOpenBurger} />} />
+            <Route
+              path="catalog/:category"
+              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+            />
+            <Route
+              path="catalog/:category/:subcategory"
+              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+            />
             <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
 
             <Route path="basket" element={<BasketPage />} />
