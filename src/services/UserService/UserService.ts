@@ -79,8 +79,6 @@ class UserService {
       dateOfBirth: userData.dateOfBirth || 'no data',
       shippingAddress: handleAddressArray(addresses, 'Shipping'),
       billingAddress: handleAddressArray(addresses, 'Billing'),
-      shippingAddressAsDefault: userData.defaultShippingAddressId ? true : false,
-      billingAddressAsDefault: userData.defaultBillingAddressId ? true : false,
     };
     return customerProfile;
   }

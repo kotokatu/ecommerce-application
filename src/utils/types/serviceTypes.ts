@@ -8,8 +8,6 @@ export type UserProfile = {
   addresses: FullAddressInfo[];
   shippingAddress: FullAddressInfo[];
   billingAddress: FullAddressInfo[];
-  shippingAddressAsDefault: boolean;
-  billingAddressAsDefault: boolean;
 };
 
 export type FullAddressInfo = {

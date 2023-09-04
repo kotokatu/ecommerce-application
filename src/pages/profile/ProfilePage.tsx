@@ -16,8 +16,6 @@ export const defaultData: UserProfile = {
   addresses: [],
   shippingAddress: [],
   billingAddress: [],
-  shippingAddressAsDefault: false,
-  billingAddressAsDefault: false,
 };
 
 const formStyles = createStyles((theme) => ({

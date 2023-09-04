@@ -104,7 +104,7 @@ const ProfilePage = (userData: UserProfile) => {
           <Text className={classes.smallTitle} align="center">
             Billing Address
           </Text>
-          {userData.shippingAddress.map((address) => (
+          {userData.billingAddress.map((address) => (
             <ProfileDataAddress address={address} key={+address.id} />
           ))}
         </Paper>

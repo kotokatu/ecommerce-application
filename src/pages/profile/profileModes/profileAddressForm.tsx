@@ -52,6 +52,7 @@ const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
+  const [isNewAddress, setIsNewAddress] = useState(address.id === '');
   const [checked, setChecked] = useState(props.address.isDefault);
 
   const addressform = useForm({
@@ -122,23 +123,44 @@ const ProfileAddress = (props: Props) => {
           checked={checked}
           onChange={() => setChecked(!checked)}
         />
-        <Flex align="center" justify="space-around" m={20}>
-          <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading}>
-            Save
-          </Button>
-          <Button
-            type="button"
-            style={{ width: '100px' }}
-            color="red"
-            onClick={async () => {
-              props.remove(address);
-              await userService.removeAdress(props.address.id, props.version);
-              window.location.reload();
-            }}
-          >
-            Remove address
-          </Button>
-        </Flex>
+        {!isNewAddress && (
+          <Flex align="center" justify="space-around" m={20}>
+            <Button type="submit" style={{ width: '100px' }} loading={isLoading}>
+              Update
+            </Button>
+            <Button
+              type="button"
+              style={{ width: '100px' }}
+              color="red"
+              onClick={async () => {
+                props.remove(address);
+                await userService.removeAdress(props.address.id, props.version);
+                window.location.reload();
+              }}
+            >
+              Remove
+            </Button>
+          </Flex>
+        )}
+        {isNewAddress && (
+          <Flex align="center" justify="space-around" m={20}>
+            <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading}>
+              Save
+            </Button>
+            <Button
+              type="button"
+              style={{ width: '100px' }}
+              color="red"
+              onClick={async () => {
+                props.remove(address);
+                await userService.removeAdress(props.address.id, props.version);
+                window.location.reload();
+              }}
+            >
+              Remove address
+            </Button>
+          </Flex>
+        )}
       </form>
     </Paper>
   );
