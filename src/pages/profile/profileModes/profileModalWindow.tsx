@@ -13,6 +13,7 @@ const ProfileModal = (props: { userVersion: number; userEmail: string }) => {
     initialValues: {
       currentPassword: '',
       newPassword: '',
+      repeatNewPassword: '',
     },
     validate: {
       currentPassword: (value) =>
@@ -20,6 +21,10 @@ const ProfileModal = (props: { userVersion: number; userEmail: string }) => {
           ? null
           : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
       newPassword: (value) =>
+        passwordRegex.test(value)
+          ? null
+          : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
+      repeatNewPassword: (value) =>
         passwordRegex.test(value)
           ? null
           : 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number. Only Latin letters are allowed.',
@@ -31,15 +36,19 @@ const ProfileModal = (props: { userVersion: number; userEmail: string }) => {
     <Container>
       <form
         onSubmit={passwordForm.onSubmit(async (values) => {
-          setIsLoading(true);
-          try {
-            await userService.changePassword({ version, ...values }, props.userEmail);
-            notificationSuccess('Account was succesfully updated');
-            window.location.reload();
-          } catch (err) {
-            if (err instanceof Error) notificationError(err.message);
+          if (values.repeatNewPassword === values.newPassword) {
+            setIsLoading(true);
+            try {
+              await userService.changePassword({ version, ...values }, props.userEmail);
+              notificationSuccess('Account was succesfully updated');
+              window.location.reload();
+            } catch (err) {
+              if (err instanceof Error) notificationError(err.message);
+            }
+            setIsLoading(false);
+          } else {
+            notificationError('You must repeat your password correctly');
           }
-          setIsLoading(false);
         })}
       >
         <PasswordInput
@@ -57,6 +66,14 @@ const ProfileModal = (props: { userVersion: number; userEmail: string }) => {
           label="New Password"
           placeholder="New Password"
           {...passwordForm.getInputProps('newPassword')}
+        />
+        <PasswordInput
+          pt={10}
+          withAsterisk
+          autoComplete="new-password"
+          label="Repeat new Password"
+          placeholder="New Password"
+          {...passwordForm.getInputProps('repeatNewPassword')}
         />
         <Button type="submit" loading={isLoading} fullWidth mt={20}>
           Save Changes

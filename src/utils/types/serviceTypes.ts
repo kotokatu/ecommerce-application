@@ -7,7 +7,7 @@ export type UserProfile = {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  addresses: Address[];
+  addresses: UserAddress[];
   shippingAddress: UserAddress;
   billingAddress: UserAddress;
   shippingAddressAsDefault: boolean;

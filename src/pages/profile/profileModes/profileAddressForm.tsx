@@ -6,6 +6,7 @@ import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/vali
 import { userService } from '../../../services/UserService/UserService';
 import { UserAddress } from '../../../utils/types/serviceTypes';
 import { newAddress } from './ProfileEditMode';
+import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 
 const formStyles = createStyles((theme) => ({
   container: {
@@ -43,11 +44,12 @@ const countryData = [
 type Props = {
   key: number;
   address: UserAddress;
+  version: number;
   remove: (address: UserAddress) => void;
 };
 
 const ProfileAddress = (props: Props) => {
-  //const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: UserAddress = props.address;
 
@@ -74,7 +76,15 @@ const ProfileAddress = (props: Props) => {
     <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
       <form
         onSubmit={addressform.onSubmit(async (values) => {
-          console.log('save');
+          setIsLoading(true);
+          try {
+            await userService.addAdress(values, props.version);
+            notificationSuccess('Address was succesfully updated');
+          } catch (err) {
+            if (err instanceof Error) notificationError(err.message);
+          } finally {
+            setIsLoading(false);
+          }
         })}
       >
         <Text className={classes.smallTitle} align="center">

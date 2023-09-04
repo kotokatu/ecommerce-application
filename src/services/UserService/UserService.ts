@@ -74,7 +74,7 @@ class UserService {
       password: userData.password || 'no data',
       firstName: userData.firstName || 'no data',
       lastName: userData.lastName || 'no data',
-      addresses: userData.addresses || [],
+      addresses: userData.addresses.map((address) => createAddress(userData, 'Shipping')) || [],
       dateOfBirth: userData.dateOfBirth || 'no data',
       shippingAddress: createAddress(userData, 'Shipping'),
       billingAddress: createAddress(userData, 'Billing'),

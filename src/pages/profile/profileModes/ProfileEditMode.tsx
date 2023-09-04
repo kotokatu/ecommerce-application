@@ -54,12 +54,9 @@ const ProfileEdit = (userData: UserProfile) => {
   const [isLoading, setIsLoading] = useState(false);
   const shippingAddress = userData.shippingAddress as UserAddress;
   const billingAddress = userData.billingAddress as UserAddress;
-
-  const [shipAddress, setShipAddress] = useState([shippingAddress]);
-  const [addresses, setAddresses] = useState([shippingAddress, billingAddress]);
+  const [addresses, setAddresses] = useState([...userData.addresses]);
 
   const addNewAddress = () => {
-    console.log(99999999, newAddress.key);
     newAddress.key = Math.floor(Math.random() * 999999);
     setAddresses([...addresses, newAddress]);
   };
@@ -166,7 +163,7 @@ const ProfileEdit = (userData: UserProfile) => {
 
         <Flex gap="sm" justify="center" align="start" direction="column" style={{ width: '100%' }} mb={15}>
           {addresses.map((address, i) => (
-            <ProfileAddress address={address} key={i} remove={removeAddress} />
+            <ProfileAddress address={address} key={i} remove={removeAddress} version={userData.version} />
           ))}
         </Flex>
 
