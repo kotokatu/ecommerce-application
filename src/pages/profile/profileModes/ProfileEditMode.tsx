@@ -23,11 +23,11 @@ export const newAddress: FullAddressInfo = {
   key: 999,
 };
 
-const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) => {
-  const { profile, updatePage } = props;
+const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disableBtn: boolean }) => {
+  const { profile, updatePage, disableBtn } = props;
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
-  const [isLoading, setIsLoading] = useState(false);
+  //const [isLoading, setIsLoading] = useState(false);
   const [addresses, setAddresses] = useState([...profile.addresses]);
   const [userData, setUserData] = useState({ ...profile });
 
@@ -73,16 +73,17 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
           <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
             <form
               onSubmit={form.onSubmit(async (values) => {
+                console.log(4644646, disableBtn);
                 if (!opened) {
-                  setIsLoading(true);
+                  //setIsLoading(true);
                   try {
                     await storeService.updateCurrentCustomer(values, userData.version);
                     notificationSuccess('Account was succesfully updated');
                   } catch (err) {
                     if (err instanceof Error) notificationError(err.message);
                   } finally {
-                    setIsLoading(false);
                     updatePage();
+                    //setIsLoading(false);
                   }
                 }
               })}
@@ -117,7 +118,7 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
                 <Text color="dimmed" size="sm" pt={5}>
                   Do you want to update personal info?
                 </Text>
-                <Button type="submit" loading={isLoading} style={{ width: '180px' }}>
+                <Button type="submit" loading={disableBtn} style={{ width: '180px' }}>
                   Save
                 </Button>
               </Flex>

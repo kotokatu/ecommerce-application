@@ -67,6 +67,7 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState<UserProfile>(defaultData);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
 
   useEffect(() => {
@@ -76,9 +77,11 @@ const ProfilePage = () => {
     };
     profile();
   }, [isUpdated]);
-
+  //state isLoading, setIsLoading не работает, надо править (нужен, для блокировки кнопок)
   const isNeedToUpdate = () => {
+    setIsLoading(true);
     setIsUpdated(!isUpdated);
+    setIsLoading(false);
   };
 
   if (isEditMode === false) {
@@ -105,7 +108,7 @@ const ProfilePage = () => {
       <Title className={classes.title} order={1} align="center" mb={20}>
         Your Profile
       </Title>
-      <ProfileEdit profile={profile} updatePage={isNeedToUpdate} />
+      <ProfileEdit profile={profile} updatePage={isNeedToUpdate} disableBtn={isLoading} />
       <Flex align="center" justify="center" mt={15}>
         <Button style={{ width: '180px' }} mt={5} onClick={() => setIsEditMode(false)} component={Link} to="/profile">
           Go to profile

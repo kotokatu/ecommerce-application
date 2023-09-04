@@ -41,7 +41,7 @@ const ProfileAddress = (props: Props) => {
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await storeService.updateAdress(version, address, address.id);
+    await storeService.updateAdress(version, address, address.id, checked);
     props.needUpdate();
   };
 
@@ -85,6 +85,7 @@ const ProfileAddress = (props: Props) => {
                 id: address.id,
                 name: address.name,
                 key: address.key,
+                isDefault: checked,
               });
               notificationSuccess('Address was succesfully updated');
               props.needUpdate();

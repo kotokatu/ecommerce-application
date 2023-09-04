@@ -5,7 +5,7 @@ import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetool
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, ProductType, TermFacetResult } from '@commercetools/platform-sdk';
 import { tokenCache } from '../api/BuildClient';
-import { UserProfile } from '../../utils/types/serviceTypes';
+import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
 
 interface CustomerUpdatePersonalDraft {
@@ -231,11 +231,7 @@ class StoreService {
         .execute();
       const newAddress = addAddress.body.addresses[addAddress.body.addresses.length - 1];
       const newVersion = addAddress.body.version;
-      if (type === addressType.shipping) {
-        this.addShippingAddress(newAddress.id, newVersion, isDefault);
-      } else {
-        this.addBillingAddress(newAddress.id, newVersion, isDefault);
-      }
+      this.addAddressToType(newAddress.id, newVersion, isDefault, type);
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
@@ -262,20 +258,23 @@ class StoreService {
     }
   }
 
-  private async addShippingAddress(
+  private async addAddressToType(
     addressId: string | undefined,
     version: number,
     isDefault: boolean,
+    type: string,
   ): Promise<string | void> {
+    const addShipAddress = 'addShippingAddressId';
+    const addBilAddress = 'addBillingAddressId';
     try {
-      await this.apiRoot
+      const resp = await this.apiRoot
         .me()
         .post({
           body: {
             version,
             actions: [
               {
-                action: 'addShippingAddressId',
+                action: type === addressType.shipping ? addShipAddress : addBilAddress,
                 addressId,
               },
               {
@@ -286,15 +285,18 @@ class StoreService {
           },
         })
         .execute();
+      if (isDefault) {
+        this.setDefaultAddress(resp.body.version, addressId, type);
+      }
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
 
-  private async addBillingAddress(
-    addressId: string | undefined,
+  private async setDefaultAddress(
     version: number,
-    isDefault: boolean,
+    addressId: string | undefined,
+    type: string,
   ): Promise<string | void> {
     try {
       await this.apiRoot
@@ -304,11 +306,7 @@ class StoreService {
             version,
             actions: [
               {
-                action: 'addBillingAddressId',
-                addressId,
-              },
-              {
-                action: 'setDefaultBillingAddress',
+                action: type === addressType.shipping ? 'setDefaultShippingAddress' : 'setDefaultBillingAddress',
                 addressId,
               },
             ],
@@ -320,9 +318,14 @@ class StoreService {
     }
   }
 
-  public async updateAdress(version: number, address: Address, addressId: string): Promise<string | void> {
+  public async updateAdress(
+    version: number,
+    address: FullAddressInfo,
+    addressId: string,
+    isDefault: boolean,
+  ): Promise<string | void> {
     try {
-      await this.apiRoot
+      const resp = await this.apiRoot
         .me()
         .post({
           body: {
@@ -342,6 +345,9 @@ class StoreService {
           },
         })
         .execute();
+      if (address.isDefault) {
+        this.setDefaultAddress(resp.body.version, addressId, address.name);
+      }
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
