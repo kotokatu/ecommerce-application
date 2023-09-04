@@ -31,6 +31,7 @@ const ProfileAddress = (props: Props) => {
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
   const [checked, setChecked] = useState(props.address.isDefault);
+  const [isSaveBtn, setIsSaveBtn] = useState(true);
   const isNewAddress = address.id === '';
 
   const removeAddress = async () => {
@@ -69,15 +70,29 @@ const ProfileAddress = (props: Props) => {
       <form
         onSubmit={addressform.onSubmit(async (values) => {
           setIsLoading(true);
-          try {
-            await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
-            notificationSuccess('Address was succesfully saved');
-          } catch (err) {
-            if (err instanceof Error) notificationError(err.message);
-          } finally {
-            props.needUpdate();
-            setIsLoading(false);
+          if (isSaveBtn) {
+            try {
+              await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
+              notificationSuccess('Address was succesfully saved');
+              props.needUpdate();
+            } catch (err) {
+              if (err instanceof Error) notificationError(err.message);
+            }
+          } else {
+            try {
+              await updateAddresses(props.version, {
+                ...addressform.values,
+                id: address.id,
+                name: address.name,
+                key: address.key,
+              });
+              notificationSuccess('Address was succesfully updated');
+              props.needUpdate();
+            } catch (err) {
+              if (err instanceof Error) notificationError(err.message);
+            }
           }
+          setIsLoading(false);
         })}
       >
         <Text className={classes.smallTitle} align="center" m={10}>
@@ -124,27 +139,7 @@ const ProfileAddress = (props: Props) => {
         />
         {!isNewAddress && (
           <Flex align="center" justify="space-around" m={20}>
-            <Button
-              style={{ width: '100px' }}
-              loading={isLoading}
-              type="button"
-              onClick={async () => {
-                setIsLoading(true);
-                try {
-                  await updateAddresses(props.version, {
-                    ...addressform.values,
-                    id: address.id,
-                    name: address.name,
-                    key: address.key,
-                  });
-                  notificationSuccess('Address was succesfully updated');
-                  props.needUpdate();
-                } catch (err) {
-                  if (err instanceof Error) notificationError(err.message);
-                }
-                setIsLoading(false);
-              }}
-            >
+            <Button style={{ width: '100px' }} type="submit" loading={isLoading} onClick={() => setIsSaveBtn(false)}>
               Update
             </Button>
             <Button
