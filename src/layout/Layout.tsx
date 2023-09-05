@@ -7,19 +7,28 @@ type LayoutProps = {
   isOpenBurger: boolean;
   closeBurger: () => void;
   toggleBurger: () => void;
+  isOpenNavbar: boolean;
+  setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Layout = ({ isOpenBurger, closeBurger, toggleBurger }: LayoutProps) => {
-  function closeBurgerDelay() {
+const Layout = ({ isOpenBurger, closeBurger, toggleBurger, isOpenNavbar, setIsOpenNavbar }: LayoutProps) => {
+  function closeBurgerDelay(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const wrapper = document.querySelector('.wrapper') as HTMLElement;
+
     if (isOpenBurger) {
       setTimeout(() => {
         closeBurger();
       }, 100);
     }
+
+    if (e.target === wrapper) {
+      setIsOpenNavbar(!isOpenNavbar);
+      wrapper.className = !isOpenNavbar ? 'wrapper lock blackout' : 'wrapper';
+    }
   }
 
   return (
-    <Container className="wrapper" onClick={closeBurgerDelay}>
+    <Container className="wrapper" onClick={(e) => closeBurgerDelay(e)}>
       <AppHeader isOpenBurger={isOpenBurger} toggleBurger={toggleBurger} />
       <main className="main">
         <Outlet />

@@ -12,6 +12,10 @@ const navbarCatalogStyles = createStyles((theme) => ({
     flexDirection: 'column',
     gap: '10px',
     padding: '0 1rem 0 0',
+
+    [theme.fn.smallerThan('md')]: {
+      padding: 0,
+    },
   },
 
   button: {
@@ -38,8 +42,7 @@ type NavbarCatalogProps = {
   minProductPrice: number;
   maxProductPrice: number;
   setFilters: React.Dispatch<React.SetStateAction<string[]>>;
-  isOpenNavbar: boolean;
-  setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleScroll: () => void;
 };
 
 const NavbarCatalog = ({
@@ -50,8 +53,7 @@ const NavbarCatalog = ({
   colors,
   minProductPrice,
   maxProductPrice,
-  isOpenNavbar,
-  setIsOpenNavbar,
+  toggleScroll,
 }: NavbarCatalogProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { classes } = navbarCatalogStyles();
@@ -115,8 +117,6 @@ const NavbarCatalog = ({
     setMinPrice('');
     setMaxPrice('');
     setPriceRange([minProductPrice, maxProductPrice]);
-
-    setIsOpenNavbar(!isOpenNavbar);
   }
 
   const getParentCategories = () => {
@@ -171,10 +171,23 @@ const NavbarCatalog = ({
         />
       </div>
       <div className={classes.buttons}>
-        <Button fullWidth onClick={setFilterQuery}>
+        <Button
+          fullWidth
+          onClick={() => {
+            setFilterQuery();
+            toggleScroll();
+          }}
+        >
           Show
         </Button>
-        <Button fullWidth variant="outline" onClick={clearFilterProducts}>
+        <Button
+          fullWidth
+          variant="outline"
+          onClick={() => {
+            clearFilterProducts();
+            toggleScroll();
+          }}
+        >
           Clear all
         </Button>
       </div>
