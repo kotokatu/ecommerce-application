@@ -13,7 +13,6 @@ type DropdownPriceProps = {
   setPriceRange: Dispatch<SetStateAction<number[]>>;
   setMinPrice: Dispatch<SetStateAction<string>>;
   setMaxPrice: Dispatch<SetStateAction<string>>;
-  initiallyOpened?: boolean;
 };
 
 const DropdownPrice = ({
@@ -25,10 +24,9 @@ const DropdownPrice = ({
   setMinPrice,
   maxPriceInput,
   setMaxPrice,
-  initiallyOpened,
 }: DropdownPriceProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const [opened, setOpened] = useState(min !== +minPriceInput);
 
   return (
     <>
@@ -54,12 +52,12 @@ const DropdownPrice = ({
             <PriceInput
               label="Min"
               placeholder="Min"
-              value={minPriceInput}
-              setValue={(value) => {
+              price={minPriceInput}
+              setPrice={(value) => {
                 setMinPrice(value);
                 setPriceRange([+value, priceRange[1]]);
               }}
-              setValueOnBlur={(value) => {
+              setPriceOnBlur={(value) => {
                 if (+value <= min) {
                   setMinPrice(`${min}`);
                   setPriceRange([min, priceRange[1]]);
@@ -77,12 +75,12 @@ const DropdownPrice = ({
             <PriceInput
               label="Max"
               placeholder="Max"
-              value={maxPriceInput}
-              setValue={(value) => {
+              price={maxPriceInput}
+              setPrice={(value) => {
                 setMaxPrice(value);
                 setPriceRange([priceRange[0], +value]);
               }}
-              setValueOnBlur={(value) => {
+              setPriceOnBlur={(value) => {
                 if (+value <= priceRange[0]) {
                   setMaxPrice(`${priceRange[0]}`);
                   setPriceRange([priceRange[0], priceRange[0]]);

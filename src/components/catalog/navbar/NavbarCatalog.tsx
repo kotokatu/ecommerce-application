@@ -1,12 +1,10 @@
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { FilterParams } from '../../../services/StoreService/StoreService';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { categoryCache } from '../../../pages/catalog/CatalogPage';
+import { useSearchParams } from 'react-router-dom';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -52,55 +50,72 @@ const NavbarCatalog = ({
   colors,
   minProductPrice,
   maxProductPrice,
-  setFilters,
   isOpenNavbar,
   setIsOpenNavbar,
 }: NavbarCatalogProps) => {
-  const { classes } = navbarCatalogStyles();
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-  const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
-  const [opened, setOpened] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { category, subcategory } = useParams();
+  const { classes } = navbarCatalogStyles();
+  const [selectedBrands, setSelectedBrands] = useState(
+    searchParams
+      .get('brand')
+      ?.split(', ')
+      .map((value) => value.slice(1, -1)) || [],
+  );
+  const [selectedSizes, setSelectedSizes] = useState(
+    searchParams
+      .get('size')
+      ?.split(', ')
+      .map((value) => value.slice(1, -1)) || [],
+  );
+  const [selectedColors, setSelectedColors] = useState(
+    searchParams
+      .get('color')
+      ?.split(', ')
+      .map((value) => value.slice(1, -1)) || [],
+  );
+  const [minPrice, setMinPrice] = useState(
+    searchParams
+      .get('price')
+      ?.match(/\((.*?)\)/)?.[1]
+      .split(' to ')[0]
+      .slice(0, -2) || String(minProductPrice),
+  );
+  const [maxPrice, setMaxPrice] = useState(
+    searchParams
+      .get('price')
+      ?.match(/\((.*?)\)/)?.[1]
+      .split(' to ')[1]
+      .slice(0, -2) || String(maxProductPrice),
+  );
+  const [priceRange, setPriceRange] = useState([+minPrice || minProductPrice, +maxPrice || maxProductPrice]);
+  const [opened, setOpened] = useState(false);
 
-  // useEffect(() => {
-  // const brands = searchParams.get('brand');
-  // console.log(brands);
-  // if (brands) {
-  //   const newbrands = brands.split(', ').map((brand) => brand.slice(1, -1));
-  //   console.log(newbrands);
-  //   setSelectedBrands(newbrands);
-  // }
-  // }, [searchParams]);
-
-  function getFilterQuery() {
-    console.log(selectedBrands);
-    if (selectedBrands.length) searchParams.set('brand', `"${selectedBrands.join('", "')}"`);
-    if (selectedSizes.length) searchParams.set('size', `"${selectedSizes.join('", "')}"`);
-    if (selectedColors.length) searchParams.set('color', `"${selectedColors.join('", "')}"`);
-    if (minPrice) searchParams.set('price', `(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
+  function setFilterQuery() {
+    selectedBrands.length
+      ? searchParams.set('brand', `"${selectedBrands.join('", "')}"`)
+      : searchParams.delete('brand');
+    selectedSizes.length ? searchParams.set('size', `"${selectedSizes.join('", "')}"`) : searchParams.delete('size');
+    selectedColors.length
+      ? searchParams.set('color', `"${selectedColors.join('", "')}"`)
+      : searchParams.delete('color');
+    if (minPrice) searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
     setSearchParams(searchParams);
     setIsOpenNavbar(!isOpenNavbar);
   }
 
   function clearFilterProducts() {
-    document.querySelectorAll<HTMLInputElement>('input:checked').forEach((item) => (item.checked = false));
-    setMinPrice('');
-    setMaxPrice('');
-    setPriceRange([minProductPrice, maxProductPrice]);
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
+    setMinPrice('');
+    setMaxPrice('');
+    setPriceRange([minProductPrice, maxProductPrice]);
     searchParams.delete('brand');
     searchParams.delete('size');
     searchParams.delete('color');
     searchParams.delete('price');
-    setFilters([]);
     setSearchParams(searchParams);
+
     setIsOpenNavbar(!isOpenNavbar);
   }
 
@@ -156,7 +171,7 @@ const NavbarCatalog = ({
         />
       </div>
       <div className={classes.buttons}>
-        <Button fullWidth onClick={getFilterQuery}>
+        <Button fullWidth onClick={setFilterQuery}>
           Show
         </Button>
         <Button fullWidth variant="outline" onClick={clearFilterProducts}>

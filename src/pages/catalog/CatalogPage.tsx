@@ -84,7 +84,7 @@ const useStyles = createStyles((theme) => ({
 const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [isOpenNavbar, setIsOpenNavbar] = useState<boolean>(true);
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
@@ -105,7 +105,9 @@ const CatalogPage = ({ isOpenBurger }: { isOpenBurger: boolean }) => {
         }
 
         Object.entries(FilterParams).forEach((param) => {
-          if (searchParams.get(param[0])) filterParams.push(`${param[1]}:${searchParams.get(param[0])}`);
+          if (searchParams.get(param[0])) {
+            filterParams.push(`${param[1]}:${searchParams.get(param[0])}`);
+          }
         });
 
         if (filterParams.length) {

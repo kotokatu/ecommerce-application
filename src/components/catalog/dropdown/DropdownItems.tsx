@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Box, Collapse, UnstyledButton, Checkbox } from '@mantine/core';
+import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { dropdownStyles } from './dropdownStyles';
-import { useSearchParams } from 'react-router-dom';
 import ControlledCheckbox from './ControlledCheckbox';
 
 type DropdownItemsProps = {
@@ -9,21 +8,14 @@ type DropdownItemsProps = {
   items: string[];
   selectedItems: string[];
   setSelectedItems: Dispatch<SetStateAction<string[]>>;
-  initiallyOpened?: boolean;
 };
 
-const DropdownItems = ({ name, items, initiallyOpened, selectedItems, setSelectedItems }: DropdownItemsProps) => {
+const DropdownItems = ({ name, items, selectedItems, setSelectedItems }: DropdownItemsProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const [opened, setOpened] = useState(!!selectedItems.length);
 
   const checkItems = items.map((item) => (
-    <ControlledCheckbox
-      item={item}
-      filter={name}
-      selectedItems={selectedItems}
-      setSelectedItems={setSelectedItems}
-      key={item}
-    />
+    <ControlledCheckbox item={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} key={item} />
   ));
 
   return (

@@ -1,18 +1,23 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { TextInput } from '@mantine/core';
 import { inputStyles } from './inputStyles';
 
 type PriceInputProps = {
   label: string;
   placeholder: string;
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
-  setValueOnBlur: Dispatch<SetStateAction<string>>;
+  price: string;
+  setPrice: Dispatch<SetStateAction<string>>;
+  setPriceOnBlur: Dispatch<SetStateAction<string>>;
 };
 
-const PriceInput = ({ label, placeholder, value, setValue, setValueOnBlur }: PriceInputProps) => {
+const PriceInput = ({ label, placeholder, price, setPrice, setPriceOnBlur }: PriceInputProps) => {
   const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState('');
   const { classes } = inputStyles({ floating: value.trim().length !== 0 || focused });
+
+  useEffect(() => {
+    setValue(price || '');
+  }, [price]);
 
   return (
     <TextInput
@@ -21,11 +26,11 @@ const PriceInput = ({ label, placeholder, value, setValue, setValueOnBlur }: Pri
       placeholder={placeholder}
       classNames={classes}
       value={value}
-      onChange={(event) => setValue(event.currentTarget.value)}
+      onChange={(event) => setPrice(event.currentTarget.value)}
       onFocus={() => setFocused(true)}
       onBlur={(event) => {
         setFocused(false);
-        setValueOnBlur(event.currentTarget.value);
+        setPriceOnBlur(event.currentTarget.value);
       }}
       mt="md"
       autoComplete="nope"
