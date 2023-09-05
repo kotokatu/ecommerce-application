@@ -29,7 +29,7 @@ const DropdownPrice = ({
 }: DropdownPriceProps) => {
   const { classes } = dropdownStyles();
   const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(!!minPriceInput || !!maxPriceInput);
 
   useEffect(() => {
     const getMinMaxPrices = async () => {
@@ -57,6 +57,7 @@ const DropdownPrice = ({
               min={minMaxPrices[0]}
               max={minMaxPrices[1]}
               onChange={(value) => {
+                setPriceRange([value[0], value[1]]);
                 setMinPrice(`${value[0]}`);
                 setMaxPrice(`${value[1]}`);
               }}
