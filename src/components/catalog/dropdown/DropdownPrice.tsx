@@ -1,10 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { dropdownStyles } from './dropdownStyles';
 import Slider from 'react-slider';
 import PriceInput from '../input/PriceInput';
-import { storeService } from '../../../services/StoreService/StoreService';
-import { notificationError } from '../../ui/notification';
 
 type DropdownPriceProps = {
   minPriceInput: string;
@@ -15,6 +13,7 @@ type DropdownPriceProps = {
   setMaxPrice: Dispatch<SetStateAction<string>>;
   minProductPrice: number;
   maxProductPrice: number;
+  minMaxPrices: number[];
 };
 
 const DropdownPrice = ({
@@ -26,22 +25,10 @@ const DropdownPrice = ({
   setMaxPrice,
   minProductPrice,
   maxProductPrice,
+  minMaxPrices,
 }: DropdownPriceProps) => {
   const { classes } = dropdownStyles();
-  const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(!!minPriceInput || !!maxPriceInput);
-
-  useEffect(() => {
-    const getMinMaxPrices = async () => {
-      try {
-        const res = await storeService.getAllPrices();
-        if (res) setMinMaxPrices(res);
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-    getMinMaxPrices();
-  }, []);
 
   return (
     <>

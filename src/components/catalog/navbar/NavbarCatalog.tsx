@@ -1,10 +1,12 @@
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
+import { storeService } from '../../../services/StoreService/StoreService';
+import { notificationError } from '../../ui/notification';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -55,6 +57,7 @@ const NavbarCatalog = ({
   maxProductPrice,
   toggleScroll,
 }: NavbarCatalogProps) => {
+  const { category, subcategory } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState(
@@ -90,6 +93,7 @@ const NavbarCatalog = ({
       .slice(0, -2) || '',
   );
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
+  const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
 
   function setFilterQuery() {
@@ -125,6 +129,23 @@ const NavbarCatalog = ({
   const getChildrenCategories = (categoryName: string) => {
     return categories.filter((category) => category.parentName === categoryName).sort((a, b) => +a.order - +b.order);
   };
+
+  useEffect(() => {
+    clearFilterProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, subcategory]);
+
+  useEffect(() => {
+    const getMinMaxPrices = async () => {
+      try {
+        const res = await storeService.getAllPrices();
+        if (res) setMinMaxPrices(res);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
+    };
+    getMinMaxPrices();
+  }, []);
 
   return (
     <div className={className}>
@@ -167,6 +188,7 @@ const NavbarCatalog = ({
           setMinPrice={setMinPrice}
           maxPriceInput={maxPrice}
           setMaxPrice={setMaxPrice}
+          minMaxPrices={minMaxPrices}
         />
       </div>
       <div className={classes.buttons}>
