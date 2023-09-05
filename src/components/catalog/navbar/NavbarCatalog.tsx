@@ -102,7 +102,6 @@ const NavbarCatalog = ({
       : searchParams.delete('color');
     if (minPrice) searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
     setSearchParams(searchParams);
-    setIsOpenNavbar(!isOpenNavbar);
   }
 
   function clearFilterProducts() {
