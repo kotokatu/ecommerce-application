@@ -144,7 +144,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
 
         setResources(res);
       } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
+        setResources({ products: [], prices: [], colors: [], sizes: [], brands: [] });
       }
     };
 

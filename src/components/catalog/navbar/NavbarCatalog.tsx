@@ -4,7 +4,7 @@ import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { useSearchParams, useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { notificationError } from '../../ui/notification';
 
@@ -57,7 +57,6 @@ const NavbarCatalog = ({
   maxProductPrice,
   toggleScroll,
 }: NavbarCatalogProps) => {
-  const { category, subcategory } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState(
@@ -131,9 +130,11 @@ const NavbarCatalog = ({
   };
 
   useEffect(() => {
-    clearFilterProducts();
+    if (searchParams.size === 0) {
+      clearFilterProducts();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory]);
+  }, [searchParams]);
 
   useEffect(() => {
     const getMinMaxPrices = async () => {
