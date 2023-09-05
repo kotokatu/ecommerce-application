@@ -6,7 +6,6 @@ import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
-import { notificationError } from '../../components/ui/notification';
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
 
