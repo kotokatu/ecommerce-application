@@ -167,6 +167,25 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
+
+  public async getAllPrices(): Promise<number[]> {
+    try {
+      const response = await this.apiRoot
+        .productProjections()
+        .search()
+        .get({
+          queryArgs: {
+            facet: FilterParams.price,
+          },
+        })
+        .execute();
+      const { facets } = response.body;
+      const prices = (facets[FilterParams.price] as TermFacetResult).terms.map((facet) => +facet.term);
+      return [Math.min(...prices) / 100, Math.max(...prices) / 100];
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
 }
 
 export const storeService = new StoreService();

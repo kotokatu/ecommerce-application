@@ -78,16 +78,16 @@ const NavbarCatalog = ({
       .get('price')
       ?.match(/\((.*?)\)/)?.[1]
       .split(' to ')[0]
-      .slice(0, -2) || String(minProductPrice),
+      .slice(0, -2) || '',
   );
   const [maxPrice, setMaxPrice] = useState(
     searchParams
       .get('price')
       ?.match(/\((.*?)\)/)?.[1]
       .split(' to ')[1]
-      .slice(0, -2) || String(maxProductPrice),
+      .slice(0, -2) || '',
   );
-  const [priceRange, setPriceRange] = useState([+minPrice || minProductPrice, +maxPrice || maxProductPrice]);
+  const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
   const [opened, setOpened] = useState(false);
 
   function setFilterQuery() {
@@ -104,17 +104,17 @@ const NavbarCatalog = ({
   }
 
   function clearFilterProducts() {
+    searchParams.delete('brand');
+    searchParams.delete('size');
+    searchParams.delete('color');
+    searchParams.delete('price');
+    setSearchParams(searchParams);
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
     setMinPrice('');
     setMaxPrice('');
     setPriceRange([minProductPrice, maxProductPrice]);
-    searchParams.delete('brand');
-    searchParams.delete('size');
-    searchParams.delete('color');
-    searchParams.delete('price');
-    setSearchParams(searchParams);
 
     setIsOpenNavbar(!isOpenNavbar);
   }
@@ -160,8 +160,8 @@ const NavbarCatalog = ({
       </div>
       <div>
         <DropdownPrice
-          min={minProductPrice}
-          max={maxProductPrice}
+          minProductPrice={minProductPrice}
+          maxProductPrice={maxProductPrice}
           priceRange={priceRange}
           setPriceRange={setPriceRange}
           minPriceInput={minPrice}

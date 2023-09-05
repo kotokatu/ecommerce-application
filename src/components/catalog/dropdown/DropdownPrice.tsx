@@ -1,32 +1,47 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { dropdownStyles } from './dropdownStyles';
 import Slider from 'react-slider';
 import PriceInput from '../input/PriceInput';
+import { storeService } from '../../../services/StoreService/StoreService';
+import { notificationError } from '../../ui/notification';
 
 type DropdownPriceProps = {
-  min: number;
-  max: number;
   minPriceInput: string;
   maxPriceInput: string;
   priceRange: number[];
   setPriceRange: Dispatch<SetStateAction<number[]>>;
   setMinPrice: Dispatch<SetStateAction<string>>;
   setMaxPrice: Dispatch<SetStateAction<string>>;
+  minProductPrice: number;
+  maxProductPrice: number;
 };
 
 const DropdownPrice = ({
-  min,
-  max,
   priceRange,
   setPriceRange,
   minPriceInput,
   setMinPrice,
   maxPriceInput,
   setMaxPrice,
+  minProductPrice,
+  maxProductPrice,
 }: DropdownPriceProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(min !== +minPriceInput);
+  const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    const getMinMaxPrices = async () => {
+      try {
+        const res = await storeService.getAllPrices();
+        if (res) setMinMaxPrices(res);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
+    };
+    getMinMaxPrices();
+  }, []);
 
   return (
     <>
@@ -38,11 +53,10 @@ const DropdownPrice = ({
           <div className={classes.sliderbox}>
             <Slider
               className={classes.slider}
-              value={priceRange}
-              min={min}
-              max={max}
+              value={[+minPriceInput || minProductPrice, +maxPriceInput || maxProductPrice]}
+              min={minMaxPrices[0]}
+              max={minMaxPrices[1]}
               onChange={(value) => {
-                setPriceRange(value);
                 setMinPrice(`${value[0]}`);
                 setMaxPrice(`${value[1]}`);
               }}
@@ -58,9 +72,9 @@ const DropdownPrice = ({
                 setPriceRange([+value, priceRange[1]]);
               }}
               setPriceOnBlur={(value) => {
-                if (+value <= min) {
-                  setMinPrice(`${min}`);
-                  setPriceRange([min, priceRange[1]]);
+                if (+value <= minProductPrice) {
+                  setMinPrice(`${minProductPrice}`);
+                  setPriceRange([minProductPrice, priceRange[1]]);
                 }
                 if (+value >= priceRange[1]) {
                   setMinPrice(`${priceRange[1]}`);
@@ -68,7 +82,7 @@ const DropdownPrice = ({
                 }
                 if (+value === 0) {
                   setMinPrice('');
-                  setPriceRange([min, priceRange[1]]);
+                  setPriceRange([minProductPrice, priceRange[1]]);
                 }
               }}
             />
@@ -85,9 +99,9 @@ const DropdownPrice = ({
                   setMaxPrice(`${priceRange[0]}`);
                   setPriceRange([priceRange[0], priceRange[0]]);
                 }
-                if (+value >= max || +value === 0) {
+                if (+value >= maxProductPrice || +value === 0) {
                   setMaxPrice('');
-                  setPriceRange([priceRange[0], max]);
+                  setPriceRange([priceRange[0], maxProductPrice]);
                 }
               }}
             />
