@@ -1,12 +1,12 @@
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { FilterParams } from '../../../services/StoreService/StoreService';
-import { useParams } from 'react-router-dom';
-import { categoryCache } from '../../../pages/catalog/CatalogPage';
+import { useSearchParams } from 'react-router-dom';
+import { storeService } from '../../../services/StoreService/StoreService';
+import { notificationError } from '../../ui/notification';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -55,47 +55,70 @@ const NavbarCatalog = ({
   colors,
   minProductPrice,
   maxProductPrice,
-  setFilters,
   toggleScroll,
 }: NavbarCatalogProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { classes } = navbarCatalogStyles();
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState(
+    searchParams
+      .get('brand')
+      ?.split(', ')
+      .map((value) => value.slice(1, -1)) || [],
+  );
+  const [selectedSizes, setSelectedSizes] = useState(
+    searchParams
+      .get('size')
+      ?.split(', ')
+      .map((value) => value.slice(1, -1)) || [],
+  );
+  const [selectedColors, setSelectedColors] = useState(
+    searchParams
+      .get('color')
+      ?.split(', ')
+      .map((value) => value.slice(1, -1)) || [],
+  );
+  const [minPrice, setMinPrice] = useState(
+    searchParams
+      .get('price')
+      ?.match(/\((.*?)\)/)?.[1]
+      .split(' to ')[0]
+      .slice(0, -2) || '',
+  );
+  const [maxPrice, setMaxPrice] = useState(
+    searchParams
+      .get('price')
+      ?.match(/\((.*?)\)/)?.[1]
+      .split(' to ')[1]
+      .slice(0, -2) || '',
+  );
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
+  const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
-  const { category, subcategory } = useParams();
 
-  useEffect(() => {
-    clearFilterProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory]);
-
-  function getFilterProducts() {
-    setFilters([
-      category
-        ? `${FilterParams.category}: "${
-            subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
-          }"`
-        : '',
-      selectedBrands.length ? `${FilterParams.brand}: "${selectedBrands.join('", "')}"` : '',
-      selectedSizes.length ? `${FilterParams.size}: "${selectedSizes.join('", "')}"` : '',
-      selectedColors.length ? `${FilterParams.color}: "${selectedColors.join('", "')}"` : '',
-      minPrice ? `${FilterParams.price}: range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})` : '',
-    ]);
+  function setFilterQuery() {
+    selectedBrands.length
+      ? searchParams.set('brand', `"${selectedBrands.join('", "')}"`)
+      : searchParams.delete('brand');
+    selectedSizes.length ? searchParams.set('size', `"${selectedSizes.join('", "')}"`) : searchParams.delete('size');
+    selectedColors.length
+      ? searchParams.set('color', `"${selectedColors.join('", "')}"`)
+      : searchParams.delete('color');
+    if (minPrice) searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
+    setSearchParams(searchParams);
   }
 
   function clearFilterProducts() {
-    document.querySelectorAll<HTMLInputElement>('input:checked').forEach((item) => (item.checked = false));
-    setMinPrice('');
-    setMaxPrice('');
-    setPriceRange([minProductPrice, maxProductPrice]);
+    searchParams.delete('brand');
+    searchParams.delete('size');
+    searchParams.delete('color');
+    searchParams.delete('price');
+    setSearchParams(searchParams);
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
-    setFilters([]);
+    setMinPrice('');
+    setMaxPrice('');
+    setPriceRange([minProductPrice, maxProductPrice]);
   }
 
   const getParentCategories = () => {
@@ -105,6 +128,25 @@ const NavbarCatalog = ({
   const getChildrenCategories = (categoryName: string) => {
     return categories.filter((category) => category.parentName === categoryName).sort((a, b) => +a.order - +b.order);
   };
+
+  useEffect(() => {
+    if (searchParams.size === 0) {
+      clearFilterProducts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  useEffect(() => {
+    const getMinMaxPrices = async () => {
+      try {
+        const res = await storeService.getAllPrices();
+        if (res) setMinMaxPrices(res);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
+    };
+    getMinMaxPrices();
+  }, []);
 
   return (
     <div className={className}>
@@ -139,21 +181,22 @@ const NavbarCatalog = ({
       </div>
       <div>
         <DropdownPrice
-          min={minProductPrice}
-          max={maxProductPrice}
+          minProductPrice={minProductPrice}
+          maxProductPrice={maxProductPrice}
           priceRange={priceRange}
           setPriceRange={setPriceRange}
           minPriceInput={minPrice}
           setMinPrice={setMinPrice}
           maxPriceInput={maxPrice}
           setMaxPrice={setMaxPrice}
+          minMaxPrices={minMaxPrices}
         />
       </div>
       <div className={classes.buttons}>
         <Button
           fullWidth
           onClick={() => {
-            getFilterProducts();
+            setFilterQuery();
             toggleScroll();
           }}
         >

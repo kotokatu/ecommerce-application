@@ -1,32 +1,21 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Box, Collapse, UnstyledButton, Checkbox } from '@mantine/core';
+import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { dropdownStyles } from './dropdownStyles';
+import ControlledCheckbox from './ControlledCheckbox';
 
 type DropdownItemsProps = {
   name: string;
   items: string[];
   selectedItems: string[];
   setSelectedItems: Dispatch<SetStateAction<string[]>>;
-  initiallyOpened?: boolean;
 };
 
-const DropdownItems = ({ name, items, initiallyOpened, selectedItems, setSelectedItems }: DropdownItemsProps) => {
+const DropdownItems = ({ name, items, selectedItems, setSelectedItems }: DropdownItemsProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const [opened, setOpened] = useState(!!selectedItems.length);
 
   const checkItems = items.map((item) => (
-    <Checkbox
-      className={classes.item}
-      key={item}
-      label={item}
-      onChange={(event) => {
-        if (event.target.checked) {
-          setSelectedItems([...selectedItems, item]);
-        } else {
-          setSelectedItems(selectedItems.filter((selectedItem) => selectedItem !== item));
-        }
-      }}
-    />
+    <ControlledCheckbox item={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} key={item} />
   ));
 
   return (

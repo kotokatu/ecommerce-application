@@ -29,7 +29,6 @@ const addressType = {
 };
 
 export const FilterParams = {
-  category: 'categories.id',
   brand: 'variants.attributes.brand',
   color: 'variants.attributes.color.label',
   size: 'variants.attributes.size.label',
@@ -46,7 +45,6 @@ export type QueryArgs = {
 };
 
 export type GetProductsReturnType = {
-  categories: string[];
   brands: string[];
   colors: string[];
   sizes: string[];
@@ -392,10 +390,29 @@ class StoreService {
         })
         .execute();
       const { facets, results: products } = response.body;
-      const [categories, brands, colors, sizes, prices] = Object.values(FilterParams).map((facet) =>
+      const [brands, colors, sizes, prices] = Object.values(FilterParams).map((facet) =>
         (facets[facet] as TermFacetResult).terms.map((term) => term.term),
       );
-      return { categories, brands, colors, sizes, prices, products };
+      return { brands, colors, sizes, prices, products };
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getAllPrices(): Promise<number[]> {
+    try {
+      const response = await this.apiRoot
+        .productProjections()
+        .search()
+        .get({
+          queryArgs: {
+            facet: FilterParams.price,
+          },
+        })
+        .execute();
+      const { facets } = response.body;
+      const prices = (facets[FilterParams.price] as TermFacetResult).terms.map((facet) => +facet.term);
+      return [Math.min(...prices) / 100, Math.max(...prices) / 100];
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }

@@ -6,8 +6,8 @@ import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
-import { notificationError } from '../../components/ui/notification';
 import { CategoryCache } from '../../services/api/CategoryCache';
+import { FilterParams } from '../../services/StoreService/StoreService';
 
 export const categoryCache = new CategoryCache();
 
@@ -104,24 +104,26 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     const getProducts = async () => {
       try {
         const queryParams: QueryArgs = {};
+        const filterParams = [];
         await categoryCache.get();
 
         if (category) {
-          queryParams.filter = [
+          filterParams.push(
             `categories.id: "${
               subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
             }"`,
-          ];
-          queryParams['filter.facets'] = [
-            `categories.id: "${
-              subcategory ? categoryCache.getCategoryID(subcategory, category) : categoryCache.getCategoryID(category)
-            }"`,
-          ];
+          );
         }
 
-        if (filters.length) {
-          queryParams.filter = filters;
-          queryParams['filter.facets'] = filters;
+        Object.entries(FilterParams).forEach((param) => {
+          if (searchParams.get(param[0])) {
+            filterParams.push(`${param[1]}:${searchParams.get(param[0])}`);
+          }
+        });
+
+        if (filterParams.length) {
+          queryParams.filter = filterParams;
+          queryParams['filter.facets'] = filterParams;
         }
 
         const searchQuery = searchParams.get('search');
@@ -141,7 +143,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
 
         setResources(res);
       } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
+        setResources({ products: [], prices: [], colors: [], sizes: [], brands: [] });
       }
     };
 
