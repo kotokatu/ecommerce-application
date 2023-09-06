@@ -56,6 +56,7 @@ const DropdownPrice = ({
               placeholder="Min"
               price={minPriceInput}
               setPrice={(value) => {
+                if (Number.isNaN(+value)) return;
                 setMinPrice(value);
                 setPriceRange([+value, priceRange[1]]);
               }}
@@ -75,17 +76,17 @@ const DropdownPrice = ({
               placeholder="Max"
               price={maxPriceInput}
               setPrice={(value) => {
+                if (Number.isNaN(+value)) return;
                 setMaxPrice(value);
                 setPriceRange([priceRange[0], +value]);
               }}
               setPriceOnBlur={(value) => {
-                if (+value <= priceRange[0]) {
-                  setMaxPrice(`${priceRange[0]}`);
-                  setPriceRange([priceRange[0], priceRange[0]]);
-                }
-                if (+value >= maxProductPrice) {
+                if (+value === 0 || +value >= maxProductPrice) {
                   setMaxPrice(`${maxProductPrice}`);
                   setPriceRange([priceRange[0], maxProductPrice]);
+                } else if (+value <= priceRange[0] && +value !== 0) {
+                  setMaxPrice(`${priceRange[0]}`);
+                  setPriceRange([priceRange[0], priceRange[0]]);
                 }
               }}
             />
