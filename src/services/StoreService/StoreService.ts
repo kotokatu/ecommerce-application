@@ -275,10 +275,6 @@ class StoreService {
                 action: type === addressType.shipping ? addShipAddress : addBilAddress,
                 addressId,
               },
-              {
-                action: 'setDefaultShippingAddress',
-                addressId,
-              },
             ],
           },
         })

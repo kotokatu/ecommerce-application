@@ -33,6 +33,7 @@ const ProfileAddress = (props: Props) => {
   const [checked, setChecked] = useState(props.address.isDefault);
   const [isSaveBtn, setIsSaveBtn] = useState(true);
   const isNewAddress = address.id === '';
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const removeAddress = async () => {
     props.remove(address);
@@ -75,6 +76,7 @@ const ProfileAddress = (props: Props) => {
               await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
               notificationSuccess('Address was succesfully saved');
               props.needUpdate();
+              setIsBtnDisabled(true);
             } catch (err) {
               if (err instanceof Error) notificationError(err.message);
             }
@@ -152,7 +154,9 @@ const ProfileAddress = (props: Props) => {
                 setIsLoading(true);
                 try {
                   await removeAddress();
+                  notificationSuccess('Address was succesfully deleted');
                   props.needUpdate();
+                  window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
@@ -165,7 +169,7 @@ const ProfileAddress = (props: Props) => {
         )}
         {isNewAddress && (
           <Flex align="center" justify="space-around" m={20}>
-            <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading}>
+            <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading} disabled={isBtnDisabled}>
               Save
             </Button>
           </Flex>

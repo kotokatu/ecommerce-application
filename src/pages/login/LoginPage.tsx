@@ -22,6 +22,9 @@ import useAuth from '../../utils/hooks/useAuth';
 const formStyles = createStyles((theme) => ({
   container: {
     width: '450px',
+    [theme.fn.smallerThan('xs')]: {
+      width: '300px',
+    },
   },
   title: {
     fontWeight: 800,
