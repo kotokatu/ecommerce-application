@@ -154,7 +154,9 @@ const ProfileAddress = (props: Props) => {
                 setIsLoading(true);
                 try {
                   await removeAddress();
+                  notificationSuccess('Address was succesfully deleted');
                   props.needUpdate();
+                  window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
