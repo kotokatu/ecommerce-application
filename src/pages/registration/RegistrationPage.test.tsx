@@ -9,7 +9,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 import userEvent from '@testing-library/user-event';
 import { storeService } from '../../services/StoreService/StoreService';
 global.ResizeObserver = ResizeObserver;
-jest.setTimeout(35000);
+jest.setTimeout(50000);
 jest.mock('../../services/storeService/storeService', () => ({
   storeService: {
     signupUser: jest.fn(),

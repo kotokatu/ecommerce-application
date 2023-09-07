@@ -122,7 +122,7 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
                 </Button>
               </Flex>
 
-              <Modal opened={opened} onClose={close} centered>
+              <Modal opened={opened} onClose={close} centered title="Change a Password">
                 <ProfileModal userVersion={userData.version} userEmail={userData.email} />
               </Modal>
             </form>
