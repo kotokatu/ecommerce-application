@@ -68,7 +68,7 @@ const DropdownPrice = ({
                   setMinPrice(`${priceRange[1]}`);
                   setPriceRange([priceRange[1], priceRange[1]]);
                 }
-                setMaxPrice(`${maxProductPrice}`);
+                if (!maxPriceInput) setMaxPrice(`${maxProductPrice}`);
               }}
             />
             <PriceInput
@@ -87,6 +87,7 @@ const DropdownPrice = ({
                   setMaxPrice(`${priceRange[0]}`);
                   setPriceRange([priceRange[0], priceRange[0]]);
                 }
+                if (!minPriceInput) setMinPrice(`${minProductPrice}`);
               }}
             />
           </div>
