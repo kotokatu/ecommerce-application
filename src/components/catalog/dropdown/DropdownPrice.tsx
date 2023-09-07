@@ -56,7 +56,6 @@ const DropdownPrice = ({
               placeholder="Min"
               price={minPriceInput}
               setPrice={(value) => {
-                if (Number.isNaN(+value)) return;
                 setMinPrice(value);
                 setPriceRange([+value, priceRange[1]]);
               }}
@@ -69,6 +68,7 @@ const DropdownPrice = ({
                   setMinPrice(`${priceRange[1]}`);
                   setPriceRange([priceRange[1], priceRange[1]]);
                 }
+                setMaxPrice(`${maxProductPrice}`);
               }}
             />
             <PriceInput
@@ -76,7 +76,6 @@ const DropdownPrice = ({
               placeholder="Max"
               price={maxPriceInput}
               setPrice={(value) => {
-                if (Number.isNaN(+value)) return;
                 setMaxPrice(value);
                 setPriceRange([priceRange[0], +value]);
               }}

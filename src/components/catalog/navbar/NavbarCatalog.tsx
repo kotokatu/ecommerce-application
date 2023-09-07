@@ -105,7 +105,8 @@ const NavbarCatalog = ({
     selectedColors.length
       ? searchParams.set('color', `"${selectedColors.join('", "')}"`)
       : searchParams.delete('color');
-    if (minPrice) searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
+    if (minPrice || maxPrice)
+      searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
     setSearchParams(searchParams);
   }
 
