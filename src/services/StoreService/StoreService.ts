@@ -86,12 +86,12 @@ class StoreService {
       lastName: userData.lastName,
       dateOfBirth: formatDate(userData.dateOfBirth as Date),
       addresses: userData.copyShippingToBilling
-        ? [{ ...userData.shippingAddress }]
+        ? [{ ...userData.shippingAddress }, { ...userData.shippingAddress }]
         : [{ ...userData.shippingAddress }, { ...userData.billingAddress }],
       shippingAddresses: [0],
-      billingAddresses: userData.copyShippingToBilling ? [0] : [1],
+      billingAddresses: [1],
       defaultShippingAddress: userData.setDefaultShippingAddress ? 0 : undefined,
-      defaultBillingAddress: !userData.setDefaultBillingAddress ? undefined : userData.copyShippingToBilling ? 0 : 1,
+      defaultBillingAddress: userData.setDefaultBillingAddress ? 1 : undefined,
     };
     return customerDraft;
   }
