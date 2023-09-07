@@ -1,5 +1,6 @@
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
@@ -94,6 +95,7 @@ const NavbarCatalog = ({
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
   const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
+  const { category, subcategory } = useParams();
 
   function setFilterQuery() {
     selectedBrands.length
@@ -134,7 +136,7 @@ const NavbarCatalog = ({
       clearFilterProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [category, subcategory]);
 
   useEffect(() => {
     const getMinMaxPrices = async () => {
