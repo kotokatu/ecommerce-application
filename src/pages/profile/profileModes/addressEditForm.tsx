@@ -30,19 +30,19 @@ const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
-  const [checked, setChecked] = useState(props.address.isDefault);
+  //const [checked, setChecked] = useState(props.address.isDefault);
   const [isSaveBtn, setIsSaveBtn] = useState(true);
   const isNewAddress = address.id === '';
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const removeAddress = async () => {
     props.remove(address);
-    await storeService.removeAdress(props.address.id, props.version);
+    await storeService.removeAddress(props.address.id, props.version);
     props.needUpdate();
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await storeService.updateAdress(version, address, checked);
+    await storeService.updateAddress(version, address, address.isDefault);
     props.needUpdate();
   };
 
@@ -53,7 +53,7 @@ const ProfileAddress = (props: Props) => {
       streetName: address.streetName,
       postalCode: address.postalCode,
       addressType: address.name,
-      isDefault: checked,
+      isDefault: address.isDefault,
     },
 
     validate: {
@@ -73,7 +73,7 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
-              await storeService.addAddress(values, props.version, values.addressType, checked);
+              await storeService.addAddress(values, props.version, values.addressType, values.isDefault);
               notificationSuccess('Address was succesfully saved');
               props.needUpdate();
               setIsBtnDisabled(true);
@@ -87,7 +87,7 @@ const ProfileAddress = (props: Props) => {
                 id: address.id,
                 name: address.name,
                 key: address.key,
-                isDefault: checked,
+                isDefault: address.isDefault,
               });
               notificationSuccess('Address was succesfully updated');
               props.needUpdate();
@@ -137,8 +137,8 @@ const ProfileAddress = (props: Props) => {
           m={10}
           label="Set as default address"
           {...addressform.getInputProps('setDefault')}
-          checked={checked}
-          onChange={() => setChecked(!checked)}
+          //checked={checked}
+          //onChange={() => setChecked(!checked)}
         />
         {!isNewAddress && (
           <Flex align="center" justify="space-around" m={20} direction={{ base: 'column', xs: 'row' }} gap="sm">
@@ -154,7 +154,6 @@ const ProfileAddress = (props: Props) => {
                 setIsLoading(true);
                 try {
                   await removeAddress();
-                  props.needUpdate();
                   notificationSuccess('Address was succesfully deleted');
                   window.location.reload();
                 } catch (err) {
