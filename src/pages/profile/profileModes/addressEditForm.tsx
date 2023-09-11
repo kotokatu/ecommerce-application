@@ -30,7 +30,7 @@ const ProfileAddress = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
   const address: FullAddressInfo = props.address;
-  //const [checked, setChecked] = useState(props.address.isDefault);
+  const [checked, setChecked] = useState(props.address.isDefault);
   const [isSaveBtn, setIsSaveBtn] = useState(true);
   const isNewAddress = address.id === '';
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
@@ -42,7 +42,7 @@ const ProfileAddress = (props: Props) => {
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await storeService.updateAddress(version, address, address.isDefault);
+    await storeService.updateAddress(version, address, checked);
     props.needUpdate();
   };
 
@@ -53,7 +53,7 @@ const ProfileAddress = (props: Props) => {
       streetName: address.streetName,
       postalCode: address.postalCode,
       addressType: address.name,
-      isDefault: address.isDefault,
+      isDefault: checked,
     },
 
     validate: {
@@ -73,7 +73,7 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
-              await storeService.addAddress(values, props.version, values.addressType, values.isDefault);
+              await storeService.addAddress(values, props.version, values.addressType, checked);
               notificationSuccess('Address was succesfully saved');
               props.needUpdate();
               setIsBtnDisabled(true);
@@ -87,7 +87,7 @@ const ProfileAddress = (props: Props) => {
                 id: address.id,
                 name: address.name,
                 key: address.key,
-                isDefault: address.isDefault,
+                isDefault: checked,
               });
               notificationSuccess('Address was succesfully updated');
               props.needUpdate();
@@ -137,8 +137,8 @@ const ProfileAddress = (props: Props) => {
           m={10}
           label="Set as default address"
           {...addressform.getInputProps('setDefault')}
-          //checked={checked}
-          //onChange={() => setChecked(!checked)}
+          checked={checked}
+          onChange={() => setChecked(!checked)}
         />
         {!isNewAddress && (
           <Flex align="center" justify="space-around" m={20} direction={{ base: 'column', xs: 'row' }} gap="sm">
