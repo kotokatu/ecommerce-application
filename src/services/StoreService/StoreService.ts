@@ -3,10 +3,10 @@ import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/dec
 import { formatDate } from '../../utils/helpers/date-helpers';
 import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
-import { ProductProjection, ProductType, TermFacetResult } from '@commercetools/platform-sdk';
-import { tokenCache } from '../api/BuildClient';
+import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
+import { tokenCache } from '../api/TokenCache';
 
 interface CustomerUpdatePersonalDraft {
   email: string;
@@ -74,8 +74,10 @@ type UserData = {
 
 class StoreService {
   private apiRoot: ByProjectKeyRequestBuilder;
+  public isUserLoggedIn: boolean;
   constructor() {
     this.apiRoot = new CtpClient().getApiRoot();
+    this.isUserLoggedIn = tokenCache.checkToken();
   }
 
   private createCustomerDraft(userData: UserData): CustomerDraft {
@@ -128,7 +130,6 @@ class StoreService {
 
   public async loginUser(email: string, password: string) {
     try {
-      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
       await this.apiRoot
         .me()
         .login()
@@ -139,13 +140,17 @@ class StoreService {
           },
         })
         .execute();
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
+      this.getUserProfile();
+      this.isUserLoggedIn = true;
     } catch (err) {
-      this.apiRoot = new CtpClient().getApiRoot();
+      this.isUserLoggedIn = false;
       throw new Error(getErrorMessage(err));
     }
   }
 
   public logoutUser() {
+    this.isUserLoggedIn = false;
     tokenCache.clear();
     this.apiRoot = new CtpClient().getApiRoot();
   }
@@ -347,15 +352,6 @@ class StoreService {
     }
   }
 
-  public async getProductTypes(): Promise<ProductType[] | undefined> {
-    try {
-      const productTypes = await this.apiRoot.productTypes().get().execute();
-      return productTypes.body.results;
-    } catch (err) {
-      throw new Error(getErrorMessage(err));
-    }
-  }
-
   public async getProduct(ID: string): Promise<ProductProjection> {
     const productData = await this.apiRoot.productProjections().withId({ ID }).get().execute();
     return productData.body;
@@ -382,6 +378,7 @@ class StoreService {
           queryArgs: {
             ...params,
             facet: Object.values(FilterParams),
+            limit: 6,
           },
         })
         .execute();
