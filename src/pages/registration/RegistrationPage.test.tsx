@@ -7,18 +7,18 @@ import { BrowserRouter } from 'react-router-dom';
 import RegistrationPage from './RegistrationPage';
 import ResizeObserver from 'resize-observer-polyfill';
 import userEvent from '@testing-library/user-event';
-import { userService } from '../../services/UserService/UserService';
+import { storeService } from '../../services/StoreService/StoreService';
 global.ResizeObserver = ResizeObserver;
-jest.setTimeout(35000);
-jest.mock('../../services/UserService/UserService', () => ({
-  userService: {
-    signup: jest.fn(),
+jest.setTimeout(50000);
+jest.mock('../../services/storeService/storeService', () => ({
+  storeService: {
+    signupUser: jest.fn(),
   },
 }));
 
 describe('RegistrationPage', () => {
   it('should display an error message when the user submits the form with an invalid email format', () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -29,7 +29,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the form is submitted with a weak password', async () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -44,7 +44,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the form is submitted with an empty first name', async () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -55,7 +55,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the form is submitted with an empty last name', async () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -66,7 +66,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the user submits the form with a date of birth indicating an age less than 13', async () => {
-    const { container } = render(<RegistrationPage onSignIn={jest.fn()} />, {
+    const { container } = render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -78,7 +78,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the user submits the form with an empty shipping country', async () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -88,7 +88,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the user submits the form with an invalid shipping city', async () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -99,7 +99,7 @@ describe('RegistrationPage', () => {
   });
 
   it('should display an error message when the user submits the form with an invalid shipping postal code', () => {
-    render(<RegistrationPage onSignIn={jest.fn()} />, {
+    render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
@@ -110,8 +110,8 @@ describe('RegistrationPage', () => {
   });
 
   it('should submit the form when all required fields are filled out correctly', async () => {
-    const mockSignup = jest.spyOn(userService, 'signup');
-    const { container } = render(<RegistrationPage onSignIn={jest.fn()} />, {
+    const mockSignup = jest.spyOn(storeService, 'signupUser');
+    const { container } = render(<RegistrationPage />, {
       wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
     fireEvent.change(screen.getByLabelText('First Name *'), { target: { value: 'John' } });

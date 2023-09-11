@@ -13,12 +13,15 @@ import RegistrationPage from '../pages/registration/RegistrationPage';
 import BasketPage from '../pages/basket/BasketPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import NotFoundPage from '../pages/not-found/NotFoundPage';
-import ProtectedRoute from '../routes/ProtectedRoute/ProtectedRoute';
+import ProtectedRoute from '../routes/ProtectedRoute';
+import AuthProvider from '../routes/AuthProvider';
+import DetailedProductPage from '../pages/detailed/DetailedProductPage';
 
 function App() {
   const loginState = localStorage.getItem('userLoggedIn');
   const [userLoggedIn, setUserLoggedIn] = useState(loginState ? JSON.parse(loginState) : false);
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
+  const [isOpenNavbar, setIsOpenNavbar] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
@@ -29,41 +32,61 @@ function App() {
       theme={{
         primaryColor: 'dark',
         fontFamily: 'Days-One',
+        breakpoints: {
+          md: '945',
+          sm: '811',
+          xs: '470',
+        },
       }}
       withGlobalStyles
       withNormalizeCSS
     >
       <Notifications position="top-center" />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout
-              setUserLoggedIn={setUserLoggedIn}
-              userLoggedIn={userLoggedIn}
-              isOpenBurger={isOpenBurger}
-              closeBurger={close}
-              toggleBurger={toggle}
+      <AuthProvider userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout
+                isOpenBurger={isOpenBurger}
+                closeBurger={close}
+                toggleBurger={toggle}
+                isOpenNavbar={isOpenNavbar}
+                setIsOpenNavbar={setIsOpenNavbar}
+              />
+            }
+          >
+            <Route index element={<MainPage />} />
+            <Route
+              path="catalog"
+              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
             />
-          }
-        >
-          <Route index element={<MainPage userLoggedIn={userLoggedIn} />} />
-          <Route path="catalog" element={<CatalogPage />} />
-          <Route path="about" element={<AboutPage />} />
+            <Route path="about" element={<AboutPage />} />
 
-          <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
-            <Route path="profile" element={<ProfilePage />} />
+            <Route element={<ProtectedRoute userLoggedIn={!userLoggedIn} redirectPath="/login" />}>
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="registration" element={<RegistrationPage />} />
+            </Route>
+
+            <Route
+              path="catalog/:category"
+              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+            />
+            <Route
+              path="catalog/:category/:subcategory"
+              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+            />
+            <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
+
+            <Route path="basket" element={<BasketPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
-
-          <Route element={<ProtectedRoute userLoggedIn={userLoggedIn} />}>
-            <Route path="login" element={<LoginPage onSignIn={setUserLoggedIn} />} />
-            <Route path="registration" element={<RegistrationPage onSignIn={setUserLoggedIn} />} />
-          </Route>
-
-          <Route path="basket" element={<BasketPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </MantineProvider>
   );
 }

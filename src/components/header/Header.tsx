@@ -1,29 +1,26 @@
 import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/core';
-import { Dispatch, SetStateAction } from 'react';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
 import HeaderLinks from '../app-links/HeaderLinks';
 
 type HeaderProps = {
-  setUserLoggedIn: Dispatch<SetStateAction<boolean>>;
-  userLoggedIn: boolean;
   isOpenBurger: boolean;
   toggleBurger: () => void;
 };
 
-export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleBurger }: HeaderProps) {
+export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
   const wrapper = document.querySelector('.wrapper') as HTMLElement;
   const { classes } = headerStyle();
 
   function toggleScroll() {
     if (wrapper) {
-      wrapper.style.overflow = isOpenBurger ? 'hidden' : 'unset';
+      wrapper.className = isOpenBurger ? 'wrapper lock' : 'wrapper';
     }
   }
 
   return (
-    <Header height={80} className={classes.root}>
-      <Container className={classes.header}>
+    <Header height={80} className={classes.header}>
+      <Container className={classes.container}>
         <Group className={classes.title}>
           <NavLink to="/">
             <div className={classes.logobox}>
@@ -37,10 +34,10 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         </Group>
 
         <Group className={classes.userLinks}>
-          <HeaderLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+          <HeaderLinks />
         </Group>
 
-        <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="sm" />
+        <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="md" />
 
         <Transition
           transition="slide-left"
@@ -51,7 +48,7 @@ export function AppHeader({ setUserLoggedIn, userLoggedIn, isOpenBurger, toggleB
         >
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
-              <HeaderLinks userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} />
+              <HeaderLinks />
             </Paper>
           )}
         </Transition>
