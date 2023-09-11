@@ -42,7 +42,7 @@ const ProfileAddress = (props: Props) => {
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await storeService.updateAdress(version, address, address.id, checked);
+    await storeService.updateAdress(version, address, checked);
     props.needUpdate();
   };
 
@@ -73,7 +73,7 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
-              await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
+              await storeService.addAddress(values, props.version, values.addressType, checked);
               notificationSuccess('Address was succesfully saved');
               props.needUpdate();
               setIsBtnDisabled(true);
@@ -141,7 +141,7 @@ const ProfileAddress = (props: Props) => {
           onChange={() => setChecked(!checked)}
         />
         {!isNewAddress && (
-          <Flex align="center" justify="space-around" m={20}>
+          <Flex align="center" justify="space-around" m={20} direction={{ base: 'column', xs: 'row' }} gap="sm">
             <Button style={{ width: '100px' }} type="submit" loading={isLoading} onClick={() => setIsSaveBtn(false)}>
               Update
             </Button>
@@ -154,8 +154,8 @@ const ProfileAddress = (props: Props) => {
                 setIsLoading(true);
                 try {
                   await removeAddress();
-                  notificationSuccess('Address was succesfully deleted');
                   props.needUpdate();
+                  notificationSuccess('Address was succesfully deleted');
                   window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
@@ -170,7 +170,7 @@ const ProfileAddress = (props: Props) => {
         {isNewAddress && (
           <Flex align="center" justify="space-around" m={20}>
             <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading} disabled={isBtnDisabled}>
-              Save
+              {isBtnDisabled ? 'Saved' : 'Save'}
             </Button>
           </Flex>
         )}

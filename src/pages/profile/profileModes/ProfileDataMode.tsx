@@ -13,20 +13,18 @@ const ProfilePage = (userData: UserProfile) => {
       <Grid gutter="md">
         <Col span={12} md={3}>
           <Flex gap="sm" justify="center" align="center" direction="column" className={classes.avatarContainer}>
-            <div>
-              <Avatar variant="filled" radius="xl" size="xl" src={null}>
-                {avatarLetters}
-              </Avatar>
-              <Text align="center" className={classes.smallTitle}>
-                {userData?.firstName} {userData?.lastName}
-              </Text>
-            </div>
+            <Avatar variant="filled" radius="xl" size="xl" src={null} color="black">
+              {avatarLetters}
+            </Avatar>
+            <Text align="center" className={classes.smallTitle}>
+              {userData?.firstName} {userData?.lastName}
+            </Text>
           </Flex>
         </Col>
         <Col span={12} md={9}>
           <Flex gap="md" justify="center" align="center" direction="column">
             <Text className={classes.smallTitle}>Personal information</Text>
-            <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+            <Paper shadow="xs" withBorder style={{ width: '100%' }} p={10}>
               <Text className={classes.smallTitle}>First Name</Text>
               <Text className={classes.text} color="gray">
                 {userData?.firstName}
@@ -50,8 +48,8 @@ const ProfilePage = (userData: UserProfile) => {
       <Text className={classes.smallTitle} m={20} align="center">
         Addresses
       </Text>
-      <Flex gap="sm" justify="center" align="start" direction="row" style={{ width: '100%' }}>
-        <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+      <Flex gap="sm" justify="center" align="start" direction={{ base: 'column', sm: 'row' }} style={{ width: '100%' }}>
+        <Paper style={{ width: '100%' }}>
           <Text className={classes.smallTitle} align="center" m={10}>
             Shipping Addresses
           </Text>
@@ -59,7 +57,7 @@ const ProfilePage = (userData: UserProfile) => {
             <ProfileDataAddress address={address} key={i} />
           ))}
         </Paper>
-        <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+        <Paper style={{ width: '100%' }}>
           <Text className={classes.smallTitle} align="center" m={10}>
             Billing Addresses
           </Text>
