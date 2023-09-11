@@ -6,7 +6,6 @@ import {
   SimpleGrid,
   Paper,
   Button,
-  Select,
   Title,
   Group,
   Text,
@@ -15,6 +14,7 @@ import {
   rem,
   getStylesRef,
   createStyles,
+  Select,
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
@@ -22,6 +22,7 @@ import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
+import { PiBagSimple } from 'react-icons/pi';
 import parse from 'html-react-parser';
 import './detailed-product-page.scss';
 
@@ -66,9 +67,9 @@ const carouselStyles = createStyles((theme) => ({
 
 const getSizeData = (variant: ProductVariant) => ({
   label: variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label,
-  value: variant.id.toString(),
+  value: `${variant.id}`,
 });
-const productSizes = (product: ProductProjection) => {
+const getProductSizes = (product: ProductProjection) => {
   return [getSizeData(product.masterVariant), ...product.variants.map((variant) => getSizeData(variant))];
 };
 
@@ -114,12 +115,9 @@ const DetailedProductPage = (): JSX.Element => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (selectedVariant) {
+      if (product && selectedVariant) {
         try {
-          const data = await storeService.checkProductInCart(
-            product?.id as string,
-            selectedVariant ? +selectedVariant : 1,
-          );
+          const data = await storeService.checkProductInCart(product.id, +selectedVariant);
           setButtonDisabled(data);
         } catch (err) {
           notificationError(getErrorMessage(err));
@@ -163,13 +161,15 @@ const DetailedProductPage = (): JSX.Element => {
                   </Group>
                   <Select
                     my="md"
-                    maw={450}
+                    mr="md"
                     withinPortal
-                    data={productSizes(product)}
-                    onChange={(value) => setSelectedVariant(value)}
+                    data={getProductSizes(product)}
+                    onChange={setSelectedVariant}
                     placeholder="Select size"
                   />
                   <Button
+                    rightIcon={<PiBagSimple size="1.5rem" />}
+                    mr="sm"
                     onClick={async () => {
                       if (!selectedVariant) return;
                       try {
@@ -181,8 +181,25 @@ const DetailedProductPage = (): JSX.Element => {
                     }}
                     disabled={buttonDisabled}
                   >
-                    Add To Cart
+                    Add To
                   </Button>
+                  {buttonDisabled && (
+                    <Button
+                      rightIcon={<PiBagSimple size="1.5rem" />}
+                      onClick={async () => {
+                        if (selectedVariant) {
+                          try {
+                            await storeService.removeProductFromCart(product.id, +selectedVariant);
+                            setButtonDisabled(false);
+                          } catch (err) {
+                            if (err instanceof Error) notificationError(err.message);
+                          }
+                        }
+                      }}
+                    >
+                      Remove From
+                    </Button>
+                  )}
                   <Paper fz={13} className="product-description" ff="Montserrat">
                     {product.description?.['en-US'] && parse(product.description['en-US'])}
                   </Paper>

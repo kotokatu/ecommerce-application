@@ -452,6 +452,36 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
+  public async removeProductFromCart(productId: string, variantId: number, quantity?: number) {
+    try {
+      const { id, version, lineItems } = await this.getCart();
+      const lineItem = lineItems.find(
+        (lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId,
+      );
+      const lineItemId = lineItem?.id;
+      if (lineItemId) {
+        await this.apiRoot
+          .me()
+          .carts()
+          .withId({ ID: id })
+          .post({
+            body: {
+              version,
+              actions: [
+                {
+                  action: 'removeLineItem',
+                  lineItemId,
+                  quantity,
+                },
+              ],
+            },
+          })
+          .execute();
+      }
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
 
   public async getActiveCart() {
     try {
