@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
@@ -16,16 +16,12 @@ import NotFoundPage from '../pages/not-found/NotFoundPage';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import AuthProvider from '../routes/AuthProvider';
 import DetailedProductPage from '../pages/detailed/DetailedProductPage';
+import { storeService } from '../services/StoreService/StoreService';
 
 function App() {
-  const loginState = localStorage.getItem('userLoggedIn');
-  const [userLoggedIn, setUserLoggedIn] = useState(loginState ? JSON.parse(loginState) : false);
+  const [userLoggedIn, setUserLoggedIn] = useState(storeService.isUserLoggedIn);
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
-  }, [userLoggedIn]);
 
   return (
     <MantineProvider

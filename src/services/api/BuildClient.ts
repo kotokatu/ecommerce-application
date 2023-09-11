@@ -10,10 +10,9 @@ import {
 } from '@commercetools/sdk-client-v2';
 
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { TokenCacheHandler } from './TokenCache';
+import { tokenCache } from './TokenCache';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 
-export const tokenCache = new TokenCacheHandler();
 class CtpClient {
   private projectKey = process.env.REACT_APP_PROJECT_KEY as string;
   private authURL = process.env.REACT_APP_AUTH_URL as string;
@@ -34,7 +33,7 @@ class CtpClient {
         .withPasswordFlow(this.getUserAuthOptions())
         .withHttpMiddleware(this.getHttpMiddlewareOptions())
         .build();
-    } else if (tokenCache.getRefreshToken()) {
+    } else if (tokenCache.getRefreshToken() && tokenCache.checkToken()) {
       return new ClientBuilder()
         .withRefreshTokenFlow(this.getRefreshTokenOptions())
         .withHttpMiddleware(this.getHttpMiddlewareOptions())

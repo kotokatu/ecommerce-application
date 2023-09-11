@@ -25,15 +25,17 @@ export class TokenCacheHandler implements TokenCache {
     localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(this.cache));
   }
 
-  // set() {
-  //   localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(this.cache));
-  // }
-
   getAccessToken() {
     return this.cache.token;
   }
   getRefreshToken() {
     return this.cache.refreshToken;
+  }
+
+  checkToken(): boolean {
+    const isValid = this.cache.expirationTime > Date.now();
+    if (!isValid) this.clear();
+    return isValid;
   }
 
   clear() {
@@ -45,3 +47,5 @@ export class TokenCacheHandler implements TokenCache {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
 }
+
+export const tokenCache = new TokenCacheHandler();
