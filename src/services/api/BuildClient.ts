@@ -41,7 +41,7 @@ class CtpClient {
         .build();
     }
     return new ClientBuilder()
-      .withClientCredentialsFlow(this.getAuthOptions())
+      .withAnonymousSessionFlow(this.getAuthOptions())
       .withHttpMiddleware(this.getHttpMiddlewareOptions())
       .build();
   }

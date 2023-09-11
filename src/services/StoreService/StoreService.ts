@@ -413,6 +413,13 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
+
+  public async createCart() {
+    console.log('cart');
+  }
+  public async addProductToCart() {
+    console.log('product');
+  }
 }
 
 export const storeService = new StoreService();
