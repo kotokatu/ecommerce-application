@@ -64,14 +64,18 @@ const carouselStyles = createStyles((theme) => ({
   },
 }));
 
-const getSizeData = (variant: ProductVariant): string =>
-  variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label;
-const productSizes = (product: ProductProjection): string[] => {
+const getSizeData = (variant: ProductVariant) => ({
+  label: variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label,
+  value: variant.id.toString(),
+});
+const productSizes = (product: ProductProjection) => {
   return [getSizeData(product.masterVariant), ...product.variants.map((variant) => getSizeData(variant))];
 };
 
 const DetailedProductPage = (): JSX.Element => {
   const [product, setProduct] = useState<ProductProjection>();
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const { productID } = useParams();
   const { classes } = carouselStyles();
   const navigate = useNavigate();
@@ -108,6 +112,23 @@ const DetailedProductPage = (): JSX.Element => {
     fetchData();
   }, [productID, navigate]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedVariant) {
+        try {
+          const data = await storeService.checkProductInCart(
+            product?.id as string,
+            selectedVariant ? +selectedVariant : 1,
+          );
+          setButtonDisabled(data);
+        } catch (err) {
+          notificationError(getErrorMessage(err));
+        }
+      }
+    };
+    fetchData();
+  }, [selectedVariant, product]);
+
   return (
     <Container w="100%" h="100%" my="md" px="1rem" size="lg">
       {product ? (
@@ -140,8 +161,28 @@ const DetailedProductPage = (): JSX.Element => {
                       {product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100 + ' €'}
                     </Text>
                   </Group>
-                  <Select my="md" maw={450} withinPortal data={productSizes(product)} placeholder="Select size" />
-                  <Button>Add To Cart</Button>
+                  <Select
+                    my="md"
+                    maw={450}
+                    withinPortal
+                    data={productSizes(product)}
+                    onChange={(value) => setSelectedVariant(value)}
+                    placeholder="Select size"
+                  />
+                  <Button
+                    onClick={async () => {
+                      if (!selectedVariant) return;
+                      try {
+                        await storeService.addProductToCart(product.id, +selectedVariant);
+                        setButtonDisabled(true);
+                      } catch (err) {
+                        if (err instanceof Error) notificationError(err.message);
+                      }
+                    }}
+                    disabled={buttonDisabled}
+                  >
+                    Add To Cart
+                  </Button>
                   <Paper fz={13} className="product-description" ff="Montserrat">
                     {product.description?.['en-US'] && parse(product.description['en-US'])}
                   </Paper>

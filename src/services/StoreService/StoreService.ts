@@ -414,11 +414,73 @@ class StoreService {
     }
   }
 
-  public async createCart() {
-    console.log('cart');
+  public async getCart() {
+    try {
+      const cart = await this.getActiveCart();
+      if (cart !== null) return cart.body;
+      const newCart = await this.apiRoot
+        .me()
+        .carts()
+        .post({
+          body: { currency: 'EUR' },
+        })
+        .execute();
+      return newCart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
   }
-  public async addProductToCart() {
-    console.log('product');
+  public async addProductToCart(productId: string, variantId: number, quantity = 1) {
+    try {
+      const { id, version } = await this.getCart();
+      await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId,
+                variantId,
+                quantity,
+              },
+            ],
+          },
+        })
+        .execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getActiveCart() {
+    try {
+      const activeCart = await this.apiRoot.me().activeCart().get().execute();
+      return activeCart;
+    } catch (err) {
+      if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === 404) {
+        return null;
+      }
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async checkProductInCart(productId: string, variantId: number) {
+    try {
+      const cart = await this.getActiveCart();
+      if (
+        cart &&
+        cart.body.lineItems.find((lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId)
+      ) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
   }
 }
 
