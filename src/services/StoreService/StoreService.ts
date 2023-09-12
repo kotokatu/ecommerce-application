@@ -1,7 +1,7 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetools/platform-sdk';
+import { CustomerDraft, Customer, MyCustomerChangePassword, Cart, Category } from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
@@ -353,7 +353,7 @@ class StoreService {
     return productData.body;
   }
 
-  public async getCategories() {
+  public async getCategories(): Promise<Category[]> {
     try {
       const categories = await this.apiRoot
         .categories()
@@ -407,10 +407,10 @@ class StoreService {
     }
   }
 
-  public async getCart() {
+  public async getCart(): Promise<Cart> {
     try {
       const cart = await this.getActiveCart();
-      if (cart !== null) return cart.body;
+      if (cart !== null) return cart;
       const newCart = await this.apiRoot
         .me()
         .carts()
@@ -423,10 +423,10 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
-  public async addProductToCart(productId: string, variantId: number, quantity = 1) {
+  public async addProductToCart(productId: string, variantId: number, quantity = 1): Promise<Cart> {
     try {
       const { id, version } = await this.getCart();
-      await this.apiRoot
+      const cart = await this.apiRoot
         .me()
         .carts()
         .withId({ ID: id })
@@ -444,11 +444,12 @@ class StoreService {
           },
         })
         .execute();
+      return cart.body;
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
-  public async removeProductFromCart(productId: string, variantId: number, quantity?: number) {
+  public async removeProductFromCart(productId: string, variantId: number, quantity?: number): Promise<Cart | null> {
     try {
       const { id, version, lineItems } = await this.getCart();
       const lineItem = lineItems.find(
@@ -456,7 +457,7 @@ class StoreService {
       );
       const lineItemId = lineItem?.id;
       if (lineItemId) {
-        await this.apiRoot
+        const cart = await this.apiRoot
           .me()
           .carts()
           .withId({ ID: id })
@@ -473,35 +474,23 @@ class StoreService {
             },
           })
           .execute();
+        return cart.body;
+      } else {
+        return null;
       }
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
 
-  public async getActiveCart() {
+  public async getActiveCart(): Promise<Cart | null> {
     try {
       const activeCart = await this.apiRoot.me().activeCart().get().execute();
-      return activeCart;
+      return activeCart.body;
     } catch (err) {
       if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === 404) {
         return null;
       }
-      throw new Error(getErrorMessage(err));
-    }
-  }
-
-  public async checkProductInCart(productId: string, variantId: number) {
-    try {
-      const cart = await this.getActiveCart();
-      if (
-        cart &&
-        cart.body.lineItems.find((lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId)
-      ) {
-        return true;
-      }
-      return false;
-    } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }

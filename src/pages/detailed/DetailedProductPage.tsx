@@ -22,8 +22,10 @@ import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
+import useAuth from '../../utils/hooks/useAuth';
 import { PiBagSimple } from 'react-icons/pi';
 import parse from 'html-react-parser';
+import { checkProductInCart } from '../../utils/helpers/cart-helpers';
 import './detailed-product-page.scss';
 
 const carouselStyles = createStyles((theme) => ({
@@ -82,6 +84,7 @@ const DetailedProductPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
   const [initialSlide, setInitialSlide] = useState(0);
+  const { cart, setCart } = useAuth();
 
   const slides = (product: ProductProjection): JSX.Element[] | null => {
     if (product.masterVariant.images) {
@@ -114,18 +117,8 @@ const DetailedProductPage = (): JSX.Element => {
   }, [productID, navigate]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (product && selectedVariant) {
-        try {
-          const data = await storeService.checkProductInCart(product.id, +selectedVariant);
-          setButtonDisabled(data);
-        } catch (err) {
-          notificationError(getErrorMessage(err));
-        }
-      }
-    };
-    fetchData();
-  }, [selectedVariant, product]);
+    if (product && selectedVariant && cart) setButtonDisabled(checkProductInCart(product?.id, +selectedVariant, cart));
+  }, [selectedVariant, product, cart]);
 
   return (
     <Container w="100%" h="100%" my="md" px="1rem" size="lg">
@@ -173,7 +166,8 @@ const DetailedProductPage = (): JSX.Element => {
                     onClick={async () => {
                       if (!selectedVariant) return;
                       try {
-                        await storeService.addProductToCart(product.id, +selectedVariant);
+                        const updatedCart = await storeService.addProductToCart(product.id, +selectedVariant);
+                        if (updatedCart) setCart(updatedCart);
                         setButtonDisabled(true);
                       } catch (err) {
                         if (err instanceof Error) notificationError(err.message);
@@ -189,7 +183,8 @@ const DetailedProductPage = (): JSX.Element => {
                       onClick={async () => {
                         if (selectedVariant) {
                           try {
-                            await storeService.removeProductFromCart(product.id, +selectedVariant);
+                            const updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
+                            if (updatedCart) setCart(updatedCart);
                             setButtonDisabled(false);
                           } catch (err) {
                             if (err instanceof Error) notificationError(err.message);
