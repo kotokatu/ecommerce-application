@@ -21,8 +21,22 @@ export const defaultData: UserProfile = {
 export const formStyles = createStyles((theme) => ({
   container: {
     width: '80%',
+    [theme.fn.smallerThan('xs')]: {
+      width: '100%',
+      padding: '0',
+      border: 'none',
+    },
+  },
+  containerEditMode: {
+    width: '80%',
     [theme.fn.smallerThan('sm')]: {
-      width: '95%',
+      width: '100%',
+      padding: '0',
+    },
+    [theme.fn.smallerThan('xs')]: {
+      width: '100%',
+      padding: '0',
+      border: 'none',
     },
   },
   title: {
@@ -36,20 +50,21 @@ export const formStyles = createStyles((theme) => ({
     padding: '1.5rem',
     [theme.fn.smallerThan('xs')]: {
       padding: '1rem',
+      border: 'none',
     },
   },
   smallTitle: {
     fontWeight: 400,
     fontSize: '16px',
     [theme.fn.smallerThan('xs')]: {
-      fontSize: '10px',
+      fontSize: '14px',
     },
   },
   text: {
     fontWeight: 400,
     fontSize: '15px',
     [theme.fn.smallerThan('xs')]: {
-      fontSize: '9px',
+      fontSize: '12px',
     },
   },
   avatarContainer: {
@@ -67,7 +82,6 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState<UserProfile>(defaultData);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { classes } = formStyles();
 
   useEffect(() => {
@@ -77,17 +91,15 @@ const ProfilePage = () => {
     };
     profile();
   }, [isUpdated]);
-  //state isLoading, setIsLoading не работает, надо править (нужен, для блокировки кнопок)
+
   const isNeedToUpdate = () => {
-    setIsLoading(true);
     setIsUpdated(!isUpdated);
-    setIsLoading(false);
   };
 
   if (isEditMode === false) {
     return (
       <Container className={classes.container}>
-        <Title className={classes.title} order={1} align="center" mb={20}>
+        <Title className={classes.title} order={1} align="center" m={10}>
           Your Profile
         </Title>
         <Profile {...profile} />
@@ -104,11 +116,11 @@ const ProfilePage = () => {
   }
 
   return (
-    <Container className={classes.container}>
-      <Title className={classes.title} order={1} align="center" mb={20}>
+    <Container className={classes.containerEditMode}>
+      <Title className={classes.title} order={1} align="center" m={10}>
         Your Profile
       </Title>
-      <ProfileEdit profile={profile} updatePage={isNeedToUpdate} disableBtn={isLoading} />
+      <ProfileEdit profile={profile} updatePage={isNeedToUpdate} />
       <Flex align="center" justify="center" mt={15}>
         <Button style={{ width: '180px' }} mt={5} onClick={() => setIsEditMode(false)} component={Link} to="/profile">
           Go to profile
