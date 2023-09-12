@@ -212,7 +212,7 @@ class StoreService {
     }
   }
 
-  public async addAdress(address: Address, version: number, type: string, isDefault: boolean): Promise<string | void> {
+  public async addAddress(address: Address, version: number, type: string, isDefault: boolean): Promise<string | void> {
     try {
       const addAddress = await this.apiRoot
         .me()
@@ -236,7 +236,7 @@ class StoreService {
     }
   }
 
-  public async removeAdress(addressId: string, version: number): Promise<string | void> {
+  public async removeAddress(addressId: string, version: number): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -313,12 +313,7 @@ class StoreService {
     }
   }
 
-  public async updateAdress(
-    version: number,
-    address: FullAddressInfo,
-    addressId: string,
-    isDefault: boolean,
-  ): Promise<string | void> {
+  public async updateAddress(version: number, address: FullAddressInfo, isDefault: boolean): Promise<string | void> {
     try {
       const resp = await this.apiRoot
         .me()
@@ -334,14 +329,14 @@ class StoreService {
                   city: address.city,
                   postalCode: address.postalCode,
                 },
-                addressId,
+                addressId: address.id,
               },
             ],
           },
         })
         .execute();
-      if (address.isDefault) {
-        this.setDefaultAddress(resp.body.version, addressId, address.name);
+      if (isDefault) {
+        this.setDefaultAddress(resp.body.version, address.id, address.name);
       }
     } catch (err) {
       throw new Error(getErrorMessage(err));
