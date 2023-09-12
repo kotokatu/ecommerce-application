@@ -1,8 +1,4 @@
-// import { storeService } from '../../services/StoreService/StoreService';
-// import { useEffect } from 'react';
-// import { notificationError } from '../../components/ui/notification';
-// import { getErrorMessage } from '../../utils/helpers/error-handler';
-import CartItem from '../../components/basket/CartItem';
+import CartItem from '../../components/cart/CartItem';
 import useAuth from '../../utils/hooks/useAuth';
 
 const CartPage = () => {
