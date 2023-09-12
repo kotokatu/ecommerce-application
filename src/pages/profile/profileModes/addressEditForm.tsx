@@ -23,6 +23,7 @@ type Props = {
   address: FullAddressInfo;
   version: number;
   needUpdate: () => void;
+  updateState: (isNeedUpdate: boolean) => void;
 };
 
 const ProfileAddress = (props: Props) => {
@@ -71,11 +72,13 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
+              props.updateState(true);
               await storeService.handleAddressAdd(values, props.version, values.addressType, checked);
+              props.needUpdate();
+              props.updateState(false);
             } catch (err) {
               if (err instanceof Error) notificationError(err.message);
             } finally {
-              props.needUpdate();
               notificationSuccess('Address was succesfully saved');
               setIsBtnDisabled(true);
             }
@@ -152,10 +155,15 @@ const ProfileAddress = (props: Props) => {
               onClick={async () => {
                 setIsLoading(true);
                 try {
+                  props.updateState(true);
                   await removeAddress();
                   notificationSuccess('Address was succesfully deleted');
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
+                } finally {
+                  setTimeout(() => {
+                    props.updateState(false);
+                  }, 1000);
                 }
                 setIsLoading(false);
               }}

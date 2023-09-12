@@ -76,6 +76,11 @@ export const formStyles = createStyles((theme) => ({
       height: 'auto',
     },
   },
+  overlay: {
+    height: '100%',
+    width: '100%',
+    position: 'fixed',
+  },
 }));
 
 const ProfilePage = () => {
