@@ -34,7 +34,10 @@ export class TokenCacheHandler implements TokenCache {
 
   checkToken(): boolean {
     const isValid = this.cache.expirationTime > Date.now();
-    if (!isValid) this.clear();
+    if (!isValid) {
+      localStorage.setItem('userLoggedIn', 'false');
+      this.clear();
+    }
     return isValid;
   }
 

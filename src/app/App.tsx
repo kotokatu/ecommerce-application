@@ -16,10 +16,13 @@ import NotFoundPage from '../pages/not-found/NotFoundPage';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import AuthProvider from '../routes/AuthProvider';
 import DetailedProductPage from '../pages/detailed/DetailedProductPage';
+import { tokenCache } from '../services/api/TokenCache';
 
 function App() {
   const loginState = localStorage.getItem('userLoggedIn');
-  const [userLoggedIn, setUserLoggedIn] = useState(loginState ? JSON.parse(loginState) : false);
+  const [userLoggedIn, setUserLoggedIn] = useState(
+    loginState ? tokenCache.checkToken() && JSON.parse(loginState) : false,
+  );
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
 
