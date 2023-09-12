@@ -1,4 +1,4 @@
-import { Paper, Text, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
+import { Paper, Text, Container, Flex, Button, TextInput, Modal, LoadingOverlay } from '@mantine/core';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { UserProfile, FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { useState, useEffect } from 'react';
@@ -30,9 +30,11 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
   const [addresses, setAddresses] = useState([...profile.addresses]);
   const [userData, setUserData] = useState({ ...profile });
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setUserData({ ...profile });
+    setAddresses([...profile.addresses]);
   }, [profile]);
 
   const addNewAddress = () => {
@@ -40,8 +42,8 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
     setAddresses([...addresses, newAddress]);
   };
 
-  const removeAddress = (address: FullAddressInfo) => {
-    setAddresses(addresses.filter((a) => a.key !== address.key));
+  const setUpdateState = (isNeedUpdate: boolean) => {
+    setIsUpdating(isNeedUpdate);
   };
 
   const form = useForm({
@@ -147,9 +149,9 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
             <ProfileAddress
               address={address}
               key={i}
-              remove={removeAddress}
               version={userData.version}
               needUpdate={updatePage}
+              updateState={setUpdateState}
             />
           ))}
         </Flex>
@@ -163,6 +165,13 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
           </Button>
         </Flex>
       </Paper>
+      <LoadingOverlay
+        className={classes.overlay}
+        loaderProps={{ size: 'xl', color: 'black', variant: 'bars' }}
+        overlayOpacity={0.4}
+        overlayColor="black"
+        visible={isUpdating}
+      />
     </Container>
   );
 };

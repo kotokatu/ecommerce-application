@@ -52,7 +52,7 @@ export type GetProductsReturnType = {
   products: ProductProjection[];
 };
 
-type Address = {
+export type Address = {
   country: string;
   city: string;
   streetName: string;
@@ -216,7 +216,22 @@ class StoreService {
     }
   }
 
-  public async addAddress(address: Address, version: number, type: string, isDefault: boolean): Promise<string | void> {
+  public async handleAddressAdd(address: Address, version: number, type: string, isDefault: boolean) {
+    try {
+      const newUserVersion = (await this.addAddress(address, version)) as Customer;
+      const newAddressId = newUserVersion.addresses[newUserVersion.addresses.length - 1].id;
+      if (newAddressId) {
+        const newVersion = await this.addAddressToType(newAddressId, newUserVersion.version, type);
+        if (isDefault) {
+          await this.setDefaultAddress(newVersion, newAddressId, type);
+        }
+      }
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  private async addAddress(address: Address, version: number): Promise<string | Customer> {
     try {
       const addAddress = await this.apiRoot
         .me()
@@ -232,9 +247,7 @@ class StoreService {
           },
         })
         .execute();
-      const newAddress = addAddress.body.addresses[addAddress.body.addresses.length - 1];
-      const newVersion = addAddress.body.version;
-      this.addAddressToType(newAddress.id, newVersion, isDefault, type);
+      return addAddress.body;
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
@@ -261,12 +274,7 @@ class StoreService {
     }
   }
 
-  private async addAddressToType(
-    addressId: string | undefined,
-    version: number,
-    isDefault: boolean,
-    type: string,
-  ): Promise<string | void> {
+  private async addAddressToType(addressId: string, version: number, type: string): Promise<number> {
     const addShipAddress = 'addShippingAddressId';
     const addBilAddress = 'addBillingAddressId';
     try {
@@ -284,19 +292,13 @@ class StoreService {
           },
         })
         .execute();
-      if (isDefault) {
-        this.setDefaultAddress(resp.body.version, addressId, type);
-      }
+      return resp.body.version;
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
 
-  private async setDefaultAddress(
-    version: number,
-    addressId: string | undefined,
-    type: string,
-  ): Promise<string | void> {
+  private async setDefaultAddress(version: number, addressId: string, type: string): Promise<string | void> {
     try {
       await this.apiRoot
         .me()

@@ -22,8 +22,8 @@ type Props = {
   key: number;
   address: FullAddressInfo;
   version: number;
-  remove: (address: FullAddressInfo) => void;
   needUpdate: () => void;
+  updateState: (isNeedUpdate: boolean) => void;
 };
 
 const ProfileAddress = (props: Props) => {
@@ -36,7 +36,6 @@ const ProfileAddress = (props: Props) => {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const removeAddress = async () => {
-    props.remove(address);
     await storeService.removeAddress(props.address.id, props.version);
     props.needUpdate();
   };
@@ -73,12 +72,15 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
-              await storeService.addAddress(values, props.version, values.addressType, checked);
-              notificationSuccess('Address was succesfully saved');
+              props.updateState(true);
+              await storeService.handleAddressAdd(values, props.version, values.addressType, checked);
               props.needUpdate();
-              setIsBtnDisabled(true);
+              props.updateState(false);
             } catch (err) {
               if (err instanceof Error) notificationError(err.message);
+            } finally {
+              notificationSuccess('Address was succesfully saved');
+              setIsBtnDisabled(true);
             }
           } else {
             try {
@@ -153,11 +155,15 @@ const ProfileAddress = (props: Props) => {
               onClick={async () => {
                 setIsLoading(true);
                 try {
+                  props.updateState(true);
                   await removeAddress();
                   notificationSuccess('Address was succesfully deleted');
-                  window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
+                } finally {
+                  setTimeout(() => {
+                    props.updateState(false);
+                  }, 1000);
                 }
                 setIsLoading(false);
               }}

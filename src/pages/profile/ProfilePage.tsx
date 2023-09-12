@@ -76,6 +76,11 @@ export const formStyles = createStyles((theme) => ({
       height: 'auto',
     },
   },
+  overlay: {
+    height: '100%',
+    width: '100%',
+    position: 'fixed',
+  },
 }));
 
 const ProfilePage = () => {
@@ -96,26 +101,22 @@ const ProfilePage = () => {
     setIsUpdated(!isUpdated);
   };
 
-  if (isEditMode === false) {
-    return (
-      <Container className={classes.container}>
-        <Title className={classes.title} order={1} align="center" m={10}>
-          Your Profile
-        </Title>
-        <Profile {...profile} />
-        <Text color="dimmed" size="sm" align="center" pt={5}>
-          Do you want to edit Profile?
-        </Text>
-        <Flex align="center" justify="center">
-          <Button style={{ width: '180px', marginTop: '10px' }} onClick={() => setIsEditMode(true)}>
-            Edit
-          </Button>
-        </Flex>
-      </Container>
-    );
-  }
-
-  return (
+  return !isEditMode ? (
+    <Container className={classes.container}>
+      <Title className={classes.title} order={1} align="center" m={10}>
+        Your Profile
+      </Title>
+      <Profile {...profile} />
+      <Text color="dimmed" size="sm" align="center" pt={5}>
+        Do you want to edit Profile?
+      </Text>
+      <Flex align="center" justify="center">
+        <Button style={{ width: '180px', marginTop: '10px' }} onClick={() => setIsEditMode(true)}>
+          Edit
+        </Button>
+      </Flex>
+    </Container>
+  ) : (
     <Container className={classes.containerEditMode}>
       <Title className={classes.title} order={1} align="center" m={10}>
         Your Profile

@@ -28,6 +28,7 @@ export class TokenCacheHandler implements TokenCache {
   getAccessToken() {
     return this.cache.token;
   }
+
   getRefreshToken() {
     return this.cache.refreshToken;
   }
