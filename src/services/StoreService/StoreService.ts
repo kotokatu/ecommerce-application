@@ -74,10 +74,8 @@ type UserData = {
 
 class StoreService {
   private apiRoot: ByProjectKeyRequestBuilder;
-  public isUserLoggedIn: boolean;
   constructor() {
     this.apiRoot = new CtpClient().getApiRoot();
-    this.isUserLoggedIn = tokenCache.checkToken();
   }
 
   private createCustomerDraft(userData: UserData): CustomerDraft {
@@ -140,17 +138,15 @@ class StoreService {
           },
         })
         .execute();
+      tokenCache.clear();
       this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
       this.getUserProfile();
-      this.isUserLoggedIn = true;
     } catch (err) {
-      this.isUserLoggedIn = false;
       throw new Error(getErrorMessage(err));
     }
   }
 
   public logoutUser() {
-    this.isUserLoggedIn = false;
     tokenCache.clear();
     this.apiRoot = new CtpClient().getApiRoot();
   }
