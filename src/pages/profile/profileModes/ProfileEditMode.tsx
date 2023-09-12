@@ -33,6 +33,7 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
 
   useEffect(() => {
     setUserData({ ...profile });
+    setAddresses([...profile.addresses]);
   }, [profile]);
 
   const addNewAddress = () => {
