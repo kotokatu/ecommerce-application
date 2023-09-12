@@ -41,10 +41,6 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
     setAddresses([...addresses, newAddress]);
   };
 
-  const removeAddress = (address: FullAddressInfo) => {
-    setAddresses(addresses.filter((a) => a.key !== address.key));
-  };
-
   const form = useForm({
     initialValues: {
       email: userData.email,
@@ -145,13 +141,7 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) =>
 
         <Flex gap="sm" justify="center" align="start" direction="column" style={{ width: '100%' }} mb={15}>
           {addresses.map((address, i) => (
-            <ProfileAddress
-              address={address}
-              key={i}
-              remove={removeAddress}
-              version={userData.version}
-              needUpdate={updatePage}
-            />
+            <ProfileAddress address={address} key={i} version={userData.version} needUpdate={updatePage} />
           ))}
         </Flex>
 

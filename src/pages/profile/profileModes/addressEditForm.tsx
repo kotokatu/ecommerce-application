@@ -22,7 +22,6 @@ type Props = {
   key: number;
   address: FullAddressInfo;
   version: number;
-  remove: (address: FullAddressInfo) => void;
   needUpdate: () => void;
 };
 
@@ -38,7 +37,6 @@ const ProfileAddress = (props: Props) => {
   const removeAddress = async () => {
     await storeService.removeAddress(props.address.id, props.version);
     props.needUpdate();
-    props.remove(address);
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
@@ -156,7 +154,6 @@ const ProfileAddress = (props: Props) => {
                 try {
                   await removeAddress();
                   notificationSuccess('Address was succesfully deleted');
-                  //window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
