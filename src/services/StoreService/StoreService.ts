@@ -1,7 +1,7 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetools/platform-sdk';
+import { CustomerDraft, Customer, MyCustomerChangePassword, Cart, Category } from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
@@ -74,10 +74,8 @@ type UserData = {
 
 class StoreService {
   private apiRoot: ByProjectKeyRequestBuilder;
-  public isUserLoggedIn: boolean;
   constructor() {
     this.apiRoot = new CtpClient().getApiRoot();
-    this.isUserLoggedIn = tokenCache.checkToken();
   }
 
   private createCustomerDraft(userData: UserData): CustomerDraft {
@@ -140,17 +138,15 @@ class StoreService {
           },
         })
         .execute();
+      tokenCache.clear();
       this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
       this.getUserProfile();
-      this.isUserLoggedIn = true;
     } catch (err) {
-      this.isUserLoggedIn = false;
       throw new Error(getErrorMessage(err));
     }
   }
 
   public logoutUser() {
-    this.isUserLoggedIn = false;
     tokenCache.clear();
     this.apiRoot = new CtpClient().getApiRoot();
   }
@@ -354,7 +350,7 @@ class StoreService {
     return productData.body;
   }
 
-  public async getCategories() {
+  public async getCategories(): Promise<Category[]> {
     try {
       const categories = await this.apiRoot
         .categories()
@@ -404,6 +400,94 @@ class StoreService {
       const prices = (facets[FilterParams.price] as TermFacetResult).terms.map((facet) => +facet.term);
       return [Math.min(...prices) / 100, Math.max(...prices) / 100];
     } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getCart(): Promise<Cart> {
+    try {
+      const cart = await this.getActiveCart();
+      if (cart !== null) return cart;
+      const newCart = await this.apiRoot
+        .me()
+        .carts()
+        .post({
+          body: { currency: 'EUR' },
+        })
+        .execute();
+      return newCart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async addProductToCart(productId: string, variantId: number, quantity = 1): Promise<Cart> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId,
+                variantId,
+                quantity,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async removeProductFromCart(productId: string, variantId: number, quantity?: number): Promise<Cart | null> {
+    try {
+      const { id, version, lineItems } = await this.getCart();
+      const lineItem = lineItems.find(
+        (lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId,
+      );
+      const lineItemId = lineItem?.id;
+      if (lineItemId) {
+        const cart = await this.apiRoot
+          .me()
+          .carts()
+          .withId({ ID: id })
+          .post({
+            body: {
+              version,
+              actions: [
+                {
+                  action: 'removeLineItem',
+                  lineItemId,
+                  quantity,
+                },
+              ],
+            },
+          })
+          .execute();
+        return cart.body;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getActiveCart(): Promise<Cart | null> {
+    try {
+      const activeCart = await this.apiRoot.me().activeCart().get().execute();
+      return activeCart.body;
+    } catch (err) {
+      if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === 404) {
+        return null;
+      }
       throw new Error(getErrorMessage(err));
     }
   }

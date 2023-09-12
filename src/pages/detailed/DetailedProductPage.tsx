@@ -6,7 +6,6 @@ import {
   SimpleGrid,
   Paper,
   Button,
-  Select,
   Title,
   Group,
   Text,
@@ -15,6 +14,7 @@ import {
   rem,
   getStylesRef,
   createStyles,
+  Select,
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
@@ -22,7 +22,10 @@ import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
+import useAuth from '../../utils/hooks/useAuth';
+import { PiBagSimple } from 'react-icons/pi';
 import parse from 'html-react-parser';
+import { checkProductInCart } from '../../utils/helpers/cart-helpers';
 import './detailed-product-page.scss';
 
 const carouselStyles = createStyles((theme) => ({
@@ -64,19 +67,24 @@ const carouselStyles = createStyles((theme) => ({
   },
 }));
 
-const getSizeData = (variant: ProductVariant): string =>
-  variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label;
-const productSizes = (product: ProductProjection): string[] => {
+const getSizeData = (variant: ProductVariant) => ({
+  label: variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label,
+  value: `${variant.id}`,
+});
+const getProductSizes = (product: ProductProjection) => {
   return [getSizeData(product.masterVariant), ...product.variants.map((variant) => getSizeData(variant))];
 };
 
 const DetailedProductPage = (): JSX.Element => {
   const [product, setProduct] = useState<ProductProjection>();
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const { productID } = useParams();
   const { classes } = carouselStyles();
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
   const [initialSlide, setInitialSlide] = useState(0);
+  const { cart, setCart } = useAuth();
 
   const slides = (product: ProductProjection): JSX.Element[] | null => {
     if (product.masterVariant.images) {
@@ -107,6 +115,10 @@ const DetailedProductPage = (): JSX.Element => {
     };
     fetchData();
   }, [productID, navigate]);
+
+  useEffect(() => {
+    if (product && selectedVariant && cart) setButtonDisabled(checkProductInCart(product?.id, +selectedVariant, cart));
+  }, [selectedVariant, product, cart]);
 
   return (
     <Container w="100%" h="100%" my="md" px="1rem" size="lg">
@@ -140,8 +152,49 @@ const DetailedProductPage = (): JSX.Element => {
                       {product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100 + ' €'}
                     </Text>
                   </Group>
-                  <Select my="md" maw={450} withinPortal data={productSizes(product)} placeholder="Select size" />
-                  <Button>Add To Cart</Button>
+                  <Select
+                    my="md"
+                    mr="md"
+                    withinPortal
+                    data={getProductSizes(product)}
+                    onChange={setSelectedVariant}
+                    placeholder="Select size"
+                  />
+                  <Button
+                    rightIcon={<PiBagSimple size="1.5rem" />}
+                    mr="sm"
+                    onClick={async () => {
+                      if (!selectedVariant) return;
+                      try {
+                        const updatedCart = await storeService.addProductToCart(product.id, +selectedVariant);
+                        if (updatedCart) setCart(updatedCart);
+                        setButtonDisabled(true);
+                      } catch (err) {
+                        if (err instanceof Error) notificationError(err.message);
+                      }
+                    }}
+                    disabled={buttonDisabled}
+                  >
+                    Add To
+                  </Button>
+                  {buttonDisabled && (
+                    <Button
+                      rightIcon={<PiBagSimple size="1.5rem" />}
+                      onClick={async () => {
+                        if (selectedVariant) {
+                          try {
+                            const updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
+                            if (updatedCart) setCart(updatedCart);
+                            setButtonDisabled(false);
+                          } catch (err) {
+                            if (err instanceof Error) notificationError(err.message);
+                          }
+                        }
+                      }}
+                    >
+                      Remove From
+                    </Button>
+                  )}
                   <Paper fz={13} className="product-description" ff="Montserrat">
                     {product.description?.['en-US'] && parse(product.description['en-US'])}
                   </Paper>

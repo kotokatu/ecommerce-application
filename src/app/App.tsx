@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
@@ -10,18 +10,41 @@ import CatalogPage from '../pages/catalog/CatalogPage';
 import AboutPage from '../pages/about-us/AboutPage';
 import LoginPage from '../pages/login/LoginPage';
 import RegistrationPage from '../pages/registration/RegistrationPage';
-import BasketPage from '../pages/basket/BasketPage';
+import CartPage from '../pages/cart/CartPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import NotFoundPage from '../pages/not-found/NotFoundPage';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import AuthProvider from '../routes/AuthProvider';
 import DetailedProductPage from '../pages/detailed/DetailedProductPage';
+import { tokenCache } from '../services/api/TokenCache';
+import { Cart } from '@commercetools/platform-sdk';
 import { storeService } from '../services/StoreService/StoreService';
+import { notificationError } from '../components/ui/notification';
 
 function App() {
-  const [userLoggedIn, setUserLoggedIn] = useState(storeService.isUserLoggedIn);
+  const loginState = localStorage.getItem('userLoggedIn');
+  const [userLoggedIn, setUserLoggedIn] = useState(
+    loginState ? tokenCache.checkToken() && JSON.parse(loginState) : false,
+  );
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
+  const [cart, setCart] = useState<Cart | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
+  }, [userLoggedIn]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cart = await storeService.getActiveCart();
+        if (cart) setCart(cart);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
+    };
+    fetchData();
+  }, [userLoggedIn]);
 
   return (
     <MantineProvider
@@ -38,7 +61,7 @@ function App() {
       withNormalizeCSS
     >
       <Notifications position="top-center" />
-      <AuthProvider userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn}>
+      <AuthProvider userLoggedIn={userLoggedIn} setUserLoggedIn={setUserLoggedIn} cart={cart} setCart={setCart}>
         <Routes>
           <Route
             path="/"
@@ -78,7 +101,7 @@ function App() {
             />
             <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
 
-            <Route path="basket" element={<BasketPage />} />
+            <Route path="basket" element={<CartPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

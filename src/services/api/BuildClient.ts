@@ -40,7 +40,7 @@ class CtpClient {
         .build();
     }
     return new ClientBuilder()
-      .withClientCredentialsFlow(this.getAuthOptions())
+      .withAnonymousSessionFlow(this.getAuthOptions())
       .withHttpMiddleware(this.getHttpMiddlewareOptions())
       .build();
   }
@@ -50,8 +50,8 @@ class CtpClient {
       host: this.authURL,
       projectKey: this.projectKey,
       credentials: { ...this.credentials, user: this.userAuthOptions as UserAuthOptions },
-      fetch,
       tokenCache: tokenCache,
+      fetch,
     };
   }
 
@@ -60,6 +60,7 @@ class CtpClient {
       host: this.authURL,
       projectKey: this.projectKey,
       credentials: this.credentials,
+      tokenCache: tokenCache,
       fetch,
     };
   }
