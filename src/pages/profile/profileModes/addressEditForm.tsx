@@ -2,7 +2,7 @@ import { Paper, Text, Checkbox, TextInput, Select, Button, Flex } from '@mantine
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { onlyLettersRegex, postalCodeRegex } from '../../../utils/constants/validationRegex';
-import { storeService } from '../../../services/StoreService/StoreService';
+import { storeService, Address } from '../../../services/StoreService/StoreService';
 import { FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { notificationError, notificationSuccess } from '../../../components/ui/notification';
 import { formStyles } from '../ProfilePage';
@@ -73,12 +73,14 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
-              await storeService.addAddress(values, props.version, values.addressType, checked);
+              await storeService.handleAddressAdd(values, props.version, values.addressType, checked);
+              console.log('завершилась сервер часть');
+            } catch (err) {
+              if (err instanceof Error) notificationError(err.message);
+            } finally {
               notificationSuccess('Address was succesfully saved');
               props.needUpdate();
               setIsBtnDisabled(true);
-            } catch (err) {
-              if (err instanceof Error) notificationError(err.message);
             }
           } else {
             try {
@@ -155,7 +157,7 @@ const ProfileAddress = (props: Props) => {
                 try {
                   await removeAddress();
                   notificationSuccess('Address was succesfully deleted');
-                  window.location.reload();
+                  //window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 }
