@@ -6,6 +6,7 @@ import { UnstyledButton, Text, Image, Group, Stack, Divider, createStyles } from
 import { TbX } from 'react-icons/tb';
 import { QuantityInput } from './QuantityInput/QuantityInput';
 import { Link } from 'react-router-dom';
+import CustomTooltip from '../ui/CustomTooltip';
 
 const useStyles = createStyles(() => ({
   button: {
@@ -44,7 +45,7 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
             </Text>
 
             {item.price.discounted && (
-              <Text ff="Montserrat" fw={700} fz="sm" c="red" strikethrough={!!item.discountedPricePerQuantity}>
+              <Text ff="Montserrat" fw={700} fz="sm" c="red" strikethrough={!!item.discountedPricePerQuantity.length}>
                 {item.price.discounted.value.centAmount / 100} €
               </Text>
             )}
@@ -64,26 +65,32 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
         </Stack>
         <Group ml="auto" noWrap>
           <QuantityInput item={item} isLoading={isLoading} setIsLoading={setIsLoading} />
-          <UnstyledButton
-            className={classes.button}
-            disabled={isLoading}
-            onClick={async () => {
-              if (!cart) return;
-              try {
-                setIsLoading(true);
-                const updatedCart = await storeService.removeProductFromCart(item.productId, item.variant.id);
-                if (updatedCart) setCart(updatedCart);
-              } catch (err) {
-                if (err instanceof Error) notificationError(err.message);
-              } finally {
-                setIsLoading(false);
-              }
-            }}
-          >
-            <Group>
-              <TbX />
-            </Group>
-          </UnstyledButton>
+          <CustomTooltip label="Delete item">
+            <UnstyledButton
+              className={classes.button}
+              disabled={isLoading}
+              mr={3}
+              onClick={async () => {
+                if (!cart) return;
+                try {
+                  setIsLoading(true);
+                  let updatedCart = await storeService.removeProductFromCart(item.productId, item.variant.id);
+                  if (updatedCart?.lineItems.length === 0) {
+                    updatedCart = await storeService.deleteCart();
+                  }
+                  if (updatedCart) setCart(updatedCart);
+                } catch (err) {
+                  if (err instanceof Error) notificationError(err.message);
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
+            >
+              <Group>
+                <TbX />
+              </Group>
+            </UnstyledButton>
+          </CustomTooltip>
         </Group>
       </Group>
       <Divider />

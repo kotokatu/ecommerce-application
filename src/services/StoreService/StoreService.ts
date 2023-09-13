@@ -491,6 +491,15 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
+  public async deleteCart(): Promise<Cart> {
+    try {
+      const { id, version } = await this.initCart();
+      const res = await this.apiRoot.me().carts().withId({ ID: id }).delete({ queryArgs: { version } }).execute();
+      return res.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
   public async getCartWithDiscount(code: string): Promise<Cart | null> {
     try {
       const { id, version } = await this.initCart();

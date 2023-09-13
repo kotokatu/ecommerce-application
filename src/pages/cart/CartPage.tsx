@@ -1,11 +1,26 @@
 import { useState } from 'react';
 import CartItem from '../../components/cart/CartItem';
 import useAuth from '../../utils/hooks/useAuth';
-import { Text, Center, Title, Stack, createStyles, Loader, Group, Container, Button, TextInput } from '@mantine/core';
+import {
+  Text,
+  Center,
+  Title,
+  Stack,
+  createStyles,
+  Loader,
+  Group,
+  Container,
+  Button,
+  TextInput,
+  UnstyledButton,
+  rem,
+} from '@mantine/core';
 import { PiBagSimple } from 'react-icons/pi';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
+import CustomTooltip from '../../components/ui/CustomTooltip';
 
 const useStyles = createStyles((theme) => ({
   cartSummary: {
@@ -13,11 +28,11 @@ const useStyles = createStyles((theme) => ({
   },
   link: {
     display: 'inline-block',
-    borderBottom: `solid 2px transparent`,
+    borderBottom: `solid ${rem(2)} transparent`,
     transition: '.3s',
 
     '&:hover': {
-      borderBottom: `solid 2px ${theme.black}`,
+      borderBottom: `solid ${rem(2)} ${theme.black}`,
     },
   },
 }));
@@ -45,6 +60,28 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
           </Title>
           <Group align="flex-start" spacing={30}>
             <div>
+              <div>
+                <CustomTooltip label="Delete all items">
+                  <UnstyledButton
+                    display="block"
+                    ml="auto"
+                    onClick={async () => {
+                      if (!cart) return;
+                      try {
+                        setIsLoading(true);
+                        const updatedCart = await storeService.deleteCart();
+                        if (updatedCart) setCart(updatedCart);
+                      } catch (err) {
+                        if (err instanceof Error) notificationError(err.message);
+                      } finally {
+                        setIsLoading(false);
+                      }
+                    }}
+                  >
+                    <RiDeleteBin6Line size="1.5rem" />
+                  </UnstyledButton>
+                </CustomTooltip>
+              </div>
               {cart?.lineItems.map((item) => (
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
               ))}
