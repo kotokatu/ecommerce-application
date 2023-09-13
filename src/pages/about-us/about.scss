@@ -1,0 +1,371 @@
+$humancolor: #ecb938;
+$colorVika: rgb(234, 119, 119);
+$colorMaxim: rgb(65, 80, 245);
+$colorNatasha: rgb(107, 234, 93);
+
+%lips {
+  position: absolute;
+  top: 10px;
+  left: 23px;
+  width: 15px;
+  height: 15px;
+}
+
+%hair {
+  position: relative;
+  top: -45px;
+  left: -15px;
+  width: 90px;
+  height: 90px;
+}
+
+%girlsPosition {
+  position: relative;
+  width: 50px;
+  height: 90px;
+  top: 30px;
+  left: 130px;
+}
+
+%photo {
+  height: 120px;
+  width: 180px;
+  border-radius: 10px;
+}
+
+.human {
+  position: absolute;
+  top: 24px;
+  width: 50px;
+  height: 50px;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -24px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    clip: rect(0, 50px, 25px, 0);
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 24px;
+    width: 50px;
+    height: 25px;
+    border-radius: 50%;
+  }
+}
+
+.legs {
+  position: absolute;
+  width: 10px;
+  top: 70px;
+  &:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    border: 10px solid transparent;
+    border-top: 70px solid $humancolor;
+    clip: rect(0px, 10px, 15px, 0);
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 2px;
+    height: 8px;
+    width: 8px;
+    background: rgb(45, 44, 44);
+    border-radius: 50%;
+    clip: rect(3px, 10px, 10px, 0);
+  }
+  &.left {
+    left: 10px;
+    animation: left-foot 1s linear infinite;
+  }
+  &.right {
+    right: 10px;
+    animation: right-foot 1s linear infinite;
+  }
+}
+
+.arms {
+  position: absolute;
+  top: 40px;
+  width: 40px;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 100px;
+    border: 5px solid $humancolor;
+    border-top-width: 10px;
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    width: 6px;
+    height: 6px;
+    background: $humancolor;
+    border-radius: 50%;
+    clip: rect(3px, 6px, 6px, 0);
+  }
+  &.left {
+    left: -17px;
+    animation: left-hand 1s linear infinite;
+    &:before {
+      clip: rect(0, 17px, 20px, 0);
+    }
+    &:after {
+      left: 4px;
+    }
+  }
+  &.right {
+    right: -15px;
+    animation: right-hand 1s linear infinite;
+    &:before {
+      clip: rect(0, 40px, 20px, 22px);
+    }
+    &:after {
+      right: 4px;
+    }
+  }
+}
+
+.eyes {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background: #144d54;
+  border-radius: 50%;
+  animation: twinkle infinite 3s;
+  &.left {
+    left: 15px;
+  }
+  &.right {
+    left: 35px;
+  }
+}
+
+.bubble {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: white;
+  z-index: 200;
+}
+
+.smallBubble {
+  position: absolute;
+  top: 5px;
+  left: 4px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: white;
+  z-index: 200;
+}
+
+#Natasha {
+  @extend %girlsPosition;
+  animation: walk-Natasha 5s linear infinite;
+  .human {
+    background: $colorNatasha;
+    height: 50px;
+    z-index: 100;
+    &:before {
+      background: $colorNatasha;
+    }
+    &:after {
+      content: '';
+      background: $colorNatasha;
+    }
+    .hat {
+      @extend %hair;
+      background: url(./icons/hat-Natasha.png) no-repeat center;
+    }
+    .mouse {
+      @extend %lips;
+      background: url(./icons/lips.png) no-repeat center;
+    }
+  }
+}
+
+#Maxim {
+  position: relative;
+  width: 50px;
+  height: 90px;
+  top: 30px;
+  left: 150px;
+  animation: walk-Maxim 5s linear infinite;
+  .human {
+    background: $colorMaxim;
+    height: 40px;
+    &:before {
+      background: $colorMaxim;
+    }
+    &:after {
+      border: 20px solid transparent;
+      border-top: 10px solid rgb(245, 68, 68);
+      content: '';
+      position: absolute;
+      top: 39px;
+      width: 50px;
+      height: 25px;
+      border-radius: 10%;
+      z-index: 100;
+    }
+    .hat {
+      position: relative;
+      top: -47px;
+      left: 0px;
+      width: 50px;
+      height: 50px;
+      background: url(./icons/hat-Maxim.png) no-repeat center;
+    }
+    .mouse {
+      position: absolute;
+      top: 10px;
+      left: 23px;
+      width: 15px;
+      height: 10px;
+      box-sizing: border-box;
+      clip: rect(5px, 15px, 10px, 0);
+      border: 5px solid rgb(212, 70, 70);
+      border-radius: 50%;
+    }
+  }
+}
+
+#Victoriia {
+  @extend %girlsPosition;
+  animation: walk-Vika 5s linear infinite;
+  .human {
+    background: $colorVika;
+    height: 50px;
+    z-index: 100;
+    &:before {
+      background: $colorVika;
+    }
+    &:after {
+      content: '';
+      background: $colorVika;
+    }
+    .hat {
+      @extend %hair;
+      background: url(./icons/hat-Vika.png) no-repeat center;
+    }
+    .mouse {
+      @extend %lips;
+      background: url(./icons/lips.png) no-repeat center;
+    }
+  }
+}
+
+.Natasha {
+  @extend %photo;
+  background: url(./icons/natasha.png) center no-repeat;
+}
+
+.Maxim {
+  @extend %photo;
+  background: url(./icons/maxim.jpg) center no-repeat;
+}
+
+.Victoriia {
+  @extend %photo;
+  background: url(./icons/vika.png) center no-repeat;
+}
+
+@keyframes walk-Maxim {
+  25% {
+    transform: translate3d(0, 0, 0);
+  }
+  30% {
+    transform: translate3d(0, -10px, 0);
+  }
+  40% {
+    transform: translate3d(0, -25px, 0);
+  }
+  65% {
+    transform: translate3d(0, -35px, 0);
+  }
+}
+
+@keyframes walk-Natasha {
+  25% {
+    transform: translate3d(20px, 0, 0);
+  }
+  50% {
+    transform: translate3d(20px, 0, 0);
+  }
+  75% {
+    transform: translate3d(-20px, 0, 0);
+  }
+}
+
+@keyframes walk-Vika {
+  25% {
+    transform: translate3d(-20px, 0, 0);
+  }
+  50% {
+    transform: translate3d(-20px, 0, 0);
+  }
+  75% {
+    transform: translate3d(20px, 0, 0);
+  }
+}
+
+@keyframes twinkle {
+  90% {
+    transform: scale3d(1, 1, 1);
+  }
+  98% {
+    transform: scale3d(1, 0.2, 1);
+  }
+}
+
+@keyframes right-hand {
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes left-hand {
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes left-foot {
+  25% {
+    transform: rotate(35deg);
+  }
+  75% {
+    transform: rotate(-35deg);
+  }
+}
+
+@keyframes right-foot {
+  25% {
+    transform: rotate(-35deg);
+  }
+  75% {
+    transform: rotate(35deg);
+  }
+}
