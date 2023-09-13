@@ -12,7 +12,6 @@ import {
   Container,
   Button,
   TextInput,
-  UnstyledButton,
   rem,
 } from '@mantine/core';
 import { PiBagSimple } from 'react-icons/pi';
@@ -20,7 +19,6 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
-import CustomTooltip from '../../components/ui/CustomTooltip';
 
 const useStyles = createStyles((theme) => ({
   cartSummary: {
@@ -29,7 +27,7 @@ const useStyles = createStyles((theme) => ({
   link: {
     display: 'inline-block',
     borderBottom: `solid ${rem(2)} transparent`,
-    transition: '.3s',
+    transition: '300ms',
 
     '&:hover': {
       borderBottom: `solid ${rem(2)} ${theme.black}`,
@@ -61,26 +59,35 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
           <Group align="flex-start" spacing={30}>
             <div>
               <div>
-                <CustomTooltip label="Delete all items">
-                  <UnstyledButton
-                    display="block"
-                    ml="auto"
-                    onClick={async () => {
-                      if (!cart) return;
-                      try {
-                        setIsLoading(true);
-                        const updatedCart = await storeService.deleteCart();
-                        if (updatedCart) setCart(updatedCart);
-                      } catch (err) {
-                        if (err instanceof Error) notificationError(err.message);
-                      } finally {
-                        setIsLoading(false);
-                      }
-                    }}
-                  >
-                    <RiDeleteBin6Line size="1.5rem" />
-                  </UnstyledButton>
-                </CustomTooltip>
+                <Button
+                  rightIcon={<RiDeleteBin6Line size="1.2rem" />}
+                  ff="Montserrat"
+                  fz={13}
+                  py={3}
+                  display="block"
+                  ml="auto"
+                  variant="outline"
+                  styles={{
+                    root: {
+                      height: 'unset',
+                      transition: '300ms',
+                    },
+                  }}
+                  onClick={async () => {
+                    if (!cart) return;
+                    try {
+                      setIsLoading(true);
+                      const updatedCart = await storeService.deleteCart();
+                      if (updatedCart) setCart(updatedCart);
+                    } catch (err) {
+                      if (err instanceof Error) notificationError(err.message);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                >
+                  Delete all items
+                </Button>
               </div>
               {cart?.lineItems.map((item) => (
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
