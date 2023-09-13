@@ -76,9 +76,10 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
                   setIsLoading(true);
                   let updatedCart = await storeService.removeProductFromCart(item.productId, item.variant.id);
                   if (updatedCart?.lineItems.length === 0) {
-                    updatedCart = await storeService.deleteCart();
+                    await storeService.deleteCart();
+                    updatedCart = null;
                   }
-                  if (updatedCart) setCart(updatedCart);
+                  setCart(updatedCart);
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
                 } finally {

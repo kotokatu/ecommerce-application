@@ -77,8 +77,8 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                     if (!cart) return;
                     try {
                       setIsLoading(true);
-                      const updatedCart = await storeService.deleteCart();
-                      if (updatedCart) setCart(updatedCart);
+                      await storeService.deleteCart();
+                      setCart(null);
                     } catch (err) {
                       if (err instanceof Error) notificationError(err.message);
                     } finally {

@@ -404,7 +404,7 @@ class StoreService {
     }
   }
 
-  public async initCart(): Promise<Cart> {
+  public async getCart(): Promise<Cart> {
     try {
       const cart = await this.getActiveCart();
       if (cart !== null) return cart;
@@ -422,7 +422,7 @@ class StoreService {
   }
   public async addProductToCart(productId: string, variantId: number, quantity = 1): Promise<Cart> {
     try {
-      const { id, version } = await this.initCart();
+      const { id, version } = await this.getCart();
       const cart = await this.apiRoot
         .me()
         .carts()
@@ -448,7 +448,7 @@ class StoreService {
   }
   public async removeProductFromCart(productId: string, variantId: number, quantity?: number): Promise<Cart | null> {
     try {
-      const { id, version, lineItems } = await this.initCart();
+      const { id, version, lineItems } = await this.getCart();
       const lineItem = lineItems.find(
         (lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId,
       );
@@ -491,18 +491,17 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
-  public async deleteCart(): Promise<Cart> {
+  public async deleteCart(): Promise<void> {
     try {
-      const { id, version } = await this.initCart();
-      const res = await this.apiRoot.me().carts().withId({ ID: id }).delete({ queryArgs: { version } }).execute();
-      return res.body;
+      const { id, version } = await this.getCart();
+      await this.apiRoot.me().carts().withId({ ID: id }).delete({ queryArgs: { version } }).execute();
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
   public async getCartWithDiscount(code: string): Promise<Cart | null> {
     try {
-      const { id, version } = await this.initCart();
+      const { id, version } = await this.getCart();
       const cart = await this.apiRoot
         .me()
         .carts()

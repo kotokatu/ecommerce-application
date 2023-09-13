@@ -185,9 +185,10 @@ const DetailedProductPage = (): JSX.Element => {
                           try {
                             let updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
                             if (updatedCart?.lineItems.length === 0) {
-                              updatedCart = await storeService.deleteCart();
+                              await storeService.deleteCart();
+                              updatedCart = null;
                             }
-                            if (updatedCart) setCart(updatedCart);
+                            setCart(updatedCart);
                             setButtonDisabled(false);
                           } catch (err) {
                             if (err instanceof Error) notificationError(err.message);
