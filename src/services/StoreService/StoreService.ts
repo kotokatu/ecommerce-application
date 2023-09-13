@@ -42,6 +42,7 @@ export type QueryArgs = {
   ['filter.facets']?: string | string[];
   fuzzy?: boolean;
   sort?: string | string[];
+  limit?: number;
 };
 
 export type GetProductsReturnType = {
@@ -50,6 +51,7 @@ export type GetProductsReturnType = {
   sizes: string[];
   prices: string[];
   products: ProductProjection[];
+  total?: number;
 };
 
 export type Address = {
@@ -371,15 +373,14 @@ class StoreService {
           queryArgs: {
             ...params,
             facet: Object.values(FilterParams),
-            limit: 6,
           },
         })
         .execute();
-      const { facets, results: products } = response.body;
+      const { facets, results: products, total } = response.body;
       const [brands, colors, sizes, prices] = Object.values(FilterParams).map((facet) =>
         (facets[facet] as TermFacetResult).terms.map((term) => term.term),
       );
-      return { brands, colors, sizes, prices, products };
+      return { brands, colors, sizes, prices, products, total };
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }

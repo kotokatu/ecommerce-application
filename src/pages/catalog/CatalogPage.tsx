@@ -89,6 +89,7 @@ type CatalogPageProps = {
 const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [filters, setFilters] = useState<string[]>([]);
+  const [limitProducts, setLimitProducts] = useState<number>(6);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
@@ -100,10 +101,18 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     wrapper.className = !isOpenNavbar ? 'wrapper lock blackout' : 'wrapper';
   };
 
+  const infiniteObserver = new IntersectionObserver(([entry], observer) => {
+    if (entry.isIntersecting) {
+      setLimitProducts(limitProducts + 3);
+      observer.unobserve(entry.target);
+    }
+  }, {});
+
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const queryParams: QueryArgs = {};
+        console.log(limitProducts);
+        const queryParams: QueryArgs = { limit: limitProducts };
         const filterParams = [];
         await categoryCache.get();
 
@@ -141,6 +150,17 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
 
         if (!res) return;
 
+        const footer = document.querySelector('.footer');
+
+        if (footer && res.total) {
+          infiniteObserver.observe(footer);
+
+          if (limitProducts >= res.total) {
+            setLimitProducts(res.total <= 6 ? 6 : res.total);
+            infiniteObserver.unobserve(footer);
+          }
+        }
+
         setResources(res);
       } catch (err) {
         setResources({ products: [], prices: [], colors: [], sizes: [], brands: [] });
@@ -148,7 +168,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     };
 
     getProducts();
-  }, [category, subcategory, searchParams, filters]);
+  }, [category, subcategory, searchParams, filters, limitProducts]);
 
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
