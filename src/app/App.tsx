@@ -20,9 +20,9 @@ import { tokenCache } from '../services/api/TokenCache';
 import { Cart } from '@commercetools/platform-sdk';
 import { storeService } from '../services/StoreService/StoreService';
 import { notificationError } from '../components/ui/notification';
-
+import { LOGIN_STORAGE_KEY } from '../services/api/TokenCache';
 function App() {
-  const loginState = localStorage.getItem('userLoggedIn');
+  const loginState = localStorage.getItem(LOGIN_STORAGE_KEY);
   const [userLoggedIn, setUserLoggedIn] = useState<boolean>(() =>
     loginState ? tokenCache.checkToken() && JSON.parse(loginState) : false,
   );
@@ -32,7 +32,7 @@ function App() {
   const [isCartLoading, setIsCartLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
+    localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(userLoggedIn));
   }, [userLoggedIn]);
 
   useEffect(() => {
