@@ -38,7 +38,7 @@ function App() {
     const fetchData = async () => {
       try {
         const cart = await storeService.getActiveCart();
-        if (cart) setCart(cart);
+        setCart(cart);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
       }
