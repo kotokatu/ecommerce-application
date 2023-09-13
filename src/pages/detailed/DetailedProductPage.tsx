@@ -181,7 +181,7 @@ const DetailedProductPage = (): JSX.Element => {
                     <Button
                       rightIcon={<PiBagSimple size="1.5rem" />}
                       onClick={async () => {
-                        if (selectedVariant) {
+                        if (cart && selectedVariant) {
                           try {
                             const updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
                             if (updatedCart) setCart(updatedCart);
