@@ -29,12 +29,10 @@ function App() {
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
   const [cart, setCart] = useState<Cart | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
-  }, [userLoggedIn]);
-
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const cart = await storeService.getActiveCart();
@@ -101,7 +99,7 @@ function App() {
             />
             <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
 
-            <Route path="basket" element={<CartPage />} />
+            <Route path="basket" element={<CartPage isLoading={isLoading} setIsLoading={setIsLoading} />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
