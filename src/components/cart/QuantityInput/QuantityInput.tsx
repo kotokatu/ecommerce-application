@@ -27,6 +27,12 @@ const useStyles = createStyles((theme) => ({
     textAlign: 'center',
     height: rem(28),
     flex: 1,
+
+    '&:disabled': {
+      backgroundColor: 'transparent',
+      color: theme.black,
+      opacity: 1,
+    },
   },
 }));
 
@@ -78,7 +84,7 @@ export function QuantityInput({ item, min = 1, max = 10, isLoading, setIsLoading
           setQuantity(value);
         }}
         classNames={{ input: classes.input }}
-        sx={{ pointerEvents: 'none' }}
+        disabled
       />
 
       <ActionIcon<'button'>

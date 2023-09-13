@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import CartItem from '../../components/cart/CartItem';
 import useAuth from '../../utils/hooks/useAuth';
-import { Text, Center, Title, Stack, createStyles, Loader } from '@mantine/core';
+import { Text, Center, Title, Stack, createStyles, Loader, Group, Container, Button, TextInput } from '@mantine/core';
 import { PiBagSimple } from 'react-icons/pi';
 import { Link } from 'react-router-dom';
+import { storeService } from '../../services/StoreService/StoreService';
+import { notificationError } from '../../components/ui/notification';
 
 const useStyles = createStyles((theme) => ({
+  cartSummary: {
+    flexGrow: 1,
+  },
   link: {
     display: 'inline-block',
     borderBottom: `solid 2px transparent`,
@@ -22,8 +28,9 @@ type CartPageProps = {
 };
 
 const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
-  const { cart } = useAuth();
+  const { cart, setCart } = useAuth();
   const { classes } = useStyles();
+  const [code, setCode] = useState('');
 
   return (
     <>
@@ -32,15 +39,57 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
           <Loader variant="bars" size="xl" display="block" mx="auto" />
         </Center>
       ) : cart?.lineItems.length ? (
-        <div>
-          <Title order={2} align="center" py={20} ff="Montserrat">
+        <Container w="100%">
+          <Title order={2} align="center" py={40} ff="Montserrat">
             Your shopping bag
           </Title>
-          {cart?.lineItems.map((item) => (
-            <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
-          ))}
-          <Text>{cart?.totalPrice.centAmount / 100} €</Text>
-        </div>
+          <Group align="flex-start" spacing={30}>
+            <div>
+              {cart?.lineItems.map((item) => (
+                <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
+              ))}
+            </div>
+            <Stack className={classes.cartSummary}>
+              <Title order={5} ff="Montserrat" pb={15}>
+                Summary
+              </Title>
+              <Group>
+                <TextInput
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  sx={{ flexGrow: 1 }}
+                  placeholder="Enter promocode"
+                  ff="Montserrat"
+                ></TextInput>
+                <Button
+                  ff="Montserrat"
+                  onClick={async () => {
+                    if (!cart) return;
+                    try {
+                      setIsLoading(true);
+                      const updatedCart = await storeService.getCartWithDiscount(code);
+                      if (updatedCart) setCart(updatedCart);
+                    } catch (err) {
+                      if (err instanceof Error) notificationError(err.message);
+                    } finally {
+                      setCode('');
+                      setIsLoading(false);
+                    }
+                  }}
+                >
+                  Apply
+                </Button>
+              </Group>
+              <Group position="apart">
+                <Text ff="Montserrat">Total</Text>
+                <Text ff="Montserrat">{cart?.totalPrice.centAmount / 100} €</Text>
+              </Group>
+              <Button mt="auto" ff="Montserrat">
+                Checkout
+              </Button>
+            </Stack>
+          </Group>
+        </Container>
       ) : (
         <Center h="100%">
           <Stack align="center">

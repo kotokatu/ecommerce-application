@@ -404,7 +404,7 @@ class StoreService {
     }
   }
 
-  public async getCart(): Promise<Cart> {
+  public async initCart(): Promise<Cart> {
     try {
       const cart = await this.getActiveCart();
       if (cart !== null) return cart;
@@ -422,7 +422,7 @@ class StoreService {
   }
   public async addProductToCart(productId: string, variantId: number, quantity = 1): Promise<Cart> {
     try {
-      const { id, version } = await this.getCart();
+      const { id, version } = await this.initCart();
       const cart = await this.apiRoot
         .me()
         .carts()
@@ -448,7 +448,7 @@ class StoreService {
   }
   public async removeProductFromCart(productId: string, variantId: number, quantity?: number): Promise<Cart | null> {
     try {
-      const { id, version, lineItems } = await this.getCart();
+      const { id, version, lineItems } = await this.initCart();
       const lineItem = lineItems.find(
         (lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId,
       );
@@ -480,7 +480,7 @@ class StoreService {
     }
   }
 
-  public async getActiveCart(): Promise<Cart | null> {
+  public async getActiveCart(discountCode?: string): Promise<Cart | null> {
     try {
       const activeCart = await this.apiRoot.me().activeCart().get().execute();
       return activeCart.body;
@@ -488,6 +488,30 @@ class StoreService {
       if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === 404) {
         return null;
       }
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async getCartWithDiscount(code: string): Promise<Cart | null> {
+    try {
+      const { id, version } = await this.initCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addDiscountCode',
+                code,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }

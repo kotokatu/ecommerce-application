@@ -5,6 +5,7 @@ import { notificationError } from '../ui/notification';
 import { UnstyledButton, Text, Image, Group, Stack, Divider, createStyles } from '@mantine/core';
 import { TbX } from 'react-icons/tb';
 import { QuantityInput } from './QuantityInput/QuantityInput';
+import { Link } from 'react-router-dom';
 
 const useStyles = createStyles(() => ({
   button: {
@@ -26,13 +27,33 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
   return (
     <>
       <Group h={100} miw={320} my={7} noWrap>
-        {item.variant.images?.[0] && (
-          <Image src={item.variant.images[0].url} width={100} height={100} fit="contain"></Image>
-        )}
+        <Link to={`/catalog/product/${item.productId}`}>
+          {item.variant.images?.[0] && (
+            <Image src={item.variant.images[0].url} width={100} height={100} fit="contain"></Image>
+          )}
+        </Link>
         <Stack spacing={2}>
-          <Text ff="Montserrat" fw={700} fz="sm">
-            {item.price.value.centAmount / 100} €
-          </Text>
+          <Group spacing="xs">
+            <Text
+              ff="Montserrat"
+              fw={700}
+              fz="sm"
+              strikethrough={!!item.price.discounted || !!item.discountedPricePerQuantity.length}
+            >
+              {item.price.value.centAmount / 100} €
+            </Text>
+
+            {item.price.discounted && (
+              <Text ff="Montserrat" fw={700} fz="sm" c="red" strikethrough={!!item.discountedPricePerQuantity}>
+                {item.price.discounted.value.centAmount / 100} €
+              </Text>
+            )}
+            {item.discountedPricePerQuantity.length && (
+              <Text ff="Montserrat" fw={700} fz="sm" c="red">
+                {item.discountedPricePerQuantity[0].discountedPrice.value.centAmount / 100} €
+              </Text>
+            )}
+          </Group>
           <Text ff="Montserrat" fw={700}>
             {item.variant.attributes?.find((attribute) => attribute.name === 'brand')?.value}
           </Text>
