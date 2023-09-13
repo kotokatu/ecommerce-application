@@ -23,22 +23,28 @@ import { notificationError } from '../components/ui/notification';
 
 function App() {
   const loginState = localStorage.getItem('userLoggedIn');
-  const [userLoggedIn, setUserLoggedIn] = useState(
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(() =>
     loginState ? tokenCache.checkToken() && JSON.parse(loginState) : false,
   );
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
   const [cart, setCart] = useState<Cart | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isCartLoading, setIsCartLoading] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
+  }, [userLoggedIn]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsCartLoading(true);
         const cart = await storeService.getActiveCart();
         setCart(cart);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
+      } finally {
+        setIsCartLoading(false);
       }
     };
     fetchData();
@@ -99,7 +105,7 @@ function App() {
             />
             <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
 
-            <Route path="basket" element={<CartPage isLoading={isLoading} setIsLoading={setIsLoading} />} />
+            <Route path="basket" element={<CartPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
