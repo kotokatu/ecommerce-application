@@ -183,7 +183,10 @@ const DetailedProductPage = (): JSX.Element => {
                       onClick={async () => {
                         if (cart && selectedVariant) {
                           try {
-                            const updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
+                            let updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
+                            if (updatedCart?.lineItems.length === 0) {
+                              updatedCart = await storeService.deleteCart();
+                            }
                             if (updatedCart) setCart(updatedCart);
                             setButtonDisabled(false);
                           } catch (err) {

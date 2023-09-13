@@ -1,11 +1,11 @@
-import { LineItem } from '@commercetools/platform-sdk';
-import { storeService } from '../../services/StoreService/StoreService';
 import useAuth from '../../utils/hooks/useAuth';
-import { notificationError } from '../ui/notification';
+import { LineItem } from '@commercetools/platform-sdk';
+import { Link } from 'react-router-dom';
 import { UnstyledButton, Text, Image, Group, Stack, Divider, createStyles } from '@mantine/core';
+import { storeService } from '../../services/StoreService/StoreService';
+import { notificationError } from '../ui/notification';
 import { TbX } from 'react-icons/tb';
 import { QuantityInput } from './QuantityInput/QuantityInput';
-import { Link } from 'react-router-dom';
 import CustomTooltip from '../ui/CustomTooltip';
 
 const useStyles = createStyles(() => ({
