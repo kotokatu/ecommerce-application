@@ -1,11 +1,10 @@
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { useSearchParams } from 'react-router-dom';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { notificationError } from '../../ui/notification';
 
@@ -59,43 +58,48 @@ const NavbarCatalog = ({
   toggleScroll,
 }: NavbarCatalogProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { classes } = navbarCatalogStyles();
   const [selectedBrands, setSelectedBrands] = useState(
-    searchParams
-      .get('brand')
-      ?.split(', ')
-      .map((value) => value.slice(1, -1)) || [],
+    () =>
+      searchParams
+        .get('brand')
+        ?.split(', ')
+        .map((value) => value.slice(1, -1)) || [],
   );
   const [selectedSizes, setSelectedSizes] = useState(
-    searchParams
-      .get('size')
-      ?.split(', ')
-      .map((value) => value.slice(1, -1)) || [],
+    () =>
+      searchParams
+        .get('size')
+        ?.split(', ')
+        .map((value) => value.slice(1, -1)) || [],
   );
   const [selectedColors, setSelectedColors] = useState(
-    searchParams
-      .get('color')
-      ?.split(', ')
-      .map((value) => value.slice(1, -1)) || [],
+    () =>
+      searchParams
+        .get('color')
+        ?.split(', ')
+        .map((value) => value.slice(1, -1)) || [],
   );
   const [minPrice, setMinPrice] = useState(
-    searchParams
-      .get('price')
-      ?.match(/\((.*?)\)/)?.[1]
-      .split(' to ')[0]
-      .slice(0, -2) || '',
+    () =>
+      searchParams
+        .get('price')
+        ?.match(/\((.*?)\)/)?.[1]
+        .split(' to ')[0]
+        .slice(0, -2) || '',
   );
   const [maxPrice, setMaxPrice] = useState(
-    searchParams
-      .get('price')
-      ?.match(/\((.*?)\)/)?.[1]
-      .split(' to ')[1]
-      .slice(0, -2) || '',
+    () =>
+      searchParams
+        .get('price')
+        ?.match(/\((.*?)\)/)?.[1]
+        .split(' to ')[1]
+        .slice(0, -2) || '',
   );
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
   const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
   const { category, subcategory } = useParams();
+  const { classes } = navbarCatalogStyles();
 
   function setFilterQuery() {
     selectedBrands.length
@@ -111,11 +115,7 @@ const NavbarCatalog = ({
   }
 
   function clearFilterProducts() {
-    searchParams.delete('brand');
-    searchParams.delete('size');
-    searchParams.delete('color');
-    searchParams.delete('price');
-    setSearchParams(searchParams);
+    setSearchParams('');
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
@@ -137,7 +137,7 @@ const NavbarCatalog = ({
       clearFilterProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory]);
+  }, [category, subcategory, searchParams]);
 
   useEffect(() => {
     const getMinMaxPrices = async () => {

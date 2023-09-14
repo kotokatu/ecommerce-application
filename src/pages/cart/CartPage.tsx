@@ -44,6 +44,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   const { cart, setCart } = useAuth();
   const { classes } = useStyles();
   const [code, setCode] = useState('');
+  const [codeLoading, setCodeLoading] = useState(false);
 
   return (
     <>
@@ -60,6 +61,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
             <div>
               <div>
                 <Button
+                  disabled={isLoading}
                   rightIcon={<RiDeleteBin6Line size="1.2rem" />}
                   ff="Montserrat"
                   fz={13}
@@ -93,7 +95,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
               ))}
             </div>
-            <Stack className={classes.cartSummary}>
+            <Stack className={classes.cartSummary} maw={415}>
               <Title order={5} ff="Montserrat" pb={15}>
                 Summary
               </Title>
@@ -107,9 +109,12 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                 ></TextInput>
                 <Button
                   ff="Montserrat"
+                  loading={codeLoading}
+                  disabled={isLoading}
                   onClick={async () => {
-                    if (!cart) return;
+                    if (!cart || !code) return;
                     try {
+                      setCodeLoading(true);
                       setIsLoading(true);
                       const updatedCart = await storeService.getCartWithDiscount(code);
                       if (updatedCart) setCart(updatedCart);
@@ -117,6 +122,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                       if (err instanceof Error) notificationError(err.message);
                     } finally {
                       setCode('');
+                      setCodeLoading(false);
                       setIsLoading(false);
                     }
                   }}
