@@ -5,8 +5,7 @@ import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { storeService } from '../../../services/StoreService/StoreService';
-import { notificationError } from '../../ui/notification';
+import { getSearchParams } from '../../../utils/helpers/search-params-helpers';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -43,7 +42,7 @@ type NavbarCatalogProps = {
   colors: string[];
   minProductPrice: number;
   maxProductPrice: number;
-  setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
   toggleScroll: () => void;
 };
 
@@ -56,52 +55,21 @@ const NavbarCatalog = ({
   minProductPrice,
   maxProductPrice,
   toggleScroll,
+  setQuery,
 }: NavbarCatalogProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedBrands, setSelectedBrands] = useState(
-    () =>
-      searchParams
-        .get('brand')
-        ?.split(', ')
-        .map((value) => value.slice(1, -1)) || [],
-  );
-  const [selectedSizes, setSelectedSizes] = useState(
-    () =>
-      searchParams
-        .get('size')
-        ?.split(', ')
-        .map((value) => value.slice(1, -1)) || [],
-  );
-  const [selectedColors, setSelectedColors] = useState(
-    () =>
-      searchParams
-        .get('color')
-        ?.split(', ')
-        .map((value) => value.slice(1, -1)) || [],
-  );
-  const [minPrice, setMinPrice] = useState(
-    () =>
-      searchParams
-        .get('price')
-        ?.match(/\((.*?)\)/)?.[1]
-        .split(' to ')[0]
-        .slice(0, -2) || '',
-  );
-  const [maxPrice, setMaxPrice] = useState(
-    () =>
-      searchParams
-        .get('price')
-        ?.match(/\((.*?)\)/)?.[1]
-        .split(' to ')[1]
-        .slice(0, -2) || '',
-  );
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
-  const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
   const { category, subcategory } = useParams();
   const { classes } = navbarCatalogStyles();
 
   function setFilterQuery() {
+    const hasPrevParams = searchParams.size !== 0;
     selectedBrands.length
       ? searchParams.set('brand', `"${selectedBrands.join('", "')}"`)
       : searchParams.delete('brand');
@@ -111,11 +79,11 @@ const NavbarCatalog = ({
       : searchParams.delete('color');
     if (minPrice || maxPrice)
       searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
-    setSearchParams(searchParams);
+    setQuery(searchParams, hasPrevParams);
   }
 
   function clearFilterProducts() {
-    setSearchParams('');
+    if (searchParams.size !== 0) setSearchParams('');
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
@@ -135,21 +103,30 @@ const NavbarCatalog = ({
   useEffect(() => {
     if (searchParams.size === 0) {
       clearFilterProducts();
+    } else {
+      setSelectedBrands(() => getSearchParams(searchParams, 'brand') || []);
+      setSelectedSizes(() => getSearchParams(searchParams, 'size') || []);
+      setSelectedColors(() => getSearchParams(searchParams, 'color') || []);
+      setMinPrice(
+        () =>
+          searchParams
+            .get('price')
+            ?.match(/\((.*?)\)/)?.[1]
+            .split(' to ')[0]
+            .slice(0, -2) || '',
+      );
+      setMaxPrice(
+        () =>
+          searchParams
+            .get('price')
+            ?.match(/\((.*?)\)/)?.[1]
+            .split(' to ')[1]
+            .slice(0, -2) || '',
+      );
+      setQuery(searchParams, searchParams.size !== 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, subcategory, searchParams]);
-
-  useEffect(() => {
-    const getMinMaxPrices = async () => {
-      try {
-        const res = await storeService.getAllPrices();
-        if (res) setMinMaxPrices(res);
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-    getMinMaxPrices();
-  }, []);
 
   return (
     <div className={className}>
@@ -192,7 +169,6 @@ const NavbarCatalog = ({
           setMinPrice={setMinPrice}
           maxPriceInput={maxPrice}
           setMaxPrice={setMaxPrice}
-          minMaxPrices={minMaxPrices}
         />
       </div>
       <div className={classes.buttons}>

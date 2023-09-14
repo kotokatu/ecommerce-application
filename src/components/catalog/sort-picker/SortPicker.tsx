@@ -43,10 +43,14 @@ const sortData = [
   },
 ];
 
-const SortPicker = () => {
+type SortPickerProps = {
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
+};
+
+const SortPicker = ({ setQuery }: SortPickerProps) => {
   const { classes } = useStyles();
   const [sortValue, setSortValue] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const sortValue = searchParams.get('sort');
@@ -61,10 +65,9 @@ const SortPicker = () => {
         data={sortData}
         value={sortValue}
         onChange={(value: string) => {
-          setSearchParams(() => {
-            searchParams.set('sort', value);
-            return searchParams;
-          });
+          const hasPrevParams = searchParams.size !== 0;
+          searchParams.set('sort', value);
+          setQuery(searchParams, hasPrevParams);
         }}
         className={classes.item}
       />

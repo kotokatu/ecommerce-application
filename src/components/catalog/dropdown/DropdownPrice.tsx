@@ -13,7 +13,7 @@ type DropdownPriceProps = {
   setMaxPrice: Dispatch<SetStateAction<string>>;
   minProductPrice: number;
   maxProductPrice: number;
-  minMaxPrices: number[];
+  // minMaxPrices: number[];
 };
 
 const DropdownPrice = ({
@@ -24,8 +24,7 @@ const DropdownPrice = ({
   maxPriceInput,
   setMaxPrice,
   minProductPrice,
-  maxProductPrice,
-  minMaxPrices,
+  maxProductPrice, // minMaxPrices,
 }: DropdownPriceProps) => {
   const { classes } = dropdownStyles();
   const [opened, setOpened] = useState(!!minPriceInput || !!maxPriceInput);
@@ -41,8 +40,8 @@ const DropdownPrice = ({
             <Slider
               className={classes.slider}
               value={[+minPriceInput || minProductPrice, +maxPriceInput || maxProductPrice]}
-              min={minMaxPrices[0]}
-              max={minMaxPrices[1]}
+              min={minProductPrice}
+              max={maxProductPrice}
               onChange={(value) => {
                 setPriceRange([value[0], value[1]]);
                 setMinPrice(`${value[0]}`);

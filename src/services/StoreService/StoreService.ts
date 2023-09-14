@@ -13,7 +13,7 @@ import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
-import { tokenCache } from '../api/TokenCache';
+import { LOGIN_STORAGE_KEY, tokenCache } from '../api/TokenCache';
 
 interface CustomerUpdatePersonalDraft {
   email: string;
@@ -160,6 +160,7 @@ class StoreService {
 
   public logoutUser() {
     tokenCache.clear();
+    localStorage.setItem(LOGIN_STORAGE_KEY, 'false');
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
