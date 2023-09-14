@@ -103,7 +103,10 @@ function App() {
               path="catalog/:category/:subcategory"
               element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
             />
-            <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
+            <Route
+              path="/catalog/product/:productID"
+              element={<DetailedProductPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />}
+            />
 
             <Route path="basket" element={<CartPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />} />
             <Route path="*" element={<NotFoundPage />} />
