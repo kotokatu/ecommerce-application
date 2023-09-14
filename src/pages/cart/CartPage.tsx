@@ -19,6 +19,7 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
+import { formatPrice } from '../../utils/helpers/format-price';
 
 const useStyles = createStyles((theme) => ({
   cartSummary: {
@@ -131,8 +132,12 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                 </Button>
               </Group>
               <Group position="apart">
-                <Text ff="Montserrat">Total</Text>
-                <Text ff="Montserrat">{cart?.totalPrice.centAmount / 100} €</Text>
+                <Text ff="Montserrat" fw={700}>
+                  Total
+                </Text>
+                <Text ff="Montserrat" fw={700}>
+                  {formatPrice(cart.totalPrice.centAmount / 100)} €
+                </Text>
               </Group>
               <Button mt="auto" ff="Montserrat">
                 Checkout

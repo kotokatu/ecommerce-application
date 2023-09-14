@@ -26,6 +26,7 @@ import useAuth from '../../utils/hooks/useAuth';
 import { PiBagSimple } from 'react-icons/pi';
 import parse from 'html-react-parser';
 import { checkProductInCart } from '../../utils/helpers/cart-helpers';
+import { formatPrice } from '../../utils/helpers/format-price';
 import './detailed-product-page.scss';
 
 const carouselStyles = createStyles((theme) => ({
@@ -146,7 +147,7 @@ const DetailedProductPage = ({ isLoading, setIsLoading }: DetailedProductPagePro
                   <Group spacing="xs">
                     {product.masterVariant.prices?.[0].discounted && (
                       <Text mt="md" fw={700} ff="Montserrat" color="red">
-                        {product.masterVariant.prices[0].discounted.value.centAmount / 100 + ' €'}
+                        {formatPrice(product.masterVariant.prices[0].discounted.value.centAmount / 100)} €
                       </Text>
                     )}
                     <Text
