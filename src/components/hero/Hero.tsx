@@ -1,15 +1,15 @@
 import { Title, Text, Container, Button, createStyles, rem } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { forwardRef } from 'react';
 import HeroImage from '../../assets/img/hero_image.jpg';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    position: 'relative',
-    paddingTop: rem(430),
-    paddingBottom: rem(100),
+    height: '700px',
+    paddingTop: '350px',
     backgroundImage: `url(${HeroImage})`,
     backgroundSize: 'cover',
-    backgroundPosition: 'center bottom',
+    backgroundPosition: 'center center',
 
     [theme.fn.smallerThan('xs')]: {
       paddingTop: rem(80),
@@ -18,7 +18,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   inner: {
-    position: 'relative',
     width: '80%',
     maxWidth: rem(800),
     marginLeft: 'auto',
@@ -85,11 +84,11 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function Hero() {
+export const Hero = forwardRef<HTMLDivElement>(function Hero(_, ref) {
   const { classes } = useStyles();
 
   return (
-    <div className={classes.wrapper}>
+    <div ref={ref} className={classes.wrapper}>
       <div className={classes.inner}>
         <Title className={classes.title}>NEW COLLECTION</Title>
 
@@ -107,4 +106,4 @@ export function Hero() {
       </div>
     </div>
   );
-}
+});

@@ -1,7 +1,14 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { CustomerDraft, Customer, MyCustomerChangePassword, Cart, Category } from '@commercetools/platform-sdk';
+import {
+  CustomerDraft,
+  Customer,
+  MyCustomerChangePassword,
+  Cart,
+  Category,
+  CartDiscountValueRelative,
+} from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
@@ -70,6 +77,11 @@ type UserData = {
   setDefaultShippingAddress: boolean;
   setDefaultBillingAddress: boolean;
   copyShippingToBilling: boolean;
+};
+
+export type PromoCode = {
+  code: string;
+  value: number;
 };
 
 class StoreService {
@@ -480,7 +492,7 @@ class StoreService {
     }
   }
 
-  public async getActiveCart(discountCode?: string): Promise<Cart | null> {
+  public async getActiveCart(): Promise<Cart | null> {
     try {
       const activeCart = await this.apiRoot.me().activeCart().get().execute();
       return activeCart.body;
@@ -519,6 +531,20 @@ class StoreService {
         })
         .execute();
       return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getDiscount(): Promise<PromoCode | null> {
+    try {
+      const discountCode = await this.apiRoot.discountCodes().get().execute();
+      if (!discountCode.body.results.length) return null;
+      const { code } = discountCode.body.results[0];
+      const { id } = discountCode.body.results[0].cartDiscounts[0];
+      const cartDiscount = await this.apiRoot.cartDiscounts().withId({ ID: id }).get().execute();
+      const value = (cartDiscount.body.value as CartDiscountValueRelative).permyriad;
+      return { code, value };
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
