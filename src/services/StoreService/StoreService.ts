@@ -480,7 +480,7 @@ class StoreService {
     }
   }
 
-  public async getActiveCart(): Promise<Cart | null> {
+  public async getActiveCart(discountCode?: string): Promise<Cart | null> {
     try {
       const activeCart = await this.apiRoot.me().activeCart().get().execute();
       return activeCart.body;
@@ -488,6 +488,38 @@ class StoreService {
       if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === 404) {
         return null;
       }
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async deleteCart(): Promise<void> {
+    try {
+      const { id, version } = await this.getCart();
+      await this.apiRoot.me().carts().withId({ ID: id }).delete({ queryArgs: { version } }).execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async getCartWithDiscount(code: string): Promise<Cart | null> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addDiscountCode',
+                code,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
