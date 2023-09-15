@@ -1,7 +1,7 @@
 import useAuth from '../../utils/hooks/useAuth';
 import { LineItem } from '@commercetools/platform-sdk';
 import { Link } from 'react-router-dom';
-import { UnstyledButton, Text, Image, Group, Stack, Divider, Anchor, createStyles, rem } from '@mantine/core';
+import { Text, Image, Group, Stack, Divider, Anchor, createStyles, ActionIcon, rem } from '@mantine/core';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError } from '../ui/notification';
 import { TbX } from 'react-icons/tb';
@@ -11,6 +11,14 @@ import { formatPrice } from '../../utils/helpers/format-price';
 
 const useStyles = createStyles((theme) => ({
   button: {
+    color: theme.black,
+    borderRadius: '100%',
+    transition: '300ms',
+
+    '&:hover': {
+      backgroundColor: theme.colors.gray[2],
+    },
+
     '&:disabled': {
       opacity: 0.5,
     },
@@ -94,8 +102,8 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
               <Stack ml="auto">
                 <Group noWrap>
                   <QuantityInput item={item} isLoading={isLoading} setIsLoading={setIsLoading} />
-                  <CustomTooltip label="Delete item">
-                    <UnstyledButton
+                  <CustomTooltip label="Remove from cart">
+                    <ActionIcon
                       className={classes.button}
                       disabled={isLoading}
                       mr={3}
@@ -119,7 +127,7 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
                       <Group>
                         <TbX />
                       </Group>
-                    </UnstyledButton>
+                    </ActionIcon>
                   </CustomTooltip>
                 </Group>
               </Stack>

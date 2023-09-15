@@ -36,6 +36,16 @@ const useStyles = createStyles((theme) => ({
       borderBottom: `solid ${rem(2)} ${theme.black}`,
     },
   },
+
+  button: {
+    height: 'unset',
+    transition: '300ms',
+
+    '&:hover': {
+      backgroundColor: theme.black,
+      color: theme.white,
+    },
+  },
 }));
 
 type CartPageProps = {
@@ -72,12 +82,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                   display="block"
                   ml="auto"
                   variant="outline"
-                  styles={{
-                    root: {
-                      height: 'unset',
-                      transition: '300ms',
-                    },
-                  }}
+                  className={classes.button}
                   onClick={async () => {
                     if (!cart) return;
                     try {
@@ -99,9 +104,9 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
               ))}
             </Stack>
-            <Stack className={classes.cartSummary} maw={430}>
-              <Title order={5} ff="Montserrat" pb={15}>
-                Summary
+            <Stack className={classes.cartSummary} maw={430} justify="apart">
+              <Title order={5} ff="Montserrat" pb={10}>
+                Order Summary
               </Title>
               <form
                 onSubmit={async (e) => {

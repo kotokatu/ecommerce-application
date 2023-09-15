@@ -39,12 +39,12 @@ const MainPage = () => {
   }, [promoCode]);
 
   return (
-    <Box sx={{ height: `${height}px`, width: '100vw' }}>
+    <Box sx={{ height: `${height}px` }}>
       <Container className={classes.container}>
         <div ref={promoRef} className={classes.promo}>
           {promoCode && (
             <div>
-              <Text className={classes.promoContent}>{`${promoCode.value / 100}% off everything with code: ${
+              <Text className={classes.promoContent}>{`${promoCode.value / 100}% off with code: ${
                 promoCode.code
               }`}</Text>
               <Text className={classes.promoSub}>Limited time only</Text>

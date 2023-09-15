@@ -16,6 +16,12 @@ const useStyles = createStyles((theme) => ({
 
   control: {
     color: theme.black,
+    borderRadius: '100%',
+    transition: '300ms',
+
+    '&:hover': {
+      backgroundColor: theme.colors.gray[2],
+    },
 
     '&:disabled': {
       opacity: 0.5,

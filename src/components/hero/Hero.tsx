@@ -5,15 +5,15 @@ import HeroImage from '../../assets/img/hero_image.jpg';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    height: '700px',
-    paddingTop: '350px',
+    height: rem(700),
+    paddingTop: rem(350),
     backgroundImage: `url(${HeroImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
 
     [theme.fn.smallerThan('xs')]: {
-      paddingTop: rem(80),
-      paddingBottom: rem(50),
+      paddingTop: rem(250),
+      height: rem(600),
     },
   },
 
@@ -34,7 +34,7 @@ const useStyles = createStyles((theme) => ({
     textAlign: 'center',
     fontFamily: `Montserrat, ${theme.fontFamily}`,
 
-    [theme.fn.smallerThan('xs')]: {
+    [theme.fn.smallerThan('sm')]: {
       fontSize: rem(28),
     },
   },
@@ -48,8 +48,8 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 200,
     fontStyle: 'italic',
 
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: theme.fontSizes.md,
+    [theme.fn.smallerThan('sm')]: {
+      fontSize: rem(24),
       textAlign: 'center',
     },
   },
