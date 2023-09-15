@@ -21,7 +21,7 @@ import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
 import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
 import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
-import { notificationError } from '../../components/ui/notification';
+import { notificationError, notificationSuccess } from '../../components/ui/notification';
 import useAuth from '../../utils/hooks/useAuth';
 import { PiBagSimple } from 'react-icons/pi';
 import parse from 'html-react-parser';
@@ -177,8 +177,11 @@ const DetailedProductPage = ({ isLoading, setIsLoading }: DetailedProductPagePro
                         setIsLoading(true);
                         try {
                           const updatedCart = await storeService.addProductToCart(product.id, +selectedVariant);
-                          if (updatedCart) setCart(updatedCart);
-                          setButtonDisabled(true);
+                          if (updatedCart) {
+                            notificationSuccess('Item added to cart');
+                            setCart(updatedCart);
+                            setButtonDisabled(true);
+                          }
                         } catch (err) {
                           if (err instanceof Error) notificationError(err.message);
                         } finally {
@@ -202,6 +205,7 @@ const DetailedProductPage = ({ isLoading, setIsLoading }: DetailedProductPagePro
                                 await storeService.deleteCart();
                                 updatedCart = null;
                               }
+                              notificationSuccess('Item removed from cart');
                               setCart(updatedCart);
                               setButtonDisabled(false);
                             } catch (err) {
