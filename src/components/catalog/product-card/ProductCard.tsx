@@ -1,11 +1,9 @@
-import { createStyles, Image, Card, Text, Group, Button, getStylesRef, rem } from '@mantine/core';
+import { createStyles, Image, Card, Text, Group, getStylesRef, rem } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { ProductProjection } from '@commercetools/platform-sdk';
-import { Link, NavLink } from 'react-router-dom';
-import parse from 'html-react-parser';
+import { NavLink } from 'react-router-dom';
 import { formatPrice } from '../../../utils/helpers/format-price';
 import Popup from '../popup/Popup';
-import { PiBagSimple } from 'react-icons/pi';
 
 const useStyles = createStyles(() => ({
   card: {
