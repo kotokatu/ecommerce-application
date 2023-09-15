@@ -3,6 +3,7 @@ import { Carousel } from '@mantine/carousel';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
+import { formatPrice } from '../../../utils/helpers/format-price';
 
 const useStyles = createStyles(() => ({
   card: {
@@ -140,7 +141,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Group className={classes.footer}>
             <Group spacing="xs">
               {product.masterVariant.prices?.[0].discounted && (
-                <Text color="red">{`${product.masterVariant.prices[0].discounted.value.centAmount / 100} €`}</Text>
+                <Text color="red">{`${formatPrice(
+                  product.masterVariant.prices[0].discounted.value.centAmount / 100,
+                )} €`}</Text>
               )}
               <Text strikethrough={!!product.masterVariant.prices?.[0].discounted}>
                 {`${product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100} €`}

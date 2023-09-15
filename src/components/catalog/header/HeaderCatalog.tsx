@@ -39,17 +39,18 @@ const headerCatalogStyles = createStyles((theme) => ({
 
 type HeaderCatalogProps = {
   allCategories: CategoryType[];
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
 };
 
-const HeaderCatalog = ({ allCategories }: HeaderCatalogProps) => {
+const HeaderCatalog = ({ allCategories, setQuery }: HeaderCatalogProps) => {
   const { classes } = headerCatalogStyles();
 
   return (
     <div className={classes.header}>
       <BreadCrumbs allCategories={allCategories} />
       <div className={classes.inputs}>
-        <SortPicker />
-        <SearchInput label="Search product" placeholder="Enter a name" />
+        <SortPicker setQuery={setQuery} />
+        <SearchInput label="Search product" placeholder="Enter a name" setQuery={setQuery} />
       </div>
     </div>
   );

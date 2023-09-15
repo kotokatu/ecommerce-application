@@ -8,6 +8,7 @@ import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 export const categoryCache = new CategoryCache();
 
@@ -88,11 +89,18 @@ type CatalogPageProps = {
 
 const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
-  const [filters, setFilters] = useState<string[]>([]);
   const [limitProducts, setLimitProducts] = useState<number>(6);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
+  const navigate = useNavigate();
+
+  const setQuery = (searchParams: URLSearchParams, hasPrevParams: boolean) => {
+    let pathname = '/catalog';
+    if (category) pathname += `/${category}`;
+    if (subcategory) pathname += `/${subcategory}`;
+    navigate({ pathname, search: createSearchParams(searchParams).toString() }, { replace: hasPrevParams });
+  };
 
   const toggleScroll = () => {
     const wrapper = document.querySelector('.wrapper') as HTMLElement;
@@ -168,14 +176,14 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     };
 
     getProducts();
-  }, [category, subcategory, searchParams, filters, limitProducts]);
+  }, [category, subcategory, searchParams, limitProducts]);
 
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
   return resources ? (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={categoryCache.categories} />
+      <HeaderCatalog allCategories={categoryCache.categories} setQuery={setQuery} />
       <Button variant="outline" size="md" className={classes.button} onClick={toggleScroll}>
         Filters
       </Button>
@@ -188,8 +196,8 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
           colors={resources.colors}
           minProductPrice={minProductPrice || 0}
           maxProductPrice={maxProductPrice || 10000}
-          setFilters={setFilters}
           toggleScroll={toggleScroll}
+          setQuery={setQuery}
         />
         <div className={classes.items}>
           {resources.products.length ? (
