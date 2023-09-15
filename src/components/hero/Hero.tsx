@@ -12,8 +12,8 @@ const useStyles = createStyles((theme) => ({
     backgroundPosition: 'center center',
 
     [theme.fn.smallerThan('xs')]: {
-      paddingTop: rem(250),
       height: rem(600),
+      paddingTop: rem(300),
     },
   },
 
@@ -99,8 +99,8 @@ export const Hero = forwardRef<HTMLDivElement>(function Hero(_, ref) {
         </Container>
 
         <div className={classes.controls}>
-          <Button className={classes.control} variant="white" size="lg" component={Link} to="/catalog">
-            Shop
+          <Button className={classes.control} variant="white" size="lg" w={200} component={Link} to="/catalog">
+            SHOP
           </Button>
         </div>
       </div>
