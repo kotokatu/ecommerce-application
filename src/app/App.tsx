@@ -82,7 +82,14 @@ function App() {
             <Route index element={<MainPage />} />
             <Route
               path="catalog"
-              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+              element={
+                <CatalogPage
+                  isOpenNavbar={isOpenNavbar}
+                  setIsOpenNavbar={setIsOpenNavbar}
+                  isLoading={isCartLoading}
+                  setIsLoading={setIsCartLoading}
+                />
+              }
             />
             <Route path="about" element={<AboutPage />} />
 
@@ -97,11 +104,25 @@ function App() {
 
             <Route
               path="catalog/:category"
-              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+              element={
+                <CatalogPage
+                  isOpenNavbar={isOpenNavbar}
+                  setIsOpenNavbar={setIsOpenNavbar}
+                  isLoading={isCartLoading}
+                  setIsLoading={setIsCartLoading}
+                />
+              }
             />
             <Route
               path="catalog/:category/:subcategory"
-              element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
+              element={
+                <CatalogPage
+                  isOpenNavbar={isOpenNavbar}
+                  setIsOpenNavbar={setIsOpenNavbar}
+                  isLoading={isCartLoading}
+                  setIsLoading={setIsCartLoading}
+                />
+              }
             />
             <Route
               path="/catalog/product/:productID"

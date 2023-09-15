@@ -85,9 +85,11 @@ const useStyles = createStyles((theme) => ({
 type CatalogPageProps = {
   isOpenNavbar: boolean;
   setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
+const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
@@ -182,7 +184,9 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
         <div className={classes.items}>
           {resources.products.length ? (
             resources.products.map((product) => {
-              return <ProductCard key={product.id} product={product} />;
+              return (
+                <ProductCard key={product.id} product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+              );
             })
           ) : (
             <h2 className={classes.center}>Product not found</h2>
