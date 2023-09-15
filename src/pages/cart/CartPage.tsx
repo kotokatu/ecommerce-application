@@ -21,7 +21,6 @@ import { Link } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError, notificationSuccess } from '../../components/ui/notification';
 import { formatPrice } from '../../utils/helpers/format-price';
-import type { DiscountCodeReference } from '@commercetools/platform-sdk';
 
 const useStyles = createStyles((theme) => ({
   cartSummary: {
@@ -47,7 +46,6 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   const { cart, setCart } = useAuth();
   const { classes } = useStyles();
   const [code, setCode] = useState('');
-  const [appliedCode, setAppliedCode] = useState<DiscountCodeReference | null>(null);
   const [codeLoading, setCodeLoading] = useState(false);
 
   return (
@@ -113,10 +111,6 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                     setIsLoading(true);
                     const updatedCart = await storeService.addDiscountCode(code.trim().toUpperCase());
                     if (updatedCart) {
-                      setAppliedCode(
-                        updatedCart.discountCodes.find((discountCode) => discountCode.state === 'MatchesCart')
-                          ?.discountCode || null,
-                      );
                       setCart(updatedCart);
                     }
                   } catch (err) {
@@ -164,11 +158,13 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                     <UnstyledButton
                       onClick={async () => {
                         try {
+                          const appliedCode = cart.discountCodes.find(
+                            (discountCode) => discountCode.state === 'MatchesCart',
+                          )?.discountCode;
                           if (!appliedCode) return;
                           setIsLoading(true);
                           const updatedCart = await storeService.removeDiscountCode(appliedCode);
                           if (updatedCart) {
-                            setAppliedCode(null);
                             setCart(updatedCart);
                           }
                         } catch (err) {
