@@ -5,6 +5,7 @@ import { Link, NavLink } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { formatPrice } from '../../../utils/helpers/format-price';
 import Popup from '../popup/Popup';
+import { PiBagSimple } from 'react-icons/pi';
 
 const useStyles = createStyles(() => ({
   card: {
@@ -131,7 +132,7 @@ const ProductCard = ({ product, isLoading, setIsLoading }: ProductCardProps) => 
 
         <Group className={classes.cardinfo}>
           <Group className={classes.title} spacing={0}>
-            <Text ff="Montserrat" size="14px" mb="5px" lh={1} fw={400}>{`${product.masterVariant.attributes?.find(
+            <Text ff="Montserrat" size="14px" mb="15px" lh={1} fw={400}>{`${product.masterVariant.attributes?.find(
               (attribute) => attribute.name === 'brand',
             )?.value}`}</Text>
             <NavLink to={`/catalog/product/${product.id}`}>
@@ -150,7 +151,9 @@ const ProductCard = ({ product, isLoading, setIsLoading }: ProductCardProps) => 
                 {`${product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100} €`}
               </Text>
             </Group>
-            <Popup product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+            <Group spacing="xs">
+              <Popup product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+            </Group>
           </Group>
         </Group>
       </Card>
