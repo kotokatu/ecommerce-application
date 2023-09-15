@@ -21,7 +21,7 @@ export const getErrorMessage = (errorResponse: unknown) => {
         case ErrorCodes.Forbidden:
           storeService.logoutUser();
           window.location.reload();
-          break;
+          return 'Authorization failed';
         case ErrorCodes.BadRequest:
           return String(error.message);
         case ErrorCodes.BadGateway:
@@ -32,9 +32,7 @@ export const getErrorMessage = (errorResponse: unknown) => {
           return 'An unexpected error occurred';
       }
     }
-  }
-
-  if (errorResponse instanceof Error) {
+  } else if (errorResponse instanceof Error) {
     return errorResponse.message;
   }
   return 'An unexpected error occurred';
