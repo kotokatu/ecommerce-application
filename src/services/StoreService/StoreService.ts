@@ -8,6 +8,7 @@ import {
   Cart,
   Category,
   CartDiscountValueRelative,
+  DiscountCodeReference,
 } from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
@@ -512,7 +513,7 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
-  public async getCartWithDiscount(code: string): Promise<Cart | null> {
+  public async addDiscountCode(code: string): Promise<Cart | null> {
     try {
       const { id, version } = await this.getCart();
       const cart = await this.apiRoot
@@ -526,6 +527,30 @@ class StoreService {
               {
                 action: 'addDiscountCode',
                 code,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async removeDiscountCode(discountCode: DiscountCodeReference): Promise<Cart | null> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'removeDiscountCode',
+                discountCode,
               },
             ],
           },

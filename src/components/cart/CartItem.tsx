@@ -70,14 +70,7 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
         </Stack>
         <Stack ml="auto">
           <Text ml="auto" ff="Montserrat" fw={700} fz="sm">
-            {formatPrice(
-              ((item.discountedPricePerQuantity?.[0]?.discountedPrice?.value?.centAmount ||
-                item.price?.discounted?.value.centAmount ||
-                item.price.value.centAmount) /
-                100) *
-                item.quantity,
-            )}{' '}
-            €
+            {formatPrice(item.totalPrice.centAmount / 100)} €
           </Text>
           <Group noWrap>
             <QuantityInput item={item} isLoading={isLoading} setIsLoading={setIsLoading} />

@@ -12,14 +12,16 @@ import {
   Container,
   Button,
   TextInput,
+  UnstyledButton,
   rem,
 } from '@mantine/core';
 import { PiBagSimple } from 'react-icons/pi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
-import { notificationError } from '../../components/ui/notification';
+import { notificationError, notificationSuccess } from '../../components/ui/notification';
 import { formatPrice } from '../../utils/helpers/format-price';
+import type { DiscountCodeReference } from '@commercetools/platform-sdk';
 
 const useStyles = createStyles((theme) => ({
   cartSummary: {
@@ -45,6 +47,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   const { cart, setCart } = useAuth();
   const { classes } = useStyles();
   const [code, setCode] = useState('');
+  const [appliedCode, setAppliedCode] = useState<DiscountCodeReference | null>(null);
   const [codeLoading, setCodeLoading] = useState(false);
 
   return (
@@ -56,7 +59,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
       ) : cart?.lineItems.length ? (
         <Container w="100%">
           <Title order={2} align="center" py={40} ff="Montserrat">
-            Your shopping bag
+            Your shopping cart
           </Title>
           <Group align="flex-start" spacing={30}>
             <div>
@@ -81,6 +84,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                     try {
                       setIsLoading(true);
                       await storeService.deleteCart();
+                      notificationSuccess('Shopping cart cleared');
                       setCart(null);
                     } catch (err) {
                       if (err instanceof Error) notificationError(err.message);
@@ -89,7 +93,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                     }
                   }}
                 >
-                  Delete all items
+                  Clear shopping cart
                 </Button>
               </div>
               {cart?.lineItems.map((item) => (
@@ -100,37 +104,106 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
               <Title order={5} ff="Montserrat" pb={15}>
                 Summary
               </Title>
-              <Group>
-                <TextInput
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  sx={{ flexGrow: 1 }}
-                  placeholder="Enter promocode"
-                  ff="Montserrat"
-                ></TextInput>
-                <Button
-                  ff="Montserrat"
-                  loading={codeLoading}
-                  disabled={isLoading}
-                  onClick={async () => {
-                    if (!cart || !code) return;
-                    try {
-                      setCodeLoading(true);
-                      setIsLoading(true);
-                      const updatedCart = await storeService.getCartWithDiscount(code);
-                      if (updatedCart) setCart(updatedCart);
-                    } catch (err) {
-                      if (err instanceof Error) notificationError(err.message);
-                    } finally {
-                      setCode('');
-                      setCodeLoading(false);
-                      setIsLoading(false);
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!cart || !code.trim()) return;
+                  try {
+                    setCodeLoading(true);
+                    setIsLoading(true);
+                    const updatedCart = await storeService.addDiscountCode(code.trim().toUpperCase());
+                    if (updatedCart) {
+                      setAppliedCode(
+                        updatedCart.discountCodes.find((discountCode) => discountCode.state === 'MatchesCart')
+                          ?.discountCode || null,
+                      );
+                      setCart(updatedCart);
                     }
-                  }}
-                >
-                  Apply
-                </Button>
+                  } catch (err) {
+                    if (err instanceof Error) notificationError(err.message);
+                  } finally {
+                    setCode('');
+                    setCodeLoading(false);
+                    setIsLoading(false);
+                  }
+                }}
+              >
+                <Group>
+                  <TextInput
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    sx={{ flexGrow: 1 }}
+                    placeholder="Enter promocode"
+                    ff="Montserrat"
+                  ></TextInput>
+                  <Button type="submit" ff="Montserrat" loading={codeLoading} disabled={isLoading}>
+                    Apply
+                  </Button>
+                </Group>
+              </form>
+              <Group position="apart">
+                <Text ff="Montserrat" fw={400}>
+                  Subtotal
+                </Text>
+                <Text ff="Montserrat" fw={400}>
+                  {formatPrice(
+                    cart.lineItems.reduce((acc, val) => {
+                      acc += (val.price.discounted?.value.centAmount || val.price.value.centAmount) * val.quantity;
+                      return acc;
+                    }, 0) / 100,
+                  )}{' '}
+                  €
+                </Text>
               </Group>
+              {!!cart.discountCodes.find((discountCode) => discountCode.state === 'MatchesCart') && (
+                <Group position="apart">
+                  <Group spacing={5}>
+                    <Text ff="Montserrat" fw={400}>
+                      Promo
+                    </Text>
+                    <UnstyledButton
+                      onClick={async () => {
+                        try {
+                          if (!appliedCode) return;
+                          setIsLoading(true);
+                          const updatedCart = await storeService.removeDiscountCode(appliedCode);
+                          if (updatedCart) {
+                            setAppliedCode(null);
+                            setCart(updatedCart);
+                          }
+                        } catch (err) {
+                          if (err instanceof Error) notificationError(err.message);
+                        } finally {
+                          setIsLoading(false);
+                        }
+                      }}
+                    >
+                      <Text
+                        lh={1}
+                        ff="Montserrat"
+                        fw={400}
+                        fz={12}
+                        c="dimmed"
+                        sx={{ borderBottom: `dotted ${rem(1)}` }}
+                      >
+                        remove
+                      </Text>
+                    </UnstyledButton>
+                  </Group>
+                  <Text ff="Montserrat" fw={400}>
+                    {'– '}
+                    {formatPrice(
+                      cart.lineItems.reduce((acc, val) => {
+                        acc +=
+                          val.discountedPricePerQuantity[0].discountedPrice.includedDiscounts[0].discountedAmount
+                            .centAmount * val.discountedPricePerQuantity[0].quantity;
+                        return acc;
+                      }, 0) / 100,
+                    )}{' '}
+                    €
+                  </Text>
+                </Group>
+              )}
               <Group position="apart">
                 <Text ff="Montserrat" fw={700}>
                   Total
@@ -149,7 +222,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
         <Center h="100%">
           <Stack align="center">
             <PiBagSimple size="5rem" />
-            <Text>Your shopping bag is empty</Text>
+            <Text>Your shopping cart is empty</Text>
             <Text>
               Browse our{' '}
               <Link className={classes.link} to="/catalog">
