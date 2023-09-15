@@ -20,6 +20,7 @@ export const getErrorMessage = (errorResponse: unknown) => {
         case ErrorCodes.Unauthorized:
         case ErrorCodes.Forbidden:
           storeService.logoutUser();
+          window.location.reload();
           break;
         case ErrorCodes.BadRequest:
           return String(error.message);
