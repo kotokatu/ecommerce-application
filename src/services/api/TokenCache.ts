@@ -1,5 +1,7 @@
 import { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 const TOKEN_STORAGE_KEY = 'ct-token-30fingers';
+export const LOGIN_STORAGE_KEY = 'login-30fingers';
+
 export class TokenCacheHandler implements TokenCache {
   cache: TokenStore;
   constructor() {
@@ -36,7 +38,7 @@ export class TokenCacheHandler implements TokenCache {
   checkToken(): boolean {
     const isValid = this.cache.expirationTime > Date.now();
     if (!isValid) {
-      localStorage.setItem('userLoggedIn', 'false');
+      localStorage.setItem(LOGIN_STORAGE_KEY, 'false');
       this.clear();
     }
     return isValid;

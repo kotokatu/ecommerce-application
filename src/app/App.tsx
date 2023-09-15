@@ -20,27 +20,31 @@ import { tokenCache } from '../services/api/TokenCache';
 import { Cart } from '@commercetools/platform-sdk';
 import { storeService } from '../services/StoreService/StoreService';
 import { notificationError } from '../components/ui/notification';
-
+import { LOGIN_STORAGE_KEY } from '../services/api/TokenCache';
 function App() {
-  const loginState = localStorage.getItem('userLoggedIn');
-  const [userLoggedIn, setUserLoggedIn] = useState(
+  const loginState = localStorage.getItem(LOGIN_STORAGE_KEY);
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(() =>
     loginState ? tokenCache.checkToken() && JSON.parse(loginState) : false,
   );
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
   const [cart, setCart] = useState<Cart | null>(null);
+  const [isCartLoading, setIsCartLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('userLoggedIn', JSON.stringify(userLoggedIn));
+    localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(userLoggedIn));
   }, [userLoggedIn]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsCartLoading(true);
         const cart = await storeService.getActiveCart();
         setCart(cart);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
+      } finally {
+        setIsCartLoading(false);
       }
     };
     fetchData();
@@ -99,9 +103,12 @@ function App() {
               path="catalog/:category/:subcategory"
               element={<CatalogPage isOpenNavbar={isOpenNavbar} setIsOpenNavbar={setIsOpenNavbar} />}
             />
-            <Route path="/catalog/product/:productID" element={<DetailedProductPage />} />
+            <Route
+              path="/catalog/product/:productID"
+              element={<DetailedProductPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />}
+            />
 
-            <Route path="basket" element={<CartPage />} />
+            <Route path="basket" element={<CartPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

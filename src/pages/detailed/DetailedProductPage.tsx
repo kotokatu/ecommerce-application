@@ -75,7 +75,12 @@ const getProductSizes = (product: ProductProjection) => {
   return [getSizeData(product.masterVariant), ...product.variants.map((variant) => getSizeData(variant))];
 };
 
-const DetailedProductPage = (): JSX.Element => {
+type DetailedProductPageProps = {
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const DetailedProductPage = ({ isLoading, setIsLoading }: DetailedProductPageProps): JSX.Element => {
   const [product, setProduct] = useState<ProductProjection>();
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -117,7 +122,8 @@ const DetailedProductPage = (): JSX.Element => {
   }, [productID, navigate]);
 
   useEffect(() => {
-    if (product && selectedVariant && cart) setButtonDisabled(checkProductInCart(product?.id, +selectedVariant, cart));
+    if (product && selectedVariant && cart)
+      setButtonDisabled(() => checkProductInCart(product?.id, +selectedVariant, cart));
   }, [selectedVariant, product, cart]);
 
   return (
@@ -160,41 +166,56 @@ const DetailedProductPage = (): JSX.Element => {
                     onChange={setSelectedVariant}
                     placeholder="Select size"
                   />
-                  <Button
-                    rightIcon={<PiBagSimple size="1.5rem" />}
-                    mr="sm"
-                    onClick={async () => {
-                      if (!selectedVariant) return;
-                      try {
-                        const updatedCart = await storeService.addProductToCart(product.id, +selectedVariant);
-                        if (updatedCart) setCart(updatedCart);
-                        setButtonDisabled(true);
-                      } catch (err) {
-                        if (err instanceof Error) notificationError(err.message);
-                      }
-                    }}
-                    disabled={buttonDisabled}
-                  >
-                    Add To
-                  </Button>
-                  {buttonDisabled && (
+                  <Group spacing={5}>
                     <Button
+                      loading={isLoading && !buttonDisabled}
                       rightIcon={<PiBagSimple size="1.5rem" />}
+                      mr="sm"
                       onClick={async () => {
-                        if (cart && selectedVariant) {
-                          try {
-                            const updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
-                            if (updatedCart) setCart(updatedCart);
-                            setButtonDisabled(false);
-                          } catch (err) {
-                            if (err instanceof Error) notificationError(err.message);
-                          }
+                        if (!selectedVariant) return;
+                        setIsLoading(true);
+                        try {
+                          const updatedCart = await storeService.addProductToCart(product.id, +selectedVariant);
+                          if (updatedCart) setCart(updatedCart);
+                          setButtonDisabled(true);
+                        } catch (err) {
+                          if (err instanceof Error) notificationError(err.message);
+                        } finally {
+                          setIsLoading(false);
                         }
                       }}
+                      disabled={buttonDisabled}
                     >
-                      Remove From
+                      Add To
                     </Button>
-                  )}
+                    {buttonDisabled && (
+                      <Button
+                        loading={isLoading}
+                        rightIcon={<PiBagSimple size="1.5rem" />}
+                        onClick={async () => {
+                          if (cart && selectedVariant) {
+                            setIsLoading(true);
+                            try {
+                              let updatedCart = await storeService.removeProductFromCart(product.id, +selectedVariant);
+                              if (updatedCart?.lineItems.length === 0) {
+                                await storeService.deleteCart();
+                                updatedCart = null;
+                              }
+                              setCart(updatedCart);
+                              setButtonDisabled(false);
+                            } catch (err) {
+                              if (err instanceof Error) notificationError(err.message);
+                            } finally {
+                              setIsLoading(false);
+                            }
+                          }
+                        }}
+                      >
+                        Remove From
+                      </Button>
+                    )}
+                  </Group>
+
                   <Paper fz={13} className="product-description" ff="Montserrat">
                     {product.description?.['en-US'] && parse(product.description['en-US'])}
                   </Paper>
