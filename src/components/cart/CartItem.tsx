@@ -94,7 +94,9 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
                 <Text className={classes.text} fw={700} fz="sm">
                   {item.variant.attributes?.find((attribute) => attribute.name === 'brand')?.value}
                 </Text>
-                <Text className={classes.text}>{item.name['en-US']}</Text>
+                <Anchor underline={false} component={Link} to={`/catalog/product/${item.productId}`}>
+                  <Text className={classes.text}>{item.name['en-US']}</Text>
+                </Anchor>
                 <Text className={classes.text} fz="sm">
                   Size: {item.variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label}{' '}
                 </Text>
