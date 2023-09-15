@@ -1,7 +1,7 @@
 import useAuth from '../../utils/hooks/useAuth';
 import { LineItem } from '@commercetools/platform-sdk';
 import { Link } from 'react-router-dom';
-import { UnstyledButton, Text, Image, Group, Stack, Divider, Anchor, createStyles } from '@mantine/core';
+import { UnstyledButton, Text, Image, Group, Stack, Divider, Anchor, createStyles, rem } from '@mantine/core';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError } from '../ui/notification';
 import { TbX } from 'react-icons/tb';
@@ -68,9 +68,18 @@ const CartItem = ({ item, isLoading, setIsLoading }: CartItemProps) => {
                   {formatPrice(item.discountedPricePerQuantity[0].discountedPrice.value.centAmount / 100)} €
                 </Text>
               )}
-              <Text className={classes.text} ml="auto" fw={700} fz="sm">
-                {formatPrice(item.totalPrice.centAmount / 100)} €
-              </Text>
+              <CustomTooltip label={`Total price for ${item.quantity} item(s)`}>
+                <Text
+                  className={classes.text}
+                  ml="auto"
+                  fw={700}
+                  fz="sm"
+                  underline
+                  sx={{ textDecorationStyle: 'dotted', textUnderlineOffset: `${rem(3)}`, cursor: 'default' }}
+                >
+                  {formatPrice(item.totalPrice.centAmount / 100)} €
+                </Text>
+              </CustomTooltip>
             </Group>
             <Group noWrap>
               <Stack spacing={4}>
