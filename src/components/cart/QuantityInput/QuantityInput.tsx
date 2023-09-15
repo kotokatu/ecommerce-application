@@ -10,8 +10,8 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    maxWidth: '100px',
-    padding: `${rem(6)} ${theme.spacing.xs}`,
+    width: '80px',
+    padding: `${rem(6)} ${rem(0)}`,
   },
 
   control: {
@@ -26,7 +26,7 @@ const useStyles = createStyles((theme) => ({
     fontFamily: 'Montserrat',
     textAlign: 'center',
     height: rem(28),
-    flex: 1,
+    flexGrow: 1,
 
     '&:disabled': {
       backgroundColor: 'transparent',
