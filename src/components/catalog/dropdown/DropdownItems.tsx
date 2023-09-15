@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { Box, Collapse, UnstyledButton } from '@mantine/core';
 import { dropdownStyles } from './dropdownStyles';
 import ControlledCheckbox from './ControlledCheckbox';
@@ -12,7 +13,11 @@ type DropdownItemsProps = {
 
 const DropdownItems = ({ name, items, selectedItems, setSelectedItems }: DropdownItemsProps) => {
   const { classes } = dropdownStyles();
-  const [opened, setOpened] = useState(!!selectedItems.length);
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    if (selectedItems.length !== 0 && !opened) setOpened(true);
+  }, [selectedItems]);
 
   const checkItems = items.map((item) => (
     <ControlledCheckbox item={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} key={item} />

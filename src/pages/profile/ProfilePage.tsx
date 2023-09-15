@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import ProfileEdit from './profileModes/ProfileEditMode';
 import Profile from './profileModes/ProfileDataMode';
 import { Link } from 'react-router-dom';
+import { notificationError } from '../../components/ui/notification';
 
 export const defaultData: UserProfile = {
   version: 0,
@@ -91,8 +92,12 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const profile = async () => {
-      const userData = (await storeService.getUserProfile()) as UserProfile;
-      setProfile(userData);
+      try {
+        const userData = (await storeService.getUserProfile()) as UserProfile;
+        setProfile(userData);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
     };
     profile();
   }, [isUpdated]);

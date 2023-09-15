@@ -1,12 +1,20 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { CustomerDraft, Customer, MyCustomerChangePassword, Cart, Category } from '@commercetools/platform-sdk';
+import {
+  CustomerDraft,
+  Customer,
+  MyCustomerChangePassword,
+  Cart,
+  Category,
+  CartDiscountValueRelative,
+  DiscountCodeReference,
+} from '@commercetools/platform-sdk';
 import { getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
-import { tokenCache } from '../api/TokenCache';
+import { LOGIN_STORAGE_KEY, tokenCache } from '../api/TokenCache';
 
 interface CustomerUpdatePersonalDraft {
   email: string;
@@ -70,6 +78,11 @@ type UserData = {
   setDefaultShippingAddress: boolean;
   setDefaultBillingAddress: boolean;
   copyShippingToBilling: boolean;
+};
+
+export type PromoCode = {
+  code: string;
+  value: number;
 };
 
 class StoreService {
@@ -148,6 +161,7 @@ class StoreService {
 
   public logoutUser() {
     tokenCache.clear();
+    localStorage.setItem(LOGIN_STORAGE_KEY, 'false');
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
@@ -480,7 +494,7 @@ class StoreService {
     }
   }
 
-  public async getActiveCart(discountCode?: string): Promise<Cart | null> {
+  public async getActiveCart(): Promise<Cart | null> {
     try {
       const activeCart = await this.apiRoot.me().activeCart().get().execute();
       return activeCart.body;
@@ -499,7 +513,7 @@ class StoreService {
       throw new Error(getErrorMessage(err));
     }
   }
-  public async getCartWithDiscount(code: string): Promise<Cart | null> {
+  public async addDiscountCode(code: string): Promise<Cart | null> {
     try {
       const { id, version } = await this.getCart();
       const cart = await this.apiRoot
@@ -519,6 +533,44 @@ class StoreService {
         })
         .execute();
       return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async removeDiscountCode(discountCode: DiscountCodeReference): Promise<Cart | null> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'removeDiscountCode',
+                discountCode,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getDiscount(): Promise<PromoCode | null> {
+    try {
+      const discountCode = await this.apiRoot.discountCodes().get().execute();
+      if (!discountCode.body.results.length) return null;
+      const { code } = discountCode.body.results[0];
+      const { id } = discountCode.body.results[0].cartDiscounts[0];
+      const cartDiscount = await this.apiRoot.cartDiscounts().withId({ ID: id }).get().execute();
+      const value = (cartDiscount.body.value as CartDiscountValueRelative).permyriad;
+      return { code, value };
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }

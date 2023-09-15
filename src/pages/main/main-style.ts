@@ -1,13 +1,32 @@
 import { createStyles } from '@mantine/core';
 
-export const mainPageStyle = createStyles(() => ({
+export const mainPageStyle = createStyles((theme) => ({
   container: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: 'block',
+    position: 'absolute',
+    left: 0,
     width: '100%',
-    height: '100%',
     maxWidth: '100%',
     padding: '0',
+  },
+
+  promo: {
+    width: '100%',
+    padding: theme.spacing.xs,
+    textAlign: 'center',
+    color: theme.white,
+    backgroundColor: theme.black,
+  },
+
+  promoContent: {
+    fontFamily: `Montserrat, ${theme.fontFamily}`,
+    fontWeight: 700,
+  },
+
+  promoSub: {
+    fontFamily: `Montserrat, ${theme.fontFamily}`,
+    fontWeight: 400,
+    fontSize: theme.fontSizes.xs,
   },
 
   links: {

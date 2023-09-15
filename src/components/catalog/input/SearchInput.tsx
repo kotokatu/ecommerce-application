@@ -7,17 +7,18 @@ import { TbX } from 'react-icons/tb';
 type SearchInputProps = {
   label: string;
   placeholder: string;
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
 };
 
-const SearchInput = ({ label, placeholder }: SearchInputProps) => {
+const SearchInput = ({ label, placeholder, setQuery }: SearchInputProps) => {
   const [focused, setFocused] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { classes } = inputStyles({ floating: searchValue.trim().length !== 0 || focused });
 
   const clearSearchParams = () => {
     searchParams.delete('search');
-    setSearchParams(searchParams);
+    setQuery(searchParams, searchParams.size !== 0);
   };
 
   useEffect(() => {
@@ -44,10 +45,9 @@ const SearchInput = ({ label, placeholder }: SearchInputProps) => {
       onChange={(event) => setSearchValue(event.currentTarget.value)}
       onKeyDown={(event) => {
         if (event.code === 'Enter') {
-          setSearchParams(() => {
-            searchParams.set('search', searchValue);
-            return searchParams;
-          });
+          const hasPrevParams = searchParams.size !== 0;
+          searchParams.set('search', searchValue);
+          setQuery(searchParams, hasPrevParams);
         }
       }}
       onFocus={() => setFocused(true)}
