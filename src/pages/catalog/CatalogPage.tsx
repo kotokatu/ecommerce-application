@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createStyles, Center, Loader, Button } from '@mantine/core';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
@@ -29,8 +29,11 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'space-between',
   },
 
-  items: {
+  itemsbox: {
     flex: '1 1 auto',
+  },
+
+  items: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
@@ -90,6 +93,7 @@ type CatalogPageProps = {
 const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [limitProducts, setLimitProducts] = useState<number>(6);
+  const [isCardLoading, setCardLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
@@ -109,20 +113,20 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     wrapper.className = !isOpenNavbar ? 'wrapper lock blackout' : 'wrapper';
   };
 
-  const infiniteObserver = new IntersectionObserver(([entry], observer) => {
-    if (entry.isIntersecting) {
-      setLimitProducts(limitProducts + 3);
-      observer.unobserve(entry.target);
-    }
-  }, {});
-
   useEffect(() => {
+    const infiniteObserver = new IntersectionObserver(([entry], observer) => {
+      if (entry.isIntersecting) {
+        setLimitProducts(limitProducts + 3);
+        observer.unobserve(entry.target);
+      }
+    }, {});
+
     const getProducts = async () => {
       try {
-        console.log(limitProducts);
         const queryParams: QueryArgs = { limit: limitProducts };
         const filterParams = [];
         await categoryCache.get();
+        setCardLoading(true);
 
         if (category) {
           filterParams.push(
@@ -162,9 +166,11 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
 
         if (footer && res.total) {
           infiniteObserver.observe(footer);
+          setLimitProducts(limitProducts - (limitProducts % 3));
 
           if (limitProducts >= res.total) {
             setLimitProducts(res.total <= 6 ? 6 : res.total);
+            setCardLoading(false);
             infiniteObserver.unobserve(footer);
           }
         }
@@ -199,14 +205,19 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
           toggleScroll={toggleScroll}
           setQuery={setQuery}
         />
-        <div className={classes.items}>
-          {resources.products.length ? (
-            resources.products.map((product) => {
-              return <ProductCard key={product.id} product={product} />;
-            })
-          ) : (
-            <h2 className={classes.center}>Product not found</h2>
-          )}
+        <div className={classes.itemsbox}>
+          <div className={classes.items}>
+            {resources.products.length ? (
+              resources.products.map((product) => {
+                return <ProductCard key={product.id} product={product} />;
+              })
+            ) : (
+              <h2 className={classes.center}>Product not found</h2>
+            )}
+          </div>
+          {isCardLoading ? (
+            <Loader className="card-loader" variant="dots" size="xl" display="flex" my="xl" mx="auto" />
+          ) : null}
         </div>
       </div>
     </div>
