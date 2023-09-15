@@ -13,7 +13,6 @@ type DropdownPriceProps = {
   setMaxPrice: Dispatch<SetStateAction<string>>;
   minProductPrice: number;
   maxProductPrice: number;
-  // minMaxPrices: number[];
 };
 
 const DropdownPrice = ({
@@ -24,7 +23,7 @@ const DropdownPrice = ({
   maxPriceInput,
   setMaxPrice,
   minProductPrice,
-  maxProductPrice, // minMaxPrices,
+  maxProductPrice,
 }: DropdownPriceProps) => {
   const { classes } = dropdownStyles();
   const [opened, setOpened] = useState(!!minPriceInput || !!maxPriceInput);
