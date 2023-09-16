@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import CartItem from '../../components/cart/CartItem';
 import useAuth from '../../utils/hooks/useAuth';
 import {
@@ -24,10 +24,6 @@ import { notificationError, notificationSuccess } from '../../components/ui/noti
 import { formatPrice } from '../../utils/helpers/format-price';
 
 const useStyles = createStyles((theme) => ({
-  cartSummary: {
-    flexGrow: 1,
-  },
-
   link: {
     position: 'relative',
     display: 'inline-block',
@@ -72,18 +68,6 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   const { classes } = useStyles();
   const [code, setCode] = useState('');
   const [codeLoading, setCodeLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const cart = await storeService.getActiveCart();
-        setCart(cart);
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-    fetchData();
-  }, []);
 
   return (
     <>
@@ -130,7 +114,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
               ))}
             </Stack>
-            <Stack className={classes.cartSummary} maw={430} justify="apart">
+            <Stack sx={{ flexGrow: 1 }} maw={430} justify="apart">
               <Title order={5} ff="Montserrat" pb={10}>
                 Order Summary
               </Title>
