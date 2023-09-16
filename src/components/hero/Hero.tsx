@@ -5,8 +5,11 @@ import HeroImage from '../../assets/img/hero_image.jpg';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    height: rem(700),
-    paddingTop: rem(350),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    flexGrow: 1,
+    paddingBottom: rem(80),
     backgroundImage: `url(${HeroImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center center',

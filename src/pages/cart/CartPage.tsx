@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import CartItem from '../../components/cart/CartItem';
 import useAuth from '../../utils/hooks/useAuth';
 import {
@@ -58,6 +59,18 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   const { classes } = useStyles();
   const [code, setCode] = useState('');
   const [codeLoading, setCodeLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cart = await storeService.getActiveCart();
+        setCart(cart);
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <>

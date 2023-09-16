@@ -2,11 +2,13 @@ import { createStyles } from '@mantine/core';
 
 export const mainPageStyle = createStyles((theme) => ({
   container: {
-    display: 'block',
     position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
     left: 0,
     width: '100%',
     maxWidth: '100%',
+    height: 'calc(100dvh - 80px)',
     padding: '0',
   },
 
