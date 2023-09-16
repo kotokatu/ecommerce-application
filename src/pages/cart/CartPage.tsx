@@ -29,12 +29,25 @@ const useStyles = createStyles((theme) => ({
   },
 
   link: {
+    position: 'relative',
     display: 'inline-block',
-    borderBottom: `solid ${rem(2)} transparent`,
-    transition: '300ms',
+    color: theme.black,
 
-    '&:hover': {
-      borderBottom: `solid ${rem(2)} ${theme.black}`,
+    '&:after': {
+      content: '""',
+      position: 'absolute',
+      display: 'block',
+      left: '50%',
+      bottom: -2,
+      width: 0,
+      height: rem(3),
+      borderRadius: rem(2),
+      backgroundColor: theme.black,
+      transition: 'width 300ms ease 0s, left 300ms ease 0s',
+    },
+    '&:hover:after': {
+      width: '100%',
+      left: 0,
     },
   },
 
@@ -237,8 +250,8 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
         <Center h="100%">
           <Stack align="center">
             <PiBagSimple size="5rem" />
-            <Text>Your shopping cart is empty</Text>
-            <Text>
+            <Text c="dimmed">Your shopping cart is empty</Text>
+            <Text c="dimmed">
               Browse our{' '}
               <Link className={classes.link} to="/catalog">
                 catalog
