@@ -33,6 +33,10 @@ export const getErrorMessage = (errorResponse: unknown) => {
       }
     }
   } else if (errorResponse instanceof Error) {
+    if (errorResponse.message === 'Missing required options') {
+      storeService.logoutUser();
+      window.location.reload();
+    }
     return errorResponse.message;
   }
   return 'An unexpected error occurred';
