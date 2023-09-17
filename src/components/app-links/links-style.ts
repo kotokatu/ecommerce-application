@@ -74,6 +74,7 @@ export const linksStyle = createStyles((theme) => ({
     textDecoration: 'none',
     color: theme.colors.dark[9],
     height: '43px',
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[2],
