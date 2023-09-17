@@ -10,7 +10,7 @@ import {
   CartDiscountValueRelative,
   DiscountCodeReference,
 } from '@commercetools/platform-sdk';
-import { getErrorMessage } from '../../utils/helpers/error-handler';
+import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
@@ -510,7 +510,7 @@ class StoreService {
       const activeCart = await this.apiRoot.me().activeCart().get().execute();
       return activeCart.body;
     } catch (err) {
-      if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === 404) {
+      if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === ErrorCodes.NotFound) {
         return null;
       }
       throw new Error(getErrorMessage(err));
@@ -575,12 +575,13 @@ class StoreService {
 
   public async getDiscount(): Promise<PromoCode | null> {
     try {
-      const discountCode = await this.apiRoot.discountCodes().get().execute();
+      const discountCode = await this.apiRoot
+        .discountCodes()
+        .get({ queryArgs: { expand: 'cartDiscounts[*]' } })
+        .execute();
       if (!discountCode.body.results.length) return null;
       const { code } = discountCode.body.results[0];
-      const { id } = discountCode.body.results[0].cartDiscounts[0];
-      const cartDiscount = await this.apiRoot.cartDiscounts().withId({ ID: id }).get().execute();
-      const value = (cartDiscount.body.value as CartDiscountValueRelative).permyriad;
+      const value = (discountCode.body.results[0].cartDiscounts[0].obj?.value as CartDiscountValueRelative).permyriad;
       return { code, value };
     } catch (err) {
       throw new Error(getErrorMessage(err));
