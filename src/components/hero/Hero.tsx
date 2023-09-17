@@ -1,6 +1,5 @@
 import { Title, Text, Container, Button, createStyles, rem } from '@mantine/core';
 import { Link } from 'react-router-dom';
-import { forwardRef } from 'react';
 import HeroImage from '../../assets/img/hero_image.jpg';
 
 const useStyles = createStyles((theme) => ({
@@ -87,11 +86,11 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const Hero = forwardRef<HTMLDivElement>(function Hero(_, ref) {
+export const Hero = () => {
   const { classes } = useStyles();
 
   return (
-    <div ref={ref} className={classes.wrapper}>
+    <div className={classes.wrapper}>
       <div className={classes.inner}>
         <Title className={classes.title}>NEW COLLECTION</Title>
 
@@ -109,4 +108,4 @@ export const Hero = forwardRef<HTMLDivElement>(function Hero(_, ref) {
       </div>
     </div>
   );
-});
+};
