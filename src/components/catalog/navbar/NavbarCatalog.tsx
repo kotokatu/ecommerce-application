@@ -28,6 +28,7 @@ const navbarCatalogStyles = createStyles((theme) => ({
     width: '100%',
     color: theme.black,
     fontSize: theme.fontSizes.sm,
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[0],

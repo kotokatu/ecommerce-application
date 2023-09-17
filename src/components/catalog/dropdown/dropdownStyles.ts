@@ -8,6 +8,7 @@ export const dropdownStyles = createStyles((theme) => ({
     width: '100%',
     color: theme.black,
     fontSize: theme.fontSizes.sm,
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[0],
@@ -40,6 +41,7 @@ export const dropdownStyles = createStyles((theme) => ({
     fontSize: theme.fontSizes.sm,
     color: theme.black,
     borderLeft: `${rem(1)} solid ${theme.colors.gray[3]}`,
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[0],

@@ -12,6 +12,7 @@ export const linksStyle = createStyles((theme) => ({
     textDecoration: 'none',
     color: theme.colors.dark[9],
     height: '43px',
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[2],
@@ -35,6 +36,8 @@ export const linksStyle = createStyles((theme) => ({
     height: '43px',
     padding: `${rem(8)} ${rem(22)}`,
     borderRadius: theme.radius.sm,
+    transition: '300ms',
+
     '&:hover': {
       backgroundColor: theme.colors.gray[2],
     },
@@ -71,6 +74,7 @@ export const linksStyle = createStyles((theme) => ({
     textDecoration: 'none',
     color: theme.colors.dark[9],
     height: '43px',
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[2],
