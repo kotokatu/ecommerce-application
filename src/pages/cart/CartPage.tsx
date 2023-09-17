@@ -41,6 +41,7 @@ const useStyles = createStyles((theme) => ({
       backgroundColor: theme.black,
       transition: 'width 300ms ease 0s, left 300ms ease 0s',
     },
+
     '&:hover:after': {
       width: '100%',
       left: 0,
@@ -48,11 +49,10 @@ const useStyles = createStyles((theme) => ({
   },
 
   button: {
-    height: 'unset',
     transition: '300ms',
 
     '&:hover': {
-      backgroundColor: theme.black,
+      backgroundColor: theme.colors.gray,
       color: theme.white,
     },
   },
@@ -80,42 +80,14 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
           <Title order={2} align="center" py={40} ff="Montserrat">
             Your shopping cart
           </Title>
-          <Group align="flex-start" position="center" spacing={50}>
-            <Stack>
-              <div>
-                <Button
-                  disabled={isLoading}
-                  rightIcon={<RiDeleteBin6Line size="1.2rem" />}
-                  ff="Montserrat"
-                  fz={13}
-                  py={3}
-                  display="block"
-                  ml="auto"
-                  variant="outline"
-                  className={classes.button}
-                  onClick={async () => {
-                    if (!cart) return;
-                    try {
-                      setIsLoading(true);
-                      await storeService.deleteCart();
-                      notificationSuccess('Shopping cart cleared');
-                      setCart(null);
-                    } catch (err) {
-                      if (err instanceof Error) notificationError(err.message);
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }}
-                >
-                  Clear shopping cart
-                </Button>
-              </div>
+          <Group align="flex-start" position="center" spacing={30}>
+            <Stack spacing="lg">
               {cart?.lineItems.map((item) => (
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
               ))}
             </Stack>
-            <Stack sx={{ flexGrow: 1 }} maw={430} justify="apart">
-              <Title order={5} ff="Montserrat" pb={10}>
+            <Stack sx={{ flexGrow: 1, backgroundColor: 'rgba(0, 0, 0, 0.03)' }} maw={430} spacing="sm" p={15}>
+              <Title order={5} ff="Montserrat">
                 Order Summary
               </Title>
               <form
@@ -226,6 +198,31 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
               </Group>
               <Button mt="auto" ff="Montserrat">
                 Checkout
+              </Button>
+              <Button
+                className={classes.button}
+                variant="outline"
+                fullWidth
+                disabled={isLoading}
+                rightIcon={<RiDeleteBin6Line size="1.2rem" />}
+                ff="Montserrat"
+                display="block"
+                ml="auto"
+                onClick={async () => {
+                  if (!cart) return;
+                  try {
+                    setIsLoading(true);
+                    await storeService.deleteCart();
+                    notificationSuccess('Shopping cart cleared');
+                    setCart(null);
+                  } catch (err) {
+                    if (err instanceof Error) notificationError(err.message);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+              >
+                Clear shopping cart
               </Button>
             </Stack>
           </Group>

@@ -77,7 +77,7 @@ export function QuantityInput({ item, min = 1, max = 10, isLoading, setIsLoading
         className={classes.control}
         onMouseDown={(event) => event.preventDefault()}
       >
-        -
+        −
       </ActionIcon>
 
       <NumberInput
@@ -112,7 +112,7 @@ export function QuantityInput({ item, min = 1, max = 10, isLoading, setIsLoading
         className={classes.control}
         onMouseDown={(event) => event.preventDefault()}
       >
-        +
+        ＋
       </ActionIcon>
     </div>
   );
