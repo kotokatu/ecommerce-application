@@ -1,7 +1,7 @@
 import { Container, Text, Box } from '@mantine/core';
 import { mainPageStyle } from './main-style';
 import { Hero } from '../../components/hero/Hero';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { storeService } from '../../services/StoreService/StoreService';
 import type { PromoCode } from '../../services/StoreService/StoreService';
 import { notificationError } from '../../components/ui/notification';
@@ -9,9 +9,6 @@ import { notificationError } from '../../components/ui/notification';
 const MainPage = () => {
   const { classes } = mainPageStyle();
   const [promoCode, setPromoCode] = useState<PromoCode | null>(null);
-  const [height, setHeight] = useState(0);
-  const promoRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,30 +25,20 @@ const MainPage = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (!heroRef?.current?.clientHeight) {
-      return;
-    }
-    const height = promoRef?.current?.clientHeight
-      ? promoRef?.current?.clientHeight + heroRef?.current?.clientHeight
-      : heroRef?.current?.clientHeight;
-    if (height) setHeight(height);
-  }, [promoCode]);
-
   return (
-    <Box sx={{ height: `${height}px`, width: '100vw' }}>
+    <Box sx={{ height: 'calc(100dvh - 80px)' }}>
       <Container className={classes.container}>
-        <div ref={promoRef} className={classes.promo}>
+        <div className={classes.promo}>
           {promoCode && (
             <div>
-              <Text className={classes.promoContent}>{`${promoCode.value / 100}% off everything with code: ${
+              <Text className={classes.promoContent}>{`${promoCode.value / 100}% off with code: ${
                 promoCode.code
               }`}</Text>
               <Text className={classes.promoSub}>Limited time only</Text>
             </div>
           )}
         </div>
-        <Hero ref={heroRef} />
+        <Hero />
       </Container>
     </Box>
   );

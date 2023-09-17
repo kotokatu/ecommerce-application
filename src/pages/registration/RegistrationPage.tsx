@@ -258,7 +258,7 @@ const RegistrationPage = () => {
           <Text color="dimmed" size="sm" align="center" pt={5}>
             Already have an account?
           </Text>
-          <Button variant="outline" fullWidth component={Link} to="/login">
+          <Button variant="outline" fullWidth component={Link} to="/login" sx={{ transition: '300ms' }}>
             Sign in
           </Button>
         </Stack>

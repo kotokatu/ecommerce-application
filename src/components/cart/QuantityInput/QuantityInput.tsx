@@ -16,6 +16,12 @@ const useStyles = createStyles((theme) => ({
 
   control: {
     color: theme.black,
+    borderRadius: '100%',
+    transition: '300ms',
+
+    '&:hover': {
+      backgroundColor: theme.colors.gray[2],
+    },
 
     '&:disabled': {
       opacity: 0.5,
@@ -71,7 +77,7 @@ export function QuantityInput({ item, min = 1, max = 10, isLoading, setIsLoading
         className={classes.control}
         onMouseDown={(event) => event.preventDefault()}
       >
-        -
+        −
       </ActionIcon>
 
       <NumberInput
@@ -106,7 +112,7 @@ export function QuantityInput({ item, min = 1, max = 10, isLoading, setIsLoading
         className={classes.control}
         onMouseDown={(event) => event.preventDefault()}
       >
-        +
+        ＋
       </ActionIcon>
     </div>
   );

@@ -2,7 +2,7 @@ import { Tooltip, createStyles, rem } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   tooltip: {
-    backgroundColor: theme.colors.gray[1],
+    backgroundColor: theme.colors.gray[0],
     color: theme.black,
     fontFamily: 'Montserrat',
     fontSize: rem(12),
@@ -19,7 +19,7 @@ type TooltipProps = {
 const CustomTooltip = ({ label, children }: TooltipProps) => {
   const { classes } = useStyles();
   return (
-    <Tooltip classNames={classes} label={label}>
+    <Tooltip classNames={classes} label={label} offset={3}>
       {children}
     </Tooltip>
   );
