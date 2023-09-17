@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -48,6 +49,16 @@ type NavbarCatalogProps = {
   setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
 };
 
+const CLOTHING_SIZES: Record<string, number> = {
+  XXS: 0,
+  XS: 1,
+  S: 2,
+  M: 3,
+  L: 4,
+  XL: 5,
+  XXL: 6,
+};
+
 const NavbarCatalog = ({
   className,
   categories,
@@ -71,7 +82,7 @@ const NavbarCatalog = ({
   const { category, subcategory } = useParams();
   const { classes } = navbarCatalogStyles();
 
-  function setFilterQuery() {
+  const setFilterQuery = () => {
     const hasPrevParams = searchParams.size !== 0;
     selectedBrands.length
       ? searchParams.set('brand', `"${selectedBrands.join('", "')}"`)
@@ -83,9 +94,9 @@ const NavbarCatalog = ({
     if (minPrice || maxPrice)
       searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
     setQuery(searchParams, hasPrevParams);
-  }
+  };
 
-  function clearFilterProducts() {
+  const clearFilterProducts = () => {
     if (searchParams.size !== 0) setSearchParams('');
     setSelectedBrands([]);
     setSelectedSizes([]);
@@ -93,7 +104,7 @@ const NavbarCatalog = ({
     setMinPrice('');
     setMaxPrice('');
     setPriceRange([minProductPrice, maxProductPrice]);
-  }
+  };
 
   const getParentCategories = () => {
     return categories.filter((category) => !category.parentID);
@@ -128,7 +139,6 @@ const NavbarCatalog = ({
       );
       setQuery(searchParams, searchParams.size !== 0);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, subcategory, searchParams]);
 
   return (
@@ -151,18 +161,39 @@ const NavbarCatalog = ({
       <div>
         <DropdownItems
           name="Brand"
-          items={brands}
+          items={brands.sort((a, b) => {
+            const brandA = a.toUpperCase();
+            const brandB = b.toUpperCase();
+            if (brandA < brandB) {
+              return -1;
+            }
+            if (brandA > brandB) {
+              return 1;
+            }
+            return 0;
+          })}
           selectedItems={selectedBrands}
           setSelectedItems={setSelectedBrands}
         />
       </div>
       <div>
-        <DropdownItems name="Size" items={sizes} selectedItems={selectedSizes} setSelectedItems={setSelectedSizes} />
+        <DropdownItems
+          name="Size"
+          items={sizes.sort((a: string, b: string) => {
+            if (CLOTHING_SIZES[a] && CLOTHING_SIZES[b]) {
+              return CLOTHING_SIZES[a] - CLOTHING_SIZES[b];
+            } else if (Number(a) && Number(b)) {
+              return Number(a) - Number(b);
+            } else return 0;
+          })}
+          selectedItems={selectedSizes}
+          setSelectedItems={setSelectedSizes}
+        />
       </div>
       <div>
         <DropdownItems
           name="Color"
-          items={colors}
+          items={colors.sort()}
           selectedItems={selectedColors}
           setSelectedItems={setSelectedColors}
         />
