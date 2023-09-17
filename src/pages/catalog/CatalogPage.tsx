@@ -12,7 +12,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 
 export const categoryCache = new CategoryCache();
 
-const minLimitProducts = 6;
+export const minLimitProducts = 6;
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -195,7 +195,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
 
   return resources ? (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={categoryCache.categories} setQuery={setQuery} />
+      <HeaderCatalog allCategories={categoryCache.categories} setQuery={setQuery} setLimitProducts={setLimitProducts} />
       <Button variant="outline" size="md" className={classes.button} onClick={toggleScroll}>
         Filters
       </Button>
@@ -210,6 +210,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
           maxProductPrice={maxProductPrice || 10000}
           toggleScroll={toggleScroll}
           setQuery={setQuery}
+          setLimitProducts={setLimitProducts}
         />
         <div className={classes.itemsbox}>
           <div className={classes.items}>

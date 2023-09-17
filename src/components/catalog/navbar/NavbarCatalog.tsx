@@ -6,6 +6,7 @@ import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { getSearchParams } from '../../../utils/helpers/search-params-helpers';
+import { minLimitProducts } from '../../../pages/catalog/CatalogPage';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -44,6 +45,7 @@ type NavbarCatalogProps = {
   maxProductPrice: number;
   setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
   toggleScroll: () => void;
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const NavbarCatalog = ({
@@ -56,6 +58,7 @@ const NavbarCatalog = ({
   maxProductPrice,
   toggleScroll,
   setQuery,
+  setLimitProducts,
 }: NavbarCatalogProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -136,7 +139,12 @@ const NavbarCatalog = ({
         </UnstyledButton>
         <Collapse in={opened} pl="sm">
           {getParentCategories().map((category) => (
-            <DropdownLinks name={category.name} key={category.id} links={getChildrenCategories(category.name)} />
+            <DropdownLinks
+              name={category.name}
+              key={category.id}
+              links={getChildrenCategories(category.name)}
+              setLimitProducts={setLimitProducts}
+            />
           ))}
         </Collapse>
       </div>
@@ -177,6 +185,7 @@ const NavbarCatalog = ({
           onClick={() => {
             setFilterQuery();
             toggleScroll();
+            setLimitProducts(minLimitProducts);
           }}
         >
           Show
@@ -187,6 +196,7 @@ const NavbarCatalog = ({
           onClick={() => {
             clearFilterProducts();
             toggleScroll();
+            setLimitProducts(minLimitProducts);
           }}
         >
           Clear all
