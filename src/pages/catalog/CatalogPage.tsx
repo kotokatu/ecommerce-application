@@ -14,6 +14,11 @@ export const categoryCache = new CategoryCache();
 
 export const minLimitProducts = 6;
 
+enum SortVariant {
+  createdAtDesc = 'createdAt desc',
+  createdAtAsc = 'createdAt asc',
+}
+
 const useStyles = createStyles((theme) => ({
   container: {
     display: 'flex',
@@ -161,7 +166,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
         if (sortOrder) {
           queryParams.sort = sortOrder;
         } else {
-          queryParams.sort = 'createdAt desc';
+          queryParams.sort = SortVariant.createdAtDesc;
         }
 
         const res = await storeService.getProducts(queryParams);
