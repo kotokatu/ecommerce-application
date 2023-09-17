@@ -388,9 +388,7 @@ class StoreService {
     }
   }
 
-  public async getProducts(
-    params: QueryArgs = { limit: MIN_LIMIT_PRODUCTS, sort: SortVariant.createdAtAsc },
-  ): Promise<GetProductsReturnType | undefined> {
+  public async getProducts(params: QueryArgs): Promise<GetProductsReturnType | undefined> {
     try {
       const response = await this.apiRoot
         .productProjections()

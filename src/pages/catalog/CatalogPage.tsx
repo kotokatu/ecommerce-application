@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createStyles, Center, Loader, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { MIN_LIMIT_PRODUCTS, storeService } from '../../services/StoreService/StoreService';
+import { MIN_LIMIT_PRODUCTS, SortVariant, storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
@@ -9,7 +9,6 @@ import type { GetProductsReturnType, QueryArgs } from '../../services/StoreServi
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
 import { createSearchParams, useNavigate } from 'react-router-dom';
-import { notificationError } from '../../components/ui/notification';
 
 export const categoryCache = new CategoryCache();
 
@@ -117,17 +116,6 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
   };
 
   useEffect(() => {
-    const getCategoryCache = async () => {
-      try {
-        await categoryCache.get();
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-    getCategoryCache();
-  }, []);
-
-  useEffect(() => {
     const infiniteObserver = new IntersectionObserver(([entry], observer) => {
       if (entry.isIntersecting) {
         setLimitProducts(limitProducts + 3);
@@ -139,6 +127,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
       try {
         const queryParams: QueryArgs = { limit: limitProducts };
         const filterParams = [];
+        await categoryCache.get();
         setCardLoading(true);
 
         if (category) {
@@ -167,7 +156,11 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
         }
 
         const sortOrder = searchParams.get('sort');
-        if (sortOrder) queryParams.sort = sortOrder;
+        if (sortOrder) {
+          queryParams.sort = sortOrder;
+        } else {
+          queryParams.sort = SortVariant.createdAtDesc;
+        }
 
         const res = await storeService.getProducts(queryParams);
 
