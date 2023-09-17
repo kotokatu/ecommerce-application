@@ -9,6 +9,7 @@ import type { GetProductsReturnType, QueryArgs } from '../../services/StoreServi
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
 import { createSearchParams, useNavigate } from 'react-router-dom';
+import { notificationError } from '../../components/ui/notification';
 
 export const categoryCache = new CategoryCache();
 
@@ -111,11 +112,21 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
   };
 
   useEffect(() => {
+    const getCategoryCache = async () => {
+      try {
+        await categoryCache.get();
+      } catch (err) {
+        if (err instanceof Error) notificationError(err.message);
+      }
+    };
+    getCategoryCache();
+  }, []);
+
+  useEffect(() => {
     const getProducts = async () => {
       try {
         const queryParams: QueryArgs = {};
         const filterParams = [];
-        await categoryCache.get();
 
         if (category) {
           filterParams.push(
