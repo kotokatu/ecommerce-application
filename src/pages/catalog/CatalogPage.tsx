@@ -160,6 +160,8 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
         const sortOrder = searchParams.get('sort');
         if (sortOrder) {
           queryParams.sort = sortOrder;
+        } else {
+          queryParams.sort = 'createdAt desc';
         }
 
         const res = await storeService.getProducts(queryParams);
