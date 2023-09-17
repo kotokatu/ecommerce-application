@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createStyles, Center, Loader, Button } from '@mantine/core';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
@@ -88,9 +88,11 @@ const useStyles = createStyles((theme) => ({
 type CatalogPageProps = {
   isOpenNavbar: boolean;
   setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
+const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
   const [limitProducts, setLimitProducts] = useState<number>(6);
   const [isCardLoading, setCardLoading] = useState(true);
@@ -209,7 +211,9 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
           <div className={classes.items}>
             {resources.products.length ? (
               resources.products.map((product) => {
-                return <ProductCard key={product.id} product={product} />;
+                return (
+                  <ProductCard key={product.id} product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+                );
               })
             ) : (
               <h2 className={classes.center}>Product not found</h2>
