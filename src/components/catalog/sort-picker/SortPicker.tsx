@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { createStyles, rem, Select } from '@mantine/core';
+import { minLimitProducts } from '../../../pages/catalog/CatalogPage';
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -45,9 +46,10 @@ const sortData = [
 
 type SortPickerProps = {
   setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const SortPicker = ({ setQuery }: SortPickerProps) => {
+const SortPicker = ({ setQuery, setLimitProducts }: SortPickerProps) => {
   const { classes } = useStyles();
   const [sortValue, setSortValue] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
@@ -68,6 +70,7 @@ const SortPicker = ({ setQuery }: SortPickerProps) => {
           const hasPrevParams = searchParams.size !== 0;
           searchParams.set('sort', value);
           setQuery(searchParams, hasPrevParams);
+          setLimitProducts(minLimitProducts);
         }}
         className={classes.item}
       />

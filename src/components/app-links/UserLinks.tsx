@@ -2,8 +2,10 @@ import { NavLink } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import { linksStyle } from './links-style';
 import useAuth from '../../utils/hooks/useAuth';
+import { PiUser } from 'react-icons/pi';
+import { Popover } from '@mantine/core';
 
-const HeaderLinks = () => {
+const UserLinks = () => {
   const { userLoggedIn, setUserLoggedIn } = useAuth();
   const { classes } = linksStyle();
 
@@ -11,26 +13,11 @@ const HeaderLinks = () => {
     return isActive ? `${classes.link} ${classes.linkActive}` : classes.link;
   }
 
-  const headerItems = [
-    {
-      name: 'Catalog',
-      routePath: '/catalog',
-      isDisplay: true,
-    },
-    {
-      name: 'About',
-      routePath: '/about',
-      isDisplay: true,
-    },
+  const userItems = [
     {
       name: 'Login',
       routePath: '/login',
       isDisplay: !userLoggedIn,
-    },
-    {
-      name: 'Logout',
-      routePath: '/login',
-      isDisplay: userLoggedIn,
     },
     {
       name: 'Registration',
@@ -43,13 +30,13 @@ const HeaderLinks = () => {
       isDisplay: userLoggedIn,
     },
     {
-      name: 'Basket',
-      routePath: '/basket',
-      isDisplay: true,
+      name: 'Logout',
+      routePath: '/login',
+      isDisplay: userLoggedIn,
     },
   ];
 
-  const headerLinks = headerItems.map((link) =>
+  const userLinks = userItems.map((link) =>
     link.isDisplay ? (
       <NavLink
         key={link.name}
@@ -67,7 +54,16 @@ const HeaderLinks = () => {
     ) : null,
   );
 
-  return <>{headerLinks}</>;
+  return (
+    <Popover width={300} trapFocus position="bottom" withArrow shadow="md">
+      <Popover.Target>
+        <div className={classes.user}>
+          <PiUser size="1.5rem" />
+        </div>
+      </Popover.Target>
+      <Popover.Dropdown>{userLinks}</Popover.Dropdown>
+    </Popover>
+  );
 };
 
-export default HeaderLinks;
+export default UserLinks;
