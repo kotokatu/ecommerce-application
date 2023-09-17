@@ -35,11 +35,6 @@ export class TokenCacheHandler implements TokenCache {
     return this.cache.refreshToken;
   }
 
-  checkToken(): boolean {
-    const isValid = this.cache.expirationTime > Date.now();
-    return isValid;
-  }
-
   clear() {
     this.cache = {
       token: '',

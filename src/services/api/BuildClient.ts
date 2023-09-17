@@ -76,10 +76,7 @@ class CtpClient {
     return {
       host: this.authURL,
       projectKey: this.projectKey,
-      credentials: {
-        clientId: process.env.REACT_APP_CLIENT_ID as string,
-        clientSecret: process.env.REACT_APP_CLIENT_SECRET as string,
-      },
+      credentials: this.credentials,
       refreshToken: tokenCache.getRefreshToken() as string,
       fetch,
     };

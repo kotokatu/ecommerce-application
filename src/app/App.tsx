@@ -16,16 +16,13 @@ import NotFoundPage from '../pages/not-found/NotFoundPage';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import AuthProvider from '../routes/AuthProvider';
 import DetailedProductPage from '../pages/detailed/DetailedProductPage';
-import { tokenCache } from '../services/api/TokenCache';
 import { Cart } from '@commercetools/platform-sdk';
 import { storeService } from '../services/StoreService/StoreService';
 import { notificationError } from '../components/ui/notification';
 import { LOGIN_STORAGE_KEY } from '../services/api/TokenCache';
 function App() {
   const loginState = localStorage.getItem(LOGIN_STORAGE_KEY);
-  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(() =>
-    loginState ? tokenCache.checkToken() && JSON.parse(loginState) : false,
-  );
+  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(() => (loginState ? JSON.parse(loginState) : false));
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
   const [cart, setCart] = useState<Cart | null>(null);
