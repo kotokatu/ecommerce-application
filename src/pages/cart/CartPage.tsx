@@ -26,6 +26,7 @@ const useStyles = createStyles((theme) => ({
   cartSummary: {
     flexGrow: 1,
   },
+
   link: {
     display: 'inline-block',
     borderBottom: `solid ${rem(2)} transparent`,
@@ -55,12 +56,12 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
           <Loader variant="bars" size="xl" display="block" mx="auto" />
         </Center>
       ) : cart?.lineItems.length ? (
-        <Container w="100%">
+        <Container maw="80rem" w="100%">
           <Title order={2} align="center" py={40} ff="Montserrat">
             Your shopping cart
           </Title>
-          <Group align="flex-start" spacing={30}>
-            <div>
+          <Group align="flex-start" position="center" spacing={50}>
+            <Stack>
               <div>
                 <Button
                   disabled={isLoading}
@@ -97,8 +98,8 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
               {cart?.lineItems.map((item) => (
                 <CartItem item={item} isLoading={isLoading} setIsLoading={setIsLoading} key={item.id} />
               ))}
-            </div>
-            <Stack className={classes.cartSummary} maw={415}>
+            </Stack>
+            <Stack className={classes.cartSummary} maw={430}>
               <Title order={5} ff="Montserrat" pb={15}>
                 Summary
               </Title>
@@ -130,7 +131,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                     placeholder="Enter promocode"
                     ff="Montserrat"
                   ></TextInput>
-                  <Button type="submit" ff="Montserrat" loading={codeLoading} disabled={isLoading}>
+                  <Button type="submit" w={120} ff="Montserrat" loading={codeLoading} disabled={isLoading}>
                     Apply
                   </Button>
                 </Group>

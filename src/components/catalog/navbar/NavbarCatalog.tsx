@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -6,6 +7,7 @@ import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { getSearchParams } from '../../../utils/helpers/search-params-helpers';
+import { minLimitProducts } from '../../../pages/catalog/CatalogPage';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -44,6 +46,17 @@ type NavbarCatalogProps = {
   maxProductPrice: number;
   setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
   toggleScroll: () => void;
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const CLOTHING_SIZES: Record<string, number> = {
+  XXS: 0,
+  XS: 1,
+  S: 2,
+  M: 3,
+  L: 4,
+  XL: 5,
+  XXL: 6,
 };
 
 const NavbarCatalog = ({
@@ -56,6 +69,7 @@ const NavbarCatalog = ({
   maxProductPrice,
   toggleScroll,
   setQuery,
+  setLimitProducts,
 }: NavbarCatalogProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -68,7 +82,7 @@ const NavbarCatalog = ({
   const { category, subcategory } = useParams();
   const { classes } = navbarCatalogStyles();
 
-  function setFilterQuery() {
+  const setFilterQuery = () => {
     const hasPrevParams = searchParams.size !== 0;
     selectedBrands.length
       ? searchParams.set('brand', `"${selectedBrands.join('", "')}"`)
@@ -80,9 +94,9 @@ const NavbarCatalog = ({
     if (minPrice || maxPrice)
       searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
     setQuery(searchParams, hasPrevParams);
-  }
+  };
 
-  function clearFilterProducts() {
+  const clearFilterProducts = () => {
     if (searchParams.size !== 0) setSearchParams('');
     setSelectedBrands([]);
     setSelectedSizes([]);
@@ -90,7 +104,7 @@ const NavbarCatalog = ({
     setMinPrice('');
     setMaxPrice('');
     setPriceRange([minProductPrice, maxProductPrice]);
-  }
+  };
 
   const getParentCategories = () => {
     return categories.filter((category) => !category.parentID);
@@ -125,7 +139,6 @@ const NavbarCatalog = ({
       );
       setQuery(searchParams, searchParams.size !== 0);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, subcategory, searchParams]);
 
   return (
@@ -136,25 +149,51 @@ const NavbarCatalog = ({
         </UnstyledButton>
         <Collapse in={opened} pl="sm">
           {getParentCategories().map((category) => (
-            <DropdownLinks name={category.name} key={category.id} links={getChildrenCategories(category.name)} />
+            <DropdownLinks
+              name={category.name}
+              key={category.id}
+              links={getChildrenCategories(category.name)}
+              setLimitProducts={setLimitProducts}
+            />
           ))}
         </Collapse>
       </div>
       <div>
         <DropdownItems
           name="Brand"
-          items={brands}
+          items={brands.sort((a, b) => {
+            const brandA = a.toUpperCase();
+            const brandB = b.toUpperCase();
+            if (brandA < brandB) {
+              return -1;
+            }
+            if (brandA > brandB) {
+              return 1;
+            }
+            return 0;
+          })}
           selectedItems={selectedBrands}
           setSelectedItems={setSelectedBrands}
         />
       </div>
       <div>
-        <DropdownItems name="Size" items={sizes} selectedItems={selectedSizes} setSelectedItems={setSelectedSizes} />
+        <DropdownItems
+          name="Size"
+          items={sizes.sort((a: string, b: string) => {
+            if (CLOTHING_SIZES[a] && CLOTHING_SIZES[b]) {
+              return CLOTHING_SIZES[a] - CLOTHING_SIZES[b];
+            } else if (Number(a) && Number(b)) {
+              return Number(a) - Number(b);
+            } else return 0;
+          })}
+          selectedItems={selectedSizes}
+          setSelectedItems={setSelectedSizes}
+        />
       </div>
       <div>
         <DropdownItems
           name="Color"
-          items={colors}
+          items={colors.sort()}
           selectedItems={selectedColors}
           setSelectedItems={setSelectedColors}
         />
@@ -177,6 +216,7 @@ const NavbarCatalog = ({
           onClick={() => {
             setFilterQuery();
             toggleScroll();
+            setLimitProducts(minLimitProducts);
           }}
         >
           Show
@@ -187,6 +227,7 @@ const NavbarCatalog = ({
           onClick={() => {
             clearFilterProducts();
             toggleScroll();
+            setLimitProducts(minLimitProducts);
           }}
         >
           Clear all
