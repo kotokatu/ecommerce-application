@@ -10,13 +10,21 @@ export const headerStyle = createStyles((theme) => ({
   title: {
     fontSize: '30px',
     fontWeight: 800,
-    minWidth: '270px',
+    minWidth: '250px',
+
+    [theme.fn.smallerThan('492')]: {
+      minWidth: 'auto',
+    },
   },
 
   logobox: {
     width: '250px',
     height: '60px',
     display: 'flex',
+
+    [theme.fn.smallerThan('492')]: {
+      width: 'auto',
+    },
   },
 
   logo: {
@@ -28,6 +36,10 @@ export const headerStyle = createStyles((theme) => ({
     fontFamily: 'Days-One',
     width: '190px',
     height: '60px',
+
+    [theme.fn.smallerThan('492')]: {
+      display: 'none',
+    },
   },
 
   topTitle: {
@@ -71,10 +83,14 @@ export const headerStyle = createStyles((theme) => ({
   userLinks: {
     fontFamily: 'Montserrat',
     fontWeight: 700,
-    minWidth: '270px',
+    minWidth: '250px',
     justifyContent: 'flex-end',
+    gap: '.5rem',
+
     [theme.fn.smallerThan('sm')]: {
-      display: 'none',
+      minWidth: 'auto',
+      flex: '1 1 auto',
+      paddingRight: '10px',
     },
   },
 

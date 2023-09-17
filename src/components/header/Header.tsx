@@ -1,7 +1,9 @@
 import { Header, Container, Group, Burger, Paper, Transition } from '@mantine/core';
 import { NavLink } from 'react-router-dom';
 import { headerStyle } from './header-style';
-import HeaderLinks from '../app-links/HeaderLinks';
+import Basket from '../app-links/Basket';
+import MenuLinks from '../app-links/MenuLinks';
+import UserLinks from '../app-links/UserLinks';
 
 type HeaderProps = {
   isOpenBurger: boolean;
@@ -33,8 +35,13 @@ export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
           </NavLink>
         </Group>
 
+        <Group className={classes.menuLinks}>
+          <MenuLinks />
+        </Group>
+
         <Group className={classes.userLinks}>
-          <HeaderLinks />
+          <UserLinks />
+          <Basket />
         </Group>
 
         <Burger opened={isOpenBurger} onClick={toggleBurger} className={classes.burger} size="md" />
@@ -48,7 +55,7 @@ export function AppHeader({ isOpenBurger, toggleBurger }: HeaderProps) {
         >
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
-              <HeaderLinks />
+              <MenuLinks />
             </Paper>
           )}
         </Transition>
