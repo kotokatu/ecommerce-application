@@ -12,6 +12,8 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 
 export const categoryCache = new CategoryCache();
 
+const minLimitProducts = 6;
+
 const useStyles = createStyles((theme) => ({
   container: {
     display: 'flex',
@@ -94,7 +96,7 @@ type CatalogPageProps = {
 
 const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
-  const [limitProducts, setLimitProducts] = useState<number>(6);
+  const [limitProducts, setLimitProducts] = useState<number>(minLimitProducts);
   const [isCardLoading, setCardLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
@@ -171,7 +173,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
           setLimitProducts(limitProducts - (limitProducts % 3));
 
           if (limitProducts >= res.total) {
-            setLimitProducts(res.total <= 6 ? 6 : res.total);
+            setLimitProducts(res.total <= minLimitProducts ? minLimitProducts : res.total);
             setCardLoading(false);
             infiniteObserver.unobserve(footer);
           }
