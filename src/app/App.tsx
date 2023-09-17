@@ -26,7 +26,7 @@ function App() {
   const [isOpenBurger, { toggle, close }] = useDisclosure(false);
   const [isOpenNavbar, setIsOpenNavbar] = useState(false);
   const [cart, setCart] = useState<Cart | null>(null);
-  const [isCartLoading, setIsCartLoading] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(userLoggedIn));
@@ -35,13 +35,13 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsCartLoading(true);
+        setCartLoading(true);
         const cart = await storeService.getActiveCart();
         setCart(cart);
       } catch (err) {
         if (err instanceof Error) notificationError(err.message);
       } finally {
-        setIsCartLoading(false);
+        setCartLoading(false);
       }
     };
     fetchData();
@@ -83,8 +83,8 @@ function App() {
                 <CatalogPage
                   isOpenNavbar={isOpenNavbar}
                   setIsOpenNavbar={setIsOpenNavbar}
-                  isLoading={isCartLoading}
-                  setIsLoading={setIsCartLoading}
+                  isLoading={cartLoading}
+                  setIsLoading={setCartLoading}
                 />
               }
             />
@@ -105,8 +105,8 @@ function App() {
                 <CatalogPage
                   isOpenNavbar={isOpenNavbar}
                   setIsOpenNavbar={setIsOpenNavbar}
-                  isLoading={isCartLoading}
-                  setIsLoading={setIsCartLoading}
+                  isLoading={cartLoading}
+                  setIsLoading={setCartLoading}
                 />
               }
             />
@@ -116,17 +116,17 @@ function App() {
                 <CatalogPage
                   isOpenNavbar={isOpenNavbar}
                   setIsOpenNavbar={setIsOpenNavbar}
-                  isLoading={isCartLoading}
-                  setIsLoading={setIsCartLoading}
+                  isLoading={cartLoading}
+                  setIsLoading={setCartLoading}
                 />
               }
             />
             <Route
               path="/catalog/product/:productID"
-              element={<DetailedProductPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />}
+              element={<DetailedProductPage isLoading={cartLoading} setIsLoading={setCartLoading} />}
             />
 
-            <Route path="basket" element={<CartPage isLoading={isCartLoading} setIsLoading={setIsCartLoading} />} />
+            <Route path="basket" element={<CartPage isLoading={cartLoading} setIsLoading={setCartLoading} />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

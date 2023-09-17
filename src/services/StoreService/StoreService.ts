@@ -87,6 +87,16 @@ export type PromoCode = {
   value: number;
 };
 
+export enum SortVariant {
+  createdAtDesc = 'createdAt desc',
+  createdAtAsc = 'createdAt asc',
+  priceAsc = 'price asc',
+  priceDesc = 'price desc',
+  nameAsc = 'name.en-us asc',
+}
+
+export const MIN_LIMIT_PRODUCTS = 6;
+
 class StoreService {
   private apiRoot: ByProjectKeyRequestBuilder;
   constructor() {
@@ -378,7 +388,9 @@ class StoreService {
     }
   }
 
-  public async getProducts(params: QueryArgs): Promise<GetProductsReturnType | undefined> {
+  public async getProducts(
+    params: QueryArgs = { limit: MIN_LIMIT_PRODUCTS, sort: SortVariant.createdAtAsc },
+  ): Promise<GetProductsReturnType | undefined> {
     try {
       const response = await this.apiRoot
         .productProjections()
