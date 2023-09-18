@@ -1,27 +1,43 @@
-import { SimpleGrid, Container, Title } from '@mantine/core';
+import { SimpleGrid, Container, Title, Flex } from '@mantine/core';
 import Developer from './components/developer';
 import AnimatedLinks from './components/anumatedLinks';
-import { developersData } from './data/data';
+import { developersData, developersResponsible } from './data/data';
 
 export function AboutPage() {
   const items = developersData.map((item) => <Developer {...item} key={item.name} />);
-
-  //   <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} spacing={50} mt={25} h={60}>
-  //   {developersData.map((data, i) => (
-  //     <a href={data.gitLink} className={'gitLink'} key={i}>
-  //       <div className={'gitHub'} />
-  //     </a>
-  //   ))}
-  // </SimpleGrid>
+  const responsibles = developersResponsible.map((item) => (
+    <Flex key={item.name} align="center" justify="center" direction="column">
+      <Title order={4} m={10} color="white">
+        {item.resp[0]}
+      </Title>
+      <Title order={4} m={10} color="white">
+        {item.resp[1]}
+      </Title>
+      <Title order={4} m={10} color="white">
+        {item.resp[2]}
+      </Title>
+    </Flex>
+  ));
 
   return (
-    <Container mt={10} mb={35} size="lg">
+    <Container mt={10} mb={35} size="lg" p={0}>
       <Title order={1} align="center" m={10}>
         About Us
       </Title>
-      <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} spacing={50}>
+      <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} spacing={50} pl={20} pr={20} mt={20}>
         {items}
       </SimpleGrid>
+      <div id="black">
+        <Title order={3} align="left" m={20} color="white" pt={10}>
+          Responsible for:
+        </Title>
+        <SimpleGrid cols={3} breakpoints={[{ maxWidth: 'sm', cols: 1 }]} spacing={50}>
+          {responsibles}
+        </SimpleGrid>
+      </div>
+      <Title order={3} align="left" m={20}>
+        Links:
+      </Title>
       <AnimatedLinks />
     </Container>
   );

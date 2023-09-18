@@ -32,10 +32,9 @@ interface DeveloperProps extends React.ComponentPropsWithoutRef<'div'> {
   greeting: string;
   description: string;
   conclusion: string;
-  gitLink: string;
 }
 
-function Developer({ name, greeting, description, className, conclusion, gitLink }: DeveloperProps) {
+function Developer({ name, greeting, description, className, conclusion }: DeveloperProps) {
   const { classes, cx } = useStyles();
 
   return (
@@ -54,7 +53,7 @@ function Developer({ name, greeting, description, className, conclusion, gitLink
         <Text c="dimmed" fz="sm" mt={10}>
           {description}
         </Text>
-        <Text c="red" fz="sm" mt={10}>
+        <Text c="black" fz="m" mt={10}>
           {conclusion}
         </Text>
       </div>

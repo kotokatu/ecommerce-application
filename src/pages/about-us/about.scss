@@ -33,6 +33,14 @@ $colorNatasha: rgb(107, 234, 93);
   border-radius: 10px;
 }
 
+%ballsPosition {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .human {
   position: absolute;
   top: 24px;
@@ -426,11 +434,7 @@ $colorNatasha: rgb(107, 234, 93);
 }
 
 .gitLinkNatasha {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @extend %ballsPosition;
   animation: boll 6s linear infinite;
   .gitHub {
     width: 65px;
@@ -447,15 +451,19 @@ $colorNatasha: rgb(107, 234, 93);
     border-left: 2px solid black;
     transform: rotate(-25deg);
   }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 52px;
+    left: 25px;
+    border: 7px solid transparent;
+    border-bottom: 7px solid rgba(0, 0, 0, 0.87);
+  }
 }
 
 .gitLinkMaxim {
-  position: relative;
+  @extend %ballsPosition;
   top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   animation: boll 7s linear infinite;
   .gitHub {
     width: 55px;
@@ -470,14 +478,18 @@ $colorNatasha: rgb(107, 234, 93);
     height: 97px;
     border-left: 2px solid black;
   }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 43px;
+    left: 22px;
+    border: 6px solid transparent;
+    border-bottom: 6px solid rgba(0, 0, 0, 0.87);
+  }
 }
 
 .gitLinkVika {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @extend %ballsPosition;
   animation: boll 5s linear infinite;
   .gitHub {
     width: 65px;
@@ -494,6 +506,14 @@ $colorNatasha: rgb(107, 234, 93);
     border-left: 2px solid black;
     transform: rotate(28deg);
     z-index: 1;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 49px;
+    left: 24px;
+    border: 8px solid transparent;
+    border-bottom: 8px solid rgba(0, 0, 0, 0.87);
   }
 }
 
@@ -525,5 +545,32 @@ $colorNatasha: rgb(107, 234, 93);
     height: 63%;
     background: url(./icons/rs_school_js.svg) no-repeat center;
     z-index: 3;
+  }
+}
+
+//responsib
+
+#black {
+  background-color: rgba(0, 0, 0, 0.905);
+  position: relative;
+  border-radius: 10px;
+  box-shadow: -1px 7px 12px 1px rgba(34, 60, 80, 0.2);
+}
+
+#black {
+  background-color: rgba(0, 0, 0, 0.905);
+  position: relative;
+  border-radius: 10px;
+  background: rgb(50, 49, 46);
+  box-shadow: 0 -200px 100px -120px rgb(63, 61, 61) inset;
+  border-radius: 30px;
+  border: 10px solid white;
+  animation: background 8s infinite alternate;
+}
+
+@keyframes background {
+  50% {
+    background: rgb(103, 119, 125);
+    box-shadow: 0 -200px 100px -100px rgb(16, 17, 16) inset;
   }
 }
