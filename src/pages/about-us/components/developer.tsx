@@ -14,7 +14,7 @@ const useStyles = createStyles((theme) => ({
     width: rem(180),
     top: 0,
     left: 0,
-    zIndex: -1,
+    zIndex: 1,
   },
 
   content: {
@@ -53,7 +53,7 @@ function Developer({ name, greeting, description, className, conclusion }: Devel
         <Text c="dimmed" fz="sm" mt={10}>
           {description}
         </Text>
-        <Text c="black" fz="m" mt={10}>
+        <Text c="black" fz="sm" mt={10}>
           {conclusion}
         </Text>
       </div>
