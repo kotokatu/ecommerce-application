@@ -39,5 +39,3 @@ export class CategoryCache {
       : this.categories.find((category) => category.name === name)?.id;
   }
 }
-
-// export const categoryCache = new CategoryCache();
