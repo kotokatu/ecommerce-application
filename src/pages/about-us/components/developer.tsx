@@ -14,7 +14,7 @@ const useStyles = createStyles((theme) => ({
     width: rem(180),
     top: 0,
     left: 0,
-    zIndex: 1,
+    zIndex: -1,
   },
 
   content: {
@@ -32,13 +32,14 @@ interface DeveloperProps extends React.ComponentPropsWithoutRef<'div'> {
   greeting: string;
   description: string;
   conclusion: string;
+  gitLink: string;
 }
 
-function Developer({ name, greeting, description, className, conclusion, ...others }: DeveloperProps) {
+function Developer({ name, greeting, description, className, conclusion, gitLink }: DeveloperProps) {
   const { classes, cx } = useStyles();
 
   return (
-    <div className={cx(classes.feature, className)} {...others}>
+    <div className={cx(classes.feature, className)}>
       <div className={classes.overlay}>
         <div className={name} />
       </div>
