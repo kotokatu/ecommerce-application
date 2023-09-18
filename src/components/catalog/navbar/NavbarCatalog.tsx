@@ -142,6 +142,10 @@ const NavbarCatalog = ({
     }
   }, [category, subcategory, searchParams]);
 
+  useEffect(() => {
+    setOpened(!!category);
+  }, []);
+
   return (
     <div className={className}>
       <div>

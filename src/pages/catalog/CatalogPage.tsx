@@ -221,7 +221,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
               <h2 className={classes.center}>Product not found</h2>
             )}
           </div>
-          {isCardLoading ? (
+          {isCardLoading && resources.products.length ? (
             <Loader className="card-loader" variant="dots" size="xl" display="flex" my="xl" mx="auto" />
           ) : null}
         </div>
