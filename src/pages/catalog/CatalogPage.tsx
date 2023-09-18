@@ -181,8 +181,6 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
         setResources(res);
       } catch (err) {
         setResources({ products: [], prices: [], colors: [], sizes: [], brands: [] });
-      } finally {
-        setCardLoading(false);
       }
     };
 
@@ -213,15 +211,17 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
         />
         <div className={classes.itemsbox}>
           <div className={classes.items}>
-            {resources.products.length
-              ? resources.products.map((product) => {
-                  return (
-                    <ProductCard key={product.id} product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
-                  );
-                })
-              : !isCardLoading && <h2 className={classes.center}>Product not found</h2>}
+            {resources.products.length ? (
+              resources.products.map((product) => {
+                return (
+                  <ProductCard key={product.id} product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+                );
+              })
+            ) : (
+              <h2 className={classes.center}>Product not found</h2>
+            )}
           </div>
-          {isCardLoading ? (
+          {isCardLoading && resources.products.length ? (
             <Loader className="card-loader" variant="dots" size="xl" display="flex" my="xl" mx="auto" />
           ) : null}
         </div>
