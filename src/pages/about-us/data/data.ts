@@ -41,11 +41,11 @@ export const developersLinks = [
 export const developersResponsible = [
   {
     name: 'NatashaResp',
-    resp: ['Product Page', 'Regictration', 'Cart'],
+    resp: ['Cart', 'Regictration', 'Product Page'],
   },
   {
     name: 'MaximResp',
-    resp: ['Catalog Page', 'Main Page', 'Routing'],
+    resp: ['Routing', 'Main Page', 'Catalog Page'],
   },
   {
     name: 'VikaResp',

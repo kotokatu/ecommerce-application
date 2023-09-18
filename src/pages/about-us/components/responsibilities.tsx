@@ -1,4 +1,4 @@
-import { Text, Title, Flex } from '@mantine/core';
+import { Title, Flex } from '@mantine/core';
 import AnimatedDeveloper from './animatedDeveloper';
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
@@ -8,16 +8,18 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
 
 function Responsibilities({ name, resp }: Props) {
   return (
-    <Flex key={name} align="center" justify="center" direction="column">
-      <Title order={5} m={10} color="white">
-        {resp[0]}
-      </Title>
-      <Title order={5} m={10} color="white">
-        {resp[1]}
-      </Title>
-      <Title order={5} m={10} color="white" mb={20}>
-        {resp[2]}
-      </Title>
+    <Flex key={name} align="center" justify="center" direction="column" pb={10}>
+      <div className="piramid">
+        <Title order={5} m={0} align="center" color="white">
+          {resp[0]}
+        </Title>
+        <Title order={5} m={0} align="center" color="white">
+          {resp[1]}
+        </Title>
+        <Title order={5} m={0} align="center" color="white" mb={30}>
+          {resp[2]}
+        </Title>
+      </div>
       <AnimatedDeveloper name={name} />
     </Flex>
   );

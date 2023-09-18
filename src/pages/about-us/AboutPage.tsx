@@ -1,4 +1,4 @@
-import { SimpleGrid, Container, Title, Flex } from '@mantine/core';
+import { SimpleGrid, Container, Title } from '@mantine/core';
 import Developer from './components/developer';
 import AnimatedLinks from './components/anumatedLinks';
 import Responsibilities from './components/responsibilities';
