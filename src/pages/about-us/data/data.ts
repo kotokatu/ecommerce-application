@@ -41,7 +41,7 @@ export const developersLinks = [
 export const developersResponsible = [
   {
     name: 'NatashaResp',
-    resp: ['Cart', 'Regictration', 'Product Page'],
+    resp: ['Cart', 'Registration', 'Product Page'],
     role: 'TEAM LEAD',
   },
   {
