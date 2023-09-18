@@ -7,7 +7,7 @@ import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { getSearchParams } from '../../../utils/helpers/search-params-helpers';
-import { minLimitProducts } from '../../../pages/catalog/CatalogPage';
+import { MIN_LIMIT_PRODUCTS } from '../../../services/StoreService/StoreService';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -217,7 +217,7 @@ const NavbarCatalog = ({
           onClick={() => {
             setFilterQuery();
             toggleScroll();
-            setLimitProducts(minLimitProducts);
+            setLimitProducts(MIN_LIMIT_PRODUCTS);
           }}
         >
           Show
@@ -228,7 +228,7 @@ const NavbarCatalog = ({
           onClick={() => {
             clearFilterProducts();
             toggleScroll();
-            setLimitProducts(minLimitProducts);
+            setLimitProducts(MIN_LIMIT_PRODUCTS);
           }}
         >
           Clear all

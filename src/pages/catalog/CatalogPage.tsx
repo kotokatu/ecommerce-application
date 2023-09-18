@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createStyles, Center, Loader, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { storeService } from '../../services/StoreService/StoreService';
+import { MIN_LIMIT_PRODUCTS, SortVariant, storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
@@ -9,16 +9,8 @@ import type { GetProductsReturnType, QueryArgs } from '../../services/StoreServi
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
 import { createSearchParams, useNavigate } from 'react-router-dom';
-import { notificationError } from '../../components/ui/notification';
 
 export const categoryCache = new CategoryCache();
-
-export const minLimitProducts = 6;
-
-enum SortVariant {
-  createdAtDesc = 'createdAt desc',
-  createdAtAsc = 'createdAt asc',
-}
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -102,7 +94,7 @@ type CatalogPageProps = {
 
 const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
-  const [limitProducts, setLimitProducts] = useState<number>(minLimitProducts);
+  const [limitProducts, setLimitProducts] = useState<number>(MIN_LIMIT_PRODUCTS);
   const [isCardLoading, setCardLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
@@ -124,17 +116,6 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
   };
 
   useEffect(() => {
-    const getCategoryCache = async () => {
-      try {
-        await categoryCache.get();
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-    getCategoryCache();
-  }, []);
-
-  useEffect(() => {
     const infiniteObserver = new IntersectionObserver(([entry], observer) => {
       if (entry.isIntersecting) {
         setLimitProducts(limitProducts + 3);
@@ -146,6 +127,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
       try {
         const queryParams: QueryArgs = { limit: limitProducts };
         const filterParams = [];
+        await categoryCache.get();
         setCardLoading(true);
 
         if (category) {
@@ -191,7 +173,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
           setLimitProducts(limitProducts - (limitProducts % 3));
 
           if (limitProducts >= res.total) {
-            setLimitProducts(res.total <= minLimitProducts ? minLimitProducts : res.total);
+            setLimitProducts(res.total <= MIN_LIMIT_PRODUCTS ? MIN_LIMIT_PRODUCTS : res.total);
             setCardLoading(false);
             infiniteObserver.unobserve(footer);
           }

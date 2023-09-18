@@ -11,7 +11,7 @@ const MainPage = () => {
   const [promoCode, setPromoCode] = useState<PromoCode | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getDiscountCode = async () => {
       try {
         const discount = await storeService.getDiscount();
         if (!discount) return;
@@ -22,7 +22,7 @@ const MainPage = () => {
       }
     };
 
-    fetchData();
+    getDiscountCode();
   }, []);
 
   return (

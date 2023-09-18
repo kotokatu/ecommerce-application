@@ -1,8 +1,7 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { dropdownStyles } from './dropdownStyles';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { minLimitProducts } from '../../../pages/catalog/CatalogPage';
-
+import { MIN_LIMIT_PRODUCTS } from '../../../services/StoreService/StoreService';
 type DropdownLinksProps = {
   name: string;
   links: CategoryType[];
@@ -22,7 +21,7 @@ const DropdownLinks = ({ name, links, setLimitProducts }: DropdownLinksProps) =>
       }
       key={link.id}
       to={`/catalog/${link.parentName}/${link.name}`}
-      onClick={() => setLimitProducts(minLimitProducts)}
+      onClick={() => setLimitProducts(MIN_LIMIT_PRODUCTS)}
     >
       {link.name}
     </NavLink>
@@ -33,7 +32,7 @@ const DropdownLinks = ({ name, links, setLimitProducts }: DropdownLinksProps) =>
       <NavLink
         to={`/catalog/${name}`}
         className={name === category && !subcategory ? `${classes.button} ${classes.active}` : `${classes.button}`}
-        onClick={() => setLimitProducts(minLimitProducts)}
+        onClick={() => setLimitProducts(MIN_LIMIT_PRODUCTS)}
       >
         {name}
       </NavLink>

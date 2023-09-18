@@ -32,7 +32,7 @@ class CtpClient {
         .withPasswordFlow(this.getUserAuthOptions())
         .withHttpMiddleware(this.getHttpMiddlewareOptions())
         .build();
-    } else if (tokenCache.getRefreshToken() && tokenCache.checkToken()) {
+    } else if (tokenCache.getRefreshToken()) {
       return new ClientBuilder()
         .withRefreshTokenFlow(this.getRefreshTokenOptions())
         .withHttpMiddleware(this.getHttpMiddlewareOptions())
@@ -49,7 +49,7 @@ class CtpClient {
       host: this.authURL,
       projectKey: this.projectKey,
       credentials: { ...this.credentials, user: this.userAuthOptions as UserAuthOptions },
-      tokenCache: tokenCache,
+      tokenCache,
       fetch,
     };
   }
@@ -59,7 +59,7 @@ class CtpClient {
       host: this.authURL,
       projectKey: this.projectKey,
       credentials: this.credentials,
-      tokenCache: tokenCache,
+      tokenCache,
       fetch,
     };
   }
@@ -73,11 +73,10 @@ class CtpClient {
 
   private getRefreshTokenOptions(): RefreshAuthMiddlewareOptions {
     return {
-      host: this.apiURL,
+      host: this.authURL,
       projectKey: this.projectKey,
       credentials: this.credentials,
-      refreshToken: tokenCache.getRefreshToken() || '',
-      tokenCache: tokenCache,
+      refreshToken: tokenCache.getRefreshToken() as string,
       fetch,
     };
   }
