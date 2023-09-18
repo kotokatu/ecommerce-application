@@ -1,6 +1,5 @@
 import '../about.scss';
 import { Flex } from '@mantine/core';
-import AnimatedDeveloper from './animatedDeveloper';
 import { developersLinks } from '../data/data';
 
 function AnimatedLinks() {
