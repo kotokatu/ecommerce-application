@@ -119,9 +119,9 @@ const NavbarCatalog = ({
     if (searchParams.size === 0) {
       clearFilterProducts();
     } else {
-      setSelectedBrands(() => getSearchParams(searchParams, 'brand') || []);
-      setSelectedSizes(() => getSearchParams(searchParams, 'size') || []);
-      setSelectedColors(() => getSearchParams(searchParams, 'color') || []);
+      setSelectedBrands(() => getSearchParams(searchParams, 'brand'));
+      setSelectedSizes(() => getSearchParams(searchParams, 'size'));
+      setSelectedColors(() => getSearchParams(searchParams, 'color'));
       setMinPrice(
         () =>
           searchParams

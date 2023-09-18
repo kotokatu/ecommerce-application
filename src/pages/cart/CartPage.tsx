@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from 'react';
-import CartItem from '../../components/cart/CartItem';
+import CartItem from '../../components/cart/CartItem/CartItem';
 import useAuth from '../../utils/hooks/useAuth';
 import {
   Text,

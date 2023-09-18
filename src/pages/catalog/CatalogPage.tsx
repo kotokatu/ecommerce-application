@@ -152,7 +152,6 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
         const searchQuery = searchParams.get('search');
         if (searchQuery !== null) {
           queryParams['text.en-US'] = `${searchQuery}`;
-          queryParams.fuzzy = true;
         }
 
         const sortOrder = searchParams.get('sort');
