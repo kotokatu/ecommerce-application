@@ -1,23 +1,12 @@
 import { SimpleGrid, Container, Title, Flex } from '@mantine/core';
 import Developer from './components/developer';
 import AnimatedLinks from './components/anumatedLinks';
+import Responsibilities from './components/responsibilities';
 import { developersData, developersResponsible } from './data/data';
 
 export function AboutPage() {
   const items = developersData.map((item) => <Developer {...item} key={item.name} />);
-  const responsibles = developersResponsible.map((item) => (
-    <Flex key={item.name} align="center" justify="center" direction="column" className="cards">
-      <Title order={5} m={10} color="white">
-        {item.resp[0]}
-      </Title>
-      <Title order={5} m={10} color="white">
-        {item.resp[1]}
-      </Title>
-      <Title order={5} m={10} color="white">
-        {item.resp[2]}
-      </Title>
-    </Flex>
-  ));
+  const responsibles = developersResponsible.map((item) => <Responsibilities key={item.name} {...item} />);
 
   return (
     <Container mt={10} mb={35} size="lg" p={0}>
