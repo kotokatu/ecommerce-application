@@ -8,19 +8,12 @@ So, as developers, we were asked to design and create an E-commerce web site whi
 
 This is a Single Page Application built using React. This website allows users to login, fetch info from the server, add/update/delete items into a cart and save the cart options to the server. The products have a title, image and description. It also has a shopping list page and user info with the ability to change address and other parameters. The website was hosted on GitHub pages. Authentication and Database is handled using Commerce Tools.
 
-## Screenshots
-
-- **ADD screen**
-
-## Demo
-
-- **ADD VIDEO**
 
 ## Tech Stack
 
-- Frontend: `React, HTML, SCSS, `
+- Frontend: `React, HTML, SCSS, Typescript`
 - Backend: `Commerce Tools`
-- Other Libraries and Tools: `Husky, Eslint, Prettier` **ADD**
+- Other Libraries and Tools: `Mantine, React Router, Husky, Eslint, Prettier, Jest, Testing Library`
 
 ## Features
 
@@ -32,9 +25,12 @@ This is a Single Page Application built using React. This website allows users t
 - Filter Products by
   - Category
   - Price
+  - Brand
+  - Color
+  - Size
 - Cart Management
 - Search by
-  - Product Name
+  - Product Name or Description
 - Address Management
 - Single Product Page
 - Loading & Alerts
