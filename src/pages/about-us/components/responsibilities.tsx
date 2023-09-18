@@ -4,9 +4,10 @@ import AnimatedDeveloper from './animatedDeveloper';
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
   name: string;
   resp: string[];
+  role: string;
 }
 
-function Responsibilities({ name, resp }: Props) {
+function Responsibilities({ name, resp, role }: Props) {
   return (
     <Flex key={name} align="center" justify="center" direction="column" pb={10}>
       <div className="piramid">
@@ -21,6 +22,9 @@ function Responsibilities({ name, resp }: Props) {
         </Title>
       </div>
       <AnimatedDeveloper name={name} />
+      <Title order={3} m={0} align="center" color="white" mb={20} className="role">
+        {role}
+      </Title>
     </Flex>
   );
 }

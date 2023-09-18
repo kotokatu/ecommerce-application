@@ -42,13 +42,16 @@ export const developersResponsible = [
   {
     name: 'NatashaResp',
     resp: ['Cart', 'Regictration', 'Product Page'],
+    role: 'TEAM LEAD',
   },
   {
     name: 'MaximResp',
     resp: ['Routing', 'Main Page', 'Catalog Page'],
+    role: 'DEVELOPER',
   },
   {
     name: 'VikaResp',
     resp: ['Login', 'Profile', 'About Us Page'],
+    role: 'DEVELOPER',
   },
 ];
