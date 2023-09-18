@@ -34,11 +34,11 @@ interface DeveloperProps extends React.ComponentPropsWithoutRef<'div'> {
   conclusion: string;
 }
 
-function Developer({ name, greeting, description, className, conclusion, ...others }: DeveloperProps) {
+function Developer({ name, greeting, description, className, conclusion }: DeveloperProps) {
   const { classes, cx } = useStyles();
 
   return (
-    <div className={cx(classes.feature, className)} {...others}>
+    <div className={cx(classes.feature, className)}>
       <div className={classes.overlay}>
         <div className={name} />
       </div>
@@ -53,7 +53,7 @@ function Developer({ name, greeting, description, className, conclusion, ...othe
         <Text c="dimmed" fz="sm" mt={10}>
           {description}
         </Text>
-        <Text c="red" fz="sm" mt={10}>
+        <Text c="black" fz="sm" mt={10}>
           {conclusion}
         </Text>
       </div>

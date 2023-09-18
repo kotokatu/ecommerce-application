@@ -3,8 +3,8 @@ export const developersData = [
     greeting: 'Hello!',
     name: 'Natasha',
     description:
-      'I first became interested in computer science when I got my first desktop back in 2001, but at that moment I was already a Linguistics major, so I never pursued CS field as a career. After having worked for an international forest industry corporation for 15 years I decided to change my career path to something that feels more satisfying and authentic to me. Becoming a Front-end developer has become my dream and my goal.',
-    conclusion: "I'm happy that I completed the RSS School courses and now I'm ready to get to work.",
+      'I first became interested in computer science when I got my first desktop back in 2001, but at that moment I was already a Linguistics major, so I never pursued CS field as a career. After having worked for an international forest industry corporation for 15 years I decided to change my career path to something that feels more satisfying and authentic to me.',
+    conclusion: "I'm glad that I completed the RSS School courses and now I'm definitely ready to get to work.",
   },
   {
     greeting: 'Hi!',
@@ -20,5 +20,38 @@ export const developersData = [
       'I started my acquaintance with frontend technologies by studying HTML Academy courses. After passing all simulators, I continued to study by myself. My main strengths are perseverance and the desire to obtain new information. I am interested in web development because this profession provides great opportunities for professional growth.',
     conclusion:
       "I'm glad that I was able to complete the RSS School courses. Now we need to move on and conquer new heights.",
+  },
+];
+
+export const developersLinks = [
+  {
+    name: 'gitLinkNatasha',
+    gitLink: 'https://github.com/kotokatu',
+  },
+  {
+    name: 'gitLinkMaxim',
+    gitLink: 'https://github.com/Kirich8',
+  },
+  {
+    name: 'gitLinkVika',
+    gitLink: 'https://github.com/vikkitorry',
+  },
+];
+
+export const developersResponsible = [
+  {
+    name: 'NatashaResp',
+    resp: ['Cart', 'Registration', 'Product Page'],
+    role: 'TEAM LEAD',
+  },
+  {
+    name: 'MaximResp',
+    resp: ['Routing', 'Main Page', 'Catalog Page'],
+    role: 'DEVELOPER',
+  },
+  {
+    name: 'VikaResp',
+    resp: ['Login', 'Profile', 'About Us Page'],
+    role: 'DEVELOPER',
   },
 ];

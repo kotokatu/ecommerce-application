@@ -1,7 +1,5 @@
-$humancolor: #ecb938;
-$colorVika: rgb(234, 119, 119);
-$colorMaxim: rgb(65, 80, 245);
-$colorNatasha: rgb(107, 234, 93);
+$humancolor: #654d10;
+$colorDeveloper: rgb(14, 14, 14);
 
 %lips {
   position: absolute;
@@ -24,13 +22,21 @@ $colorNatasha: rgb(107, 234, 93);
   width: 50px;
   height: 90px;
   top: 30px;
-  left: 130px;
+  left: 150px;
 }
 
 %photo {
   height: 120px;
   width: 180px;
   border-radius: 10px;
+}
+
+%ballsPosition {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .human {
@@ -142,7 +148,7 @@ $colorNatasha: rgb(107, 234, 93);
   top: 0;
   width: 10px;
   height: 10px;
-  background: #144d54;
+  background: #1c6c76;
   border-radius: 50%;
   animation: twinkle infinite 3s;
   &.left {
@@ -179,15 +185,11 @@ $colorNatasha: rgb(107, 234, 93);
   @extend %girlsPosition;
   animation: walk-Natasha 5s linear infinite;
   .human {
-    background: $colorNatasha;
+    background: $colorDeveloper;
     height: 50px;
     z-index: 100;
     &:before {
-      background: $colorNatasha;
-    }
-    &:after {
-      content: '';
-      background: $colorNatasha;
+      background: $colorDeveloper;
     }
     .hat {
       @extend %hair;
@@ -206,16 +208,16 @@ $colorNatasha: rgb(107, 234, 93);
   height: 90px;
   top: 30px;
   left: 150px;
-  animation: walk-Maxim 5s linear infinite;
+  animation: walk-Natasha 3s linear infinite;
   .human {
-    background: $colorMaxim;
+    background: $colorDeveloper;
     height: 40px;
     &:before {
-      background: $colorMaxim;
+      background: $colorDeveloper;
     }
     &:after {
       border: 20px solid transparent;
-      border-top: 10px solid rgb(245, 68, 68);
+      border-top: 10px solid rgba(21, 21, 21, 0.945);
       content: '';
       position: absolute;
       top: 39px;
@@ -250,15 +252,11 @@ $colorNatasha: rgb(107, 234, 93);
   @extend %girlsPosition;
   animation: walk-Vika 5s linear infinite;
   .human {
-    background: $colorVika;
+    background: $colorDeveloper;
     height: 50px;
     z-index: 100;
     &:before {
-      background: $colorVika;
-    }
-    &:after {
-      content: '';
-      background: $colorVika;
+      background: $colorDeveloper;
     }
     .hat {
       @extend %hair;
@@ -284,21 +282,6 @@ $colorNatasha: rgb(107, 234, 93);
 .Victoriia {
   @extend %photo;
   background: url(./icons/vika.png) center no-repeat;
-}
-
-@keyframes walk-Maxim {
-  25% {
-    transform: translate3d(0, 0, 0);
-  }
-  30% {
-    transform: translate3d(0, -10px, 0);
-  }
-  40% {
-    transform: translate3d(0, -25px, 0);
-  }
-  65% {
-    transform: translate3d(0, -35px, 0);
-  }
 }
 
 @keyframes walk-Natasha {
@@ -371,3 +354,343 @@ $colorNatasha: rgb(107, 234, 93);
 }
 
 //balls
+
+@keyframes boll {
+  0% {
+    transform: translate3d(0, 0, -2px);
+  }
+  25% {
+    transform: translate3d(-5px, -5px, 0);
+  }
+  50% {
+    transform: translate3d(-2px, -12px, 0);
+  }
+  70% {
+    transform: translate3d(0, -22px, -5px);
+  }
+}
+
+.gitLinkNatasha {
+  @extend %ballsPosition;
+  animation: boll 6s linear infinite;
+  .gitHub {
+    width: 65px;
+    height: 65px;
+    background: url(./icons/github-65.png) no-repeat center;
+  }
+  &:after {
+    position: absolute;
+    top: 54px;
+    left: 60px;
+    content: '';
+    width: 0;
+    height: 125px;
+    border-left: 2px solid black;
+    transform: rotate(-30deg);
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 52px;
+    left: 25px;
+    border: 7px solid transparent;
+    border-bottom: 7px solid rgba(0, 0, 0, 0.87);
+  }
+}
+
+.gitLinkMaxim {
+  @extend %ballsPosition;
+  top: 20px;
+  animation: boll 7s linear infinite;
+  .gitHub {
+    width: 55px;
+    height: 55px;
+    background: url(./icons/github-55.png) no-repeat center;
+  }
+  &:after {
+    position: absolute;
+    top: 50px;
+    content: '';
+    width: 0;
+    height: 97px;
+    border-left: 2px solid black;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 43px;
+    left: 22px;
+    border: 6px solid transparent;
+    border-bottom: 6px solid rgba(0, 0, 0, 0.87);
+  }
+}
+
+.gitLinkVika {
+  @extend %ballsPosition;
+  animation: boll 5s linear infinite;
+  .gitHub {
+    width: 65px;
+    height: 65px;
+    background: url(./icons/github-65.png) no-repeat center;
+  }
+  &:after {
+    position: absolute;
+    top: 52px;
+    right: 59px;
+    content: '';
+    width: 0;
+    height: 120px;
+    border-left: 2px solid black;
+    transform: rotate(28deg);
+    z-index: 1;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 49px;
+    left: 24px;
+    border: 8px solid transparent;
+    border-bottom: 8px solid rgba(0, 0, 0, 0.87);
+  }
+}
+
+.rss {
+  position: relative;
+  top: 5px;
+  width: 100px;
+  height: 100px;
+  background: url(./icons/bag.svg) no-repeat center;
+  z-index: 3;
+  &:before {
+    content: '';
+    position: absolute;
+    display: flex;
+    top: 33px;
+    left: 40px;
+    width: 20px;
+    height: 20px;
+    z-index: 3;
+    background: white;
+  }
+  &:after {
+    position: absolute;
+    display: flex;
+    top: 33px;
+    left: 20px;
+    content: '';
+    width: 63%;
+    height: 63%;
+    background: url(./icons/rs_school_js.svg) no-repeat center;
+    z-index: 3;
+  }
+}
+
+//responsib
+
+#black {
+  padding-bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.905);
+  position: relative;
+  border-radius: 10px;
+  background: rgb(50, 49, 46);
+  box-shadow: 0 -200px 100px -120px rgb(63, 61, 61) inset;
+  border-radius: 30px;
+  border: 10px solid white;
+  animation: background 8s infinite alternate;
+}
+
+@keyframes background {
+  50% {
+    background: rgb(103, 119, 125);
+    box-shadow: 0 -200px 100px -100px rgb(16, 17, 16) inset;
+  }
+}
+
+#NatashaResp,
+#MaximResp,
+#VikaResp {
+  position: relative;
+  width: 50px;
+  height: 90px;
+  top: 3px;
+  left: 0;
+  .human {
+    background: black;
+    height: 40px;
+    &:before {
+      background: black;
+    }
+    &:after {
+      border: 20px solid transparent;
+      border-top: 10px solid black;
+      content: '';
+      position: absolute;
+      top: 39px;
+      width: 50px;
+      height: 25px;
+      border-radius: 10%;
+      z-index: 100;
+    }
+    .mouse {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      width: 15px;
+      height: 10px;
+      box-sizing: border-box;
+      clip: rect(5px, 15px, 10px, 0);
+      border: 5px solid rgb(212, 70, 70);
+      border-radius: 50%;
+    }
+    .eyes {
+      &.left {
+        z-index: 20;
+        left: 12px;
+      }
+      &.right {
+        z-index: 20;
+        left: 32px;
+      }
+    }
+  }
+  .arms {
+    &.left {
+      animation: none;
+    }
+    &.right {
+      animation: none;
+    }
+  }
+  .legs {
+    &.left {
+      animation: none;
+    }
+    &.right {
+      animation: none;
+    }
+  }
+  .hat {
+    @extend %hair;
+    z-index: 2;
+    left: -17px;
+  }
+  .bubble {
+    top: 1px;
+    left: 3px;
+  }
+  .smallBubble {
+    top: 1px;
+    left: 3px;
+  }
+}
+
+#NatashaResp,
+#MaximResp,
+#VikaResp {
+  .hat {
+    background: url(./icons/hat-Natasha.png) no-repeat center;
+  }
+}
+
+#MaximResp {
+  .hat {
+    top: -68px;
+    left: -20px;
+    background: url(./icons/hat-Maxim.png) no-repeat center;
+  }
+}
+
+#VikaResp {
+  .hat {
+    background: url(./icons/hat-Vika.png) no-repeat center;
+  }
+}
+
+.mssg {
+  position: relative;
+  left: -30px;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.719);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+  margin-bottom: 15px;
+  padding: 0 10px;
+}
+
+.role {
+  border-top: 3px solid #000;
+  text-shadow:
+    0 1px 0 #ccc,
+    0 2px 0 #c9c9c9,
+    0 3px 0 #bbb,
+    0 4px 0 #b9b9b9,
+    0 5px 0 #aaa,
+    0 6px 1px rgba(0, 0, 0, 0.1),
+    0 0 5px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 3px 5px rgba(0, 0, 0, 0.2),
+    0 5px 10px rgba(0, 0, 0, 0.25),
+    0 10px 10px rgba(0, 0, 0, 0.2),
+    0 20px 20px rgba(0, 0, 0, 0.15);
+}
+
+.container {
+  position: relative;
+}
+
+#skills {
+  position: absolute;
+  margin-right: 115px;
+  width: 60px;
+  height: 75px;
+  background-color: #000;
+  border-radius: 10px;
+  padding: 3px;
+  color: white;
+  font-size: 10px;
+  font-weight: 300;
+}
+
+.NatashaResp {
+  :nth-child(1) {
+    width: 75%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(2) {
+    width: 80%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(3) {
+    width: 85%;
+    border-bottom: 1px solid white;
+  }
+}
+
+.MaximResp {
+  :nth-child(1) {
+    width: 85%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(2) {
+    width: 80%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(3) {
+    width: 75%;
+    border-bottom: 1px solid white;
+  }
+}
+
+.VikaResp {
+  :nth-child(1) {
+    width: 80%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(2) {
+    width: 75%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(3) {
+    width: 85%;
+    border-bottom: 1px solid white;
+  }
+}
