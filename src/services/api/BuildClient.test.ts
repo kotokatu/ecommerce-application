@@ -17,7 +17,6 @@ describe('CtpClient', () => {
 
     it('should return a client with refresh token flow when a valid refresh token is available', () => {
       jest.spyOn(tokenCache, 'getRefreshToken').mockReturnValue('valid_refresh_token');
-      jest.spyOn(tokenCache, 'checkToken').mockReturnValue(true);
 
       const ctpClient = new CtpClient();
       const client = ctpClient['getClient']();

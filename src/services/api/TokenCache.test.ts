@@ -66,42 +66,6 @@ describe('TokenCacheHandler', () => {
     });
   });
 
-  describe('checkToken', () => {
-    it('should return true if token is valid', () => {
-      const token = {
-        token: 'testToken',
-        expirationTime: Date.now() + 1000,
-        refreshToken: 'testRefreshToken',
-      };
-      window.localStorage.setItem('ct-token-30fingers', JSON.stringify(token));
-      const cache = new TokenCacheHandler();
-      expect(cache.checkToken()).toEqual(true);
-    });
-
-    it('should return false if token is expired', () => {
-      const token = {
-        token: 'testToken',
-        expirationTime: Date.now() - 1000,
-        refreshToken: 'testRefreshToken',
-      };
-      window.localStorage.setItem('ct-token-30fingers', JSON.stringify(token));
-      const cache = new TokenCacheHandler();
-      expect(cache.checkToken()).toEqual(false);
-    });
-
-    it('should clear cache if token is expired', () => {
-      const token = {
-        token: 'testToken',
-        expirationTime: Date.now() - 1000,
-        refreshToken: 'testRefreshToken',
-      };
-      window.localStorage.setItem('ct-token-30fingers', JSON.stringify(token));
-      const cache = new TokenCacheHandler();
-      cache.checkToken();
-      expect(window.localStorage.getItem('ct-token-30fingers')).toEqual(null);
-    });
-  });
-
   describe('clear', () => {
     it('should clear cache from localStorage', () => {
       const token = {

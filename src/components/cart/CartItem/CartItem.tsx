@@ -1,13 +1,13 @@
-import useAuth from '../../utils/hooks/useAuth';
+import useAuth from '../../../utils/hooks/useAuth';
 import { LineItem } from '@commercetools/platform-sdk';
 import { Link } from 'react-router-dom';
 import { Text, Image, Group, Stack, Divider, Anchor, createStyles, ActionIcon, rem } from '@mantine/core';
-import { storeService } from '../../services/StoreService/StoreService';
-import { notificationError } from '../ui/notification';
+import { storeService } from '../../../services/StoreService/StoreService';
+import { notificationError } from '../../ui/notification';
 import { TbX } from 'react-icons/tb';
-import { QuantityInput } from './QuantityInput/QuantityInput';
-import CustomTooltip from '../ui/CustomTooltip';
-import { formatPrice } from '../../utils/helpers/format-price';
+import { QuantityInput } from '../QuantityInput/QuantityInput';
+import CustomTooltip from '../../ui/CustomTooltip';
+import { formatPrice } from '../../../utils/helpers/format-price';
 
 const useStyles = createStyles((theme) => ({
   button: {
