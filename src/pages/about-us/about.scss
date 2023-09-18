@@ -606,7 +606,7 @@ $colorDeveloper: rgb(14, 14, 14);
   }
 }
 
-.piramid {
+.mssg {
   position: relative;
   left: -30px;
   z-index: 1;
@@ -631,4 +631,66 @@ $colorDeveloper: rgb(14, 14, 14);
     0 5px 10px rgba(0, 0, 0, 0.25),
     0 10px 10px rgba(0, 0, 0, 0.2),
     0 20px 20px rgba(0, 0, 0, 0.15);
+}
+
+.container {
+  position: relative;
+}
+
+#skills {
+  position: absolute;
+  margin-right: 115px;
+  width: 60px;
+  height: 75px;
+  background-color: #000;
+  border-radius: 10px;
+  padding: 3px;
+  color: white;
+  font-size: 10px;
+  font-weight: 300;
+}
+
+.NatashaResp {
+  :nth-child(1) {
+    width: 75%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(2) {
+    width: 80%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(3) {
+    width: 85%;
+    border-bottom: 1px solid white;
+  }
+}
+
+.MaximResp {
+  :nth-child(1) {
+    width: 85%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(2) {
+    width: 80%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(3) {
+    width: 75%;
+    border-bottom: 1px solid white;
+  }
+}
+
+.VikaResp {
+  :nth-child(1) {
+    width: 80%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(2) {
+    width: 75%;
+    border-bottom: 1px solid white;
+  }
+  :nth-child(3) {
+    width: 85%;
+    border-bottom: 1px solid white;
+  }
 }
