@@ -1,4 +1,4 @@
-import { Paper, Text, Container, Flex, Button, TextInput, Modal } from '@mantine/core';
+import { Paper, Text, Container, Flex, Button, TextInput, Modal, LoadingOverlay } from '@mantine/core';
 import { storeService } from '../../../services/StoreService/StoreService';
 import { UserProfile, FullAddressInfo } from '../../../utils/types/serviceTypes';
 import { useState, useEffect } from 'react';
@@ -23,15 +23,18 @@ export const newAddress: FullAddressInfo = {
   key: 999,
 };
 
-const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disableBtn: boolean }) => {
-  const { profile, updatePage, disableBtn } = props;
+const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void }) => {
+  const { profile, updatePage } = props;
   const { classes } = formStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [addresses, setAddresses] = useState([...profile.addresses]);
   const [userData, setUserData] = useState({ ...profile });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     setUserData({ ...profile });
+    setAddresses([...profile.addresses]);
   }, [profile]);
 
   const addNewAddress = () => {
@@ -39,8 +42,8 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
     setAddresses([...addresses, newAddress]);
   };
 
-  const removeAddress = (address: FullAddressInfo) => {
-    setAddresses(addresses.filter((a) => a.key !== address.key));
+  const setUpdateState = (isNeedUpdate: boolean) => {
+    setIsUpdating(isNeedUpdate);
   };
 
   const form = useForm({
@@ -69,12 +72,12 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
           Personal information
         </Text>
         <Flex gap="md" justify="center" align="center" direction="column">
-          <Paper shadow="xs" withBorder style={{ width: '100%', padding: '0 1rem' }}>
+          <Paper shadow="xs" withBorder style={{ width: '100%', padding: '1rem' }}>
             <form
               onSubmit={form.onSubmit(async (values) => {
-                console.log(4644646, disableBtn);
                 if (!opened) {
                   try {
+                    setIsLoading(true);
                     await storeService.updateCurrentCustomer(values, userData.version);
                     notificationSuccess('Account was succesfully updated');
                   } catch (err) {
@@ -83,6 +86,7 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
                     }
                   } finally {
                     updatePage();
+                    setIsLoading(false);
                   }
                 }
               })}
@@ -113,11 +117,11 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
                 {...form.getInputProps('email')}
               />
 
-              <Flex align="center" mb={20} justify="space-between">
-                <Text color="dimmed" size="sm" pt={5} pl={12}>
+              <Flex align="center" justify="space-between" direction="column">
+                <Text color="dimmed" size="sm" pt={5} pl={12} align="center">
                   Do you want to update personal info?
                 </Text>
-                <Button type="submit" loading={disableBtn} style={{ width: '180px' }}>
+                <Button type="submit" loading={isLoading} style={{ width: '180px' }}>
                   Save
                 </Button>
               </Flex>
@@ -129,7 +133,7 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
           </Paper>
         </Flex>
         <Flex align="center" m={20} direction="column">
-          <Text color="black" size="sm" pt={5}>
+          <Text color="black" size="sm" pt={5} align="center">
             Do you want to change password?
           </Text>
           <Button onClick={open} color="red" style={{ width: '180px' }}>
@@ -145,9 +149,9 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
             <ProfileAddress
               address={address}
               key={i}
-              remove={removeAddress}
               version={userData.version}
               needUpdate={updatePage}
+              updateState={setUpdateState}
             />
           ))}
         </Flex>
@@ -161,6 +165,13 @@ const ProfileEdit = (props: { profile: UserProfile; updatePage: () => void; disa
           </Button>
         </Flex>
       </Paper>
+      <LoadingOverlay
+        className={classes.overlay}
+        loaderProps={{ size: 'xl', color: 'black', variant: 'bars' }}
+        overlayOpacity={0.4}
+        overlayColor="black"
+        visible={isUpdating}
+      />
     </Container>
   );
 };

@@ -39,17 +39,19 @@ const headerCatalogStyles = createStyles((theme) => ({
 
 type HeaderCatalogProps = {
   allCategories: CategoryType[];
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const HeaderCatalog = ({ allCategories }: HeaderCatalogProps) => {
+const HeaderCatalog = ({ allCategories, setQuery, setLimitProducts }: HeaderCatalogProps) => {
   const { classes } = headerCatalogStyles();
 
   return (
     <div className={classes.header}>
-      <BreadCrumbs allCategories={allCategories} />
+      <BreadCrumbs allCategories={allCategories} setLimitProducts={setLimitProducts} />
       <div className={classes.inputs}>
-        <SortPicker />
-        <SearchInput label="Search product" placeholder="Enter a name" />
+        <SortPicker setQuery={setQuery} setLimitProducts={setLimitProducts} />
+        <SearchInput label="Search product" placeholder="Enter a name" setQuery={setQuery} />
       </div>
     </div>
   );

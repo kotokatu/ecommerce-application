@@ -22,8 +22,8 @@ type Props = {
   key: number;
   address: FullAddressInfo;
   version: number;
-  remove: (address: FullAddressInfo) => void;
   needUpdate: () => void;
+  updateState: (isNeedUpdate: boolean) => void;
 };
 
 const ProfileAddress = (props: Props) => {
@@ -36,13 +36,12 @@ const ProfileAddress = (props: Props) => {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const removeAddress = async () => {
-    props.remove(address);
-    await storeService.removeAdress(props.address.id, props.version);
+    await storeService.removeAddress(props.address.id, props.version);
     props.needUpdate();
   };
 
   const updateAddresses = async (version: number, address: FullAddressInfo) => {
-    await storeService.updateAdress(version, address, address.id, checked);
+    await storeService.updateAddress(version, address, checked);
     props.needUpdate();
   };
 
@@ -73,12 +72,15 @@ const ProfileAddress = (props: Props) => {
           setIsLoading(true);
           if (isSaveBtn) {
             try {
-              await storeService.addAdress(values, props.version, values.addressType, values.isDefault);
-              notificationSuccess('Address was succesfully saved');
+              props.updateState(true);
+              await storeService.handleAddressAdd(values, props.version, values.addressType, checked);
               props.needUpdate();
-              setIsBtnDisabled(true);
+              props.updateState(false);
             } catch (err) {
               if (err instanceof Error) notificationError(err.message);
+            } finally {
+              notificationSuccess('Address was succesfully saved');
+              setIsBtnDisabled(true);
             }
           } else {
             try {
@@ -141,7 +143,7 @@ const ProfileAddress = (props: Props) => {
           onChange={() => setChecked(!checked)}
         />
         {!isNewAddress && (
-          <Flex align="center" justify="space-around" m={20}>
+          <Flex align="center" justify="space-around" m={20} direction={{ base: 'column', xs: 'row' }} gap="sm">
             <Button style={{ width: '100px' }} type="submit" loading={isLoading} onClick={() => setIsSaveBtn(false)}>
               Update
             </Button>
@@ -153,12 +155,15 @@ const ProfileAddress = (props: Props) => {
               onClick={async () => {
                 setIsLoading(true);
                 try {
+                  props.updateState(true);
                   await removeAddress();
                   notificationSuccess('Address was succesfully deleted');
-                  props.needUpdate();
-                  window.location.reload();
                 } catch (err) {
                   if (err instanceof Error) notificationError(err.message);
+                } finally {
+                  setTimeout(() => {
+                    props.updateState(false);
+                  }, 1000);
                 }
                 setIsLoading(false);
               }}
@@ -170,7 +175,7 @@ const ProfileAddress = (props: Props) => {
         {isNewAddress && (
           <Flex align="center" justify="space-around" m={20}>
             <Button type="submit" style={{ width: '100px' }} color="green" loading={isLoading} disabled={isBtnDisabled}>
-              Save
+              {isBtnDisabled ? 'Saved' : 'Save'}
             </Button>
           </Flex>
         )}

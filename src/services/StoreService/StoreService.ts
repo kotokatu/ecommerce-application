@@ -1,12 +1,20 @@
 import CtpClient from '../api/BuildClient';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { formatDate } from '../../utils/helpers/date-helpers';
-import { CustomerDraft, Customer, MyCustomerChangePassword } from '@commercetools/platform-sdk';
-import { getErrorMessage } from '../../utils/helpers/error-handler';
-import { ProductProjection, ProductType, TermFacetResult } from '@commercetools/platform-sdk';
-import { tokenCache } from '../api/BuildClient';
+import {
+  CustomerDraft,
+  Customer,
+  MyCustomerChangePassword,
+  Cart,
+  Category,
+  CartDiscountValueRelative,
+  DiscountCodeReference,
+} from '@commercetools/platform-sdk';
+import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
+import { ProductProjection, TermFacetResult } from '@commercetools/platform-sdk';
 import { UserProfile, FullAddressInfo } from '../../utils/types/serviceTypes';
 import { createAddress, handleAddressArray } from '../../utils/helpers/handleAddresses';
+import { LOGIN_STORAGE_KEY, tokenCache } from '../api/TokenCache';
 
 interface CustomerUpdatePersonalDraft {
   email: string;
@@ -42,6 +50,7 @@ export type QueryArgs = {
   ['filter.facets']?: string | string[];
   fuzzy?: boolean;
   sort?: string | string[];
+  limit?: number;
 };
 
 export type GetProductsReturnType = {
@@ -50,9 +59,10 @@ export type GetProductsReturnType = {
   sizes: string[];
   prices: string[];
   products: ProductProjection[];
+  total?: number;
 };
 
-type Address = {
+export type Address = {
   country: string;
   city: string;
   streetName: string;
@@ -71,6 +81,21 @@ type UserData = {
   setDefaultBillingAddress: boolean;
   copyShippingToBilling: boolean;
 };
+
+export type PromoCode = {
+  code: string;
+  value: number;
+};
+
+export enum SortVariant {
+  createdAtDesc = 'createdAt desc',
+  createdAtAsc = 'createdAt asc',
+  priceAsc = 'price asc',
+  priceDesc = 'price desc',
+  nameAsc = 'name.en-us asc',
+}
+
+export const MIN_LIMIT_PRODUCTS = 6;
 
 class StoreService {
   private apiRoot: ByProjectKeyRequestBuilder;
@@ -128,7 +153,6 @@ class StoreService {
 
   public async loginUser(email: string, password: string) {
     try {
-      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
       await this.apiRoot
         .me()
         .login()
@@ -139,14 +163,17 @@ class StoreService {
           },
         })
         .execute();
+      tokenCache.clear();
+      this.apiRoot = new CtpClient({ username: email, password }).getApiRoot();
+      this.getUserProfile();
     } catch (err) {
-      this.apiRoot = new CtpClient().getApiRoot();
       throw new Error(getErrorMessage(err));
     }
   }
 
   public logoutUser() {
     tokenCache.clear();
+    localStorage.setItem(LOGIN_STORAGE_KEY, 'false');
     this.apiRoot = new CtpClient().getApiRoot();
   }
 
@@ -211,7 +238,22 @@ class StoreService {
     }
   }
 
-  public async addAdress(address: Address, version: number, type: string, isDefault: boolean): Promise<string | void> {
+  public async handleAddressAdd(address: Address, version: number, type: string, isDefault: boolean) {
+    try {
+      const newUserVersion = (await this.addAddress(address, version)) as Customer;
+      const newAddressId = newUserVersion.addresses[newUserVersion.addresses.length - 1].id;
+      if (newAddressId) {
+        const newVersion = await this.addAddressToType(newAddressId, newUserVersion.version, type);
+        if (isDefault) {
+          await this.setDefaultAddress(newVersion, newAddressId, type);
+        }
+      }
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  private async addAddress(address: Address, version: number): Promise<string | Customer> {
     try {
       const addAddress = await this.apiRoot
         .me()
@@ -227,15 +269,13 @@ class StoreService {
           },
         })
         .execute();
-      const newAddress = addAddress.body.addresses[addAddress.body.addresses.length - 1];
-      const newVersion = addAddress.body.version;
-      this.addAddressToType(newAddress.id, newVersion, isDefault, type);
+      return addAddress.body;
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
 
-  public async removeAdress(addressId: string, version: number): Promise<string | void> {
+  public async removeAddress(addressId: string, version: number): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -256,12 +296,7 @@ class StoreService {
     }
   }
 
-  private async addAddressToType(
-    addressId: string | undefined,
-    version: number,
-    isDefault: boolean,
-    type: string,
-  ): Promise<string | void> {
+  private async addAddressToType(addressId: string, version: number, type: string): Promise<number> {
     const addShipAddress = 'addShippingAddressId';
     const addBilAddress = 'addBillingAddressId';
     try {
@@ -279,19 +314,13 @@ class StoreService {
           },
         })
         .execute();
-      if (isDefault) {
-        this.setDefaultAddress(resp.body.version, addressId, type);
-      }
+      return resp.body.version;
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
   }
 
-  private async setDefaultAddress(
-    version: number,
-    addressId: string | undefined,
-    type: string,
-  ): Promise<string | void> {
+  private async setDefaultAddress(version: number, addressId: string, type: string): Promise<string | void> {
     try {
       await this.apiRoot
         .me()
@@ -312,12 +341,7 @@ class StoreService {
     }
   }
 
-  public async updateAdress(
-    version: number,
-    address: FullAddressInfo,
-    addressId: string,
-    isDefault: boolean,
-  ): Promise<string | void> {
+  public async updateAddress(version: number, address: FullAddressInfo, isDefault: boolean): Promise<string | void> {
     try {
       const resp = await this.apiRoot
         .me()
@@ -333,24 +357,15 @@ class StoreService {
                   city: address.city,
                   postalCode: address.postalCode,
                 },
-                addressId,
+                addressId: address.id,
               },
             ],
           },
         })
         .execute();
-      if (address.isDefault) {
-        this.setDefaultAddress(resp.body.version, addressId, address.name);
+      if (isDefault) {
+        this.setDefaultAddress(resp.body.version, address.id, address.name);
       }
-    } catch (err) {
-      throw new Error(getErrorMessage(err));
-    }
-  }
-
-  public async getProductTypes(): Promise<ProductType[] | undefined> {
-    try {
-      const productTypes = await this.apiRoot.productTypes().get().execute();
-      return productTypes.body.results;
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
@@ -361,7 +376,7 @@ class StoreService {
     return productData.body;
   }
 
-  public async getCategories() {
+  public async getCategories(): Promise<Category[]> {
     try {
       const categories = await this.apiRoot
         .categories()
@@ -385,11 +400,11 @@ class StoreService {
           },
         })
         .execute();
-      const { facets, results: products } = response.body;
+      const { facets, results: products, total } = response.body;
       const [brands, colors, sizes, prices] = Object.values(FilterParams).map((facet) =>
         (facets[facet] as TermFacetResult).terms.map((term) => term.term),
       );
-      return { brands, colors, sizes, prices, products };
+      return { brands, colors, sizes, prices, products, total };
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }
@@ -409,6 +424,165 @@ class StoreService {
       const { facets } = response.body;
       const prices = (facets[FilterParams.price] as TermFacetResult).terms.map((facet) => +facet.term);
       return [Math.min(...prices) / 100, Math.max(...prices) / 100];
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getCart(): Promise<Cart> {
+    try {
+      const cart = await this.getActiveCart();
+      if (cart !== null) return cart;
+      const newCart = await this.apiRoot
+        .me()
+        .carts()
+        .post({
+          body: { currency: 'EUR' },
+        })
+        .execute();
+      return newCart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async addProductToCart(productId: string, variantId: number, quantity = 1): Promise<Cart> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId,
+                variantId,
+                quantity,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async removeProductFromCart(productId: string, variantId: number, quantity?: number): Promise<Cart | null> {
+    try {
+      const { id, version, lineItems } = await this.getCart();
+      const lineItem = lineItems.find(
+        (lineItem) => lineItem.productId === productId && lineItem.variant.id === variantId,
+      );
+      const lineItemId = lineItem?.id;
+      if (lineItemId) {
+        const cart = await this.apiRoot
+          .me()
+          .carts()
+          .withId({ ID: id })
+          .post({
+            body: {
+              version,
+              actions: [
+                {
+                  action: 'removeLineItem',
+                  lineItemId,
+                  quantity,
+                },
+              ],
+            },
+          })
+          .execute();
+        return cart.body;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getActiveCart(): Promise<Cart | null> {
+    try {
+      const activeCart = await this.apiRoot.me().activeCart().get().execute();
+      return activeCart.body;
+    } catch (err) {
+      if (typeof err === 'object' && err !== null && 'statusCode' in err && err.statusCode === ErrorCodes.NotFound) {
+        return null;
+      }
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async deleteCart(): Promise<void> {
+    try {
+      const { id, version } = await this.getCart();
+      await this.apiRoot.me().carts().withId({ ID: id }).delete({ queryArgs: { version } }).execute();
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async addDiscountCode(code: string): Promise<Cart | null> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'addDiscountCode',
+                code,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+  public async removeDiscountCode(discountCode: DiscountCodeReference): Promise<Cart | null> {
+    try {
+      const { id, version } = await this.getCart();
+      const cart = await this.apiRoot
+        .me()
+        .carts()
+        .withId({ ID: id })
+        .post({
+          body: {
+            version,
+            actions: [
+              {
+                action: 'removeDiscountCode',
+                discountCode,
+              },
+            ],
+          },
+        })
+        .execute();
+      return cart.body;
+    } catch (err) {
+      throw new Error(getErrorMessage(err));
+    }
+  }
+
+  public async getDiscount(): Promise<PromoCode | null> {
+    try {
+      const discountCode = await this.apiRoot
+        .discountCodes()
+        .get({ queryArgs: { expand: 'cartDiscounts[*]' } })
+        .execute();
+      if (!discountCode.body.results.length) return null;
+      const { code } = discountCode.body.results[0];
+      const value = (discountCode.body.results[0].cartDiscounts[0].obj?.value as CartDiscountValueRelative).permyriad;
+      return { code, value };
     } catch (err) {
       throw new Error(getErrorMessage(err));
     }

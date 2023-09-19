@@ -1,5 +1,7 @@
 import { TokenCache, TokenStore } from '@commercetools/sdk-client-v2';
 const TOKEN_STORAGE_KEY = 'ct-token-30fingers';
+export const LOGIN_STORAGE_KEY = 'login-30fingers';
+
 export class TokenCacheHandler implements TokenCache {
   cache: TokenStore;
   constructor() {
@@ -25,13 +27,10 @@ export class TokenCacheHandler implements TokenCache {
     localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(this.cache));
   }
 
-  // set() {
-  //   localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(this.cache));
-  // }
-
   getAccessToken() {
     return this.cache.token;
   }
+
   getRefreshToken() {
     return this.cache.refreshToken;
   }
@@ -45,3 +44,5 @@ export class TokenCacheHandler implements TokenCache {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
 }
+
+export const tokenCache = new TokenCacheHandler();

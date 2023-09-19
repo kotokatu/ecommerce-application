@@ -5,8 +5,6 @@ import {
   Grid,
   SimpleGrid,
   Paper,
-  Button,
-  Select,
   Title,
   Group,
   Text,
@@ -18,12 +16,14 @@ import {
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
-import { ProductProjection, ProductVariant } from '@commercetools/platform-sdk';
+import { ProductProjection } from '@commercetools/platform-sdk';
 import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
 import parse from 'html-react-parser';
+import { formatPrice } from '../../utils/helpers/format-price';
 import './detailed-product-page.scss';
+import CartSelector from '../../components/cart-selector/CartSelector';
 
 const carouselStyles = createStyles((theme) => ({
   root: {
@@ -64,13 +64,12 @@ const carouselStyles = createStyles((theme) => ({
   },
 }));
 
-const getSizeData = (variant: ProductVariant): string =>
-  variant.attributes?.find((attribute) => attribute.name === 'size')?.value.label;
-const productSizes = (product: ProductProjection): string[] => {
-  return [getSizeData(product.masterVariant), ...product.variants.map((variant) => getSizeData(variant))];
+type DetailedProductPageProps = {
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const DetailedProductPage = (): JSX.Element => {
+const DetailedProductPage = ({ isLoading, setIsLoading }: DetailedProductPageProps): JSX.Element => {
   const [product, setProduct] = useState<ProductProjection>();
   const { productID } = useParams();
   const { classes } = carouselStyles();
@@ -128,7 +127,7 @@ const DetailedProductPage = (): JSX.Element => {
                   <Group spacing="xs">
                     {product.masterVariant.prices?.[0].discounted && (
                       <Text mt="md" fw={700} ff="Montserrat" color="red">
-                        {product.masterVariant.prices[0].discounted.value.centAmount / 100 + ' €'}
+                        {formatPrice(product.masterVariant.prices[0].discounted.value.centAmount / 100)} €
                       </Text>
                     )}
                     <Text
@@ -140,8 +139,9 @@ const DetailedProductPage = (): JSX.Element => {
                       {product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100 + ' €'}
                     </Text>
                   </Group>
-                  <Select my="md" maw={450} withinPortal data={productSizes(product)} placeholder="Select size" />
-                  <Button>Add To Cart</Button>
+
+                  <CartSelector product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+
                   <Paper fz={13} className="product-description" ff="Montserrat">
                     {product.description?.['en-US'] && parse(product.description['en-US'])}
                   </Paper>

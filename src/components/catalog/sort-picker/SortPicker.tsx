@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { createStyles, rem, Select } from '@mantine/core';
+import { SortVariant, MIN_LIMIT_PRODUCTS } from '../../../services/StoreService/StoreService';
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -30,23 +31,28 @@ const useStyles = createStyles((theme) => ({
 
 const sortData = [
   {
-    value: 'price asc',
+    value: SortVariant.priceAsc,
     label: 'Price: low to high',
   },
   {
-    value: 'price desc',
+    value: SortVariant.priceDesc,
     label: 'Price: high to low',
   },
   {
-    value: 'name.en-us asc',
+    value: SortVariant.nameAsc,
     label: 'Name: alphabetically',
   },
 ];
 
-const SortPicker = () => {
+type SortPickerProps = {
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const SortPicker = ({ setQuery, setLimitProducts }: SortPickerProps) => {
   const { classes } = useStyles();
   const [sortValue, setSortValue] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const sortValue = searchParams.get('sort');
@@ -61,10 +67,10 @@ const SortPicker = () => {
         data={sortData}
         value={sortValue}
         onChange={(value: string) => {
-          setSearchParams(() => {
-            searchParams.set('sort', value);
-            return searchParams;
-          });
+          const hasPrevParams = searchParams.size !== 0;
+          searchParams.set('sort', value);
+          setQuery(searchParams, hasPrevParams);
+          setLimitProducts(MIN_LIMIT_PRODUCTS);
         }}
         className={classes.item}
       />

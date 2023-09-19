@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { CategoryType } from '../../../services/api/CategoryCache';
 import { createStyles } from '@mantine/core';
+import { MIN_LIMIT_PRODUCTS } from '../../../services/StoreService/StoreService';
 
 const breadCrumbsStyles = createStyles((theme) => ({
   links: {
@@ -45,9 +46,10 @@ const breadCrumbsStyles = createStyles((theme) => ({
 
 type BreadCrumbsProps = {
   allCategories: CategoryType[];
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const BreadCrumbs = ({ allCategories }: BreadCrumbsProps) => {
+const BreadCrumbs = ({ allCategories, setLimitProducts }: BreadCrumbsProps) => {
   const location = useLocation();
   const { classes } = breadCrumbsStyles();
   let currentLink = '';
@@ -59,7 +61,12 @@ const BreadCrumbs = ({ allCategories }: BreadCrumbsProps) => {
       currentLink += `/${crumb}`;
 
       return (
-        <Link key={crumb} className={classes.link} to={currentLink}>
+        <Link
+          key={crumb}
+          className={classes.link}
+          to={currentLink}
+          onClick={() => setLimitProducts(MIN_LIMIT_PRODUCTS)}
+        >
           {allCategories.find((item) => item.name === crumb)?.name || 'Catalog'}
         </Link>
       );

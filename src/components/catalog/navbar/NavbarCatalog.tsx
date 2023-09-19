@@ -1,13 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, UnstyledButton, Collapse, createStyles } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import DropdownLinks from '../dropdown/DropdownLinks';
 import DropdownPrice from '../dropdown/DropdownPrice';
 import DropdownItems from '../dropdown/DropdownItems';
 import { CategoryType } from '../../../services/api/CategoryCache';
-import { useSearchParams } from 'react-router-dom';
-import { storeService } from '../../../services/StoreService/StoreService';
-import { notificationError } from '../../ui/notification';
+import { getSearchParams } from '../../../utils/helpers/search-params-helpers';
+import { MIN_LIMIT_PRODUCTS } from '../../../services/StoreService/StoreService';
 
 const navbarCatalogStyles = createStyles((theme) => ({
   buttons: {
@@ -28,6 +28,7 @@ const navbarCatalogStyles = createStyles((theme) => ({
     width: '100%',
     color: theme.black,
     fontSize: theme.fontSizes.sm,
+    transition: '300ms',
 
     '&:hover': {
       backgroundColor: theme.colors.gray[0],
@@ -44,8 +45,19 @@ type NavbarCatalogProps = {
   colors: string[];
   minProductPrice: number;
   maxProductPrice: number;
-  setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  setQuery: (searchParams: URLSearchParams, hasPrevParams: boolean) => void;
   toggleScroll: () => void;
+  setLimitProducts: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const CLOTHING_SIZES: Record<string, number> = {
+  XXS: 0,
+  XS: 1,
+  S: 2,
+  M: 3,
+  L: 4,
+  XL: 5,
+  XXL: 6,
 };
 
 const NavbarCatalog = ({
@@ -57,47 +69,22 @@ const NavbarCatalog = ({
   minProductPrice,
   maxProductPrice,
   toggleScroll,
+  setQuery,
+  setLimitProducts,
 }: NavbarCatalogProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { classes } = navbarCatalogStyles();
-  const [selectedBrands, setSelectedBrands] = useState(
-    searchParams
-      .get('brand')
-      ?.split(', ')
-      .map((value) => value.slice(1, -1)) || [],
-  );
-  const [selectedSizes, setSelectedSizes] = useState(
-    searchParams
-      .get('size')
-      ?.split(', ')
-      .map((value) => value.slice(1, -1)) || [],
-  );
-  const [selectedColors, setSelectedColors] = useState(
-    searchParams
-      .get('color')
-      ?.split(', ')
-      .map((value) => value.slice(1, -1)) || [],
-  );
-  const [minPrice, setMinPrice] = useState(
-    searchParams
-      .get('price')
-      ?.match(/\((.*?)\)/)?.[1]
-      .split(' to ')[0]
-      .slice(0, -2) || '',
-  );
-  const [maxPrice, setMaxPrice] = useState(
-    searchParams
-      .get('price')
-      ?.match(/\((.*?)\)/)?.[1]
-      .split(' to ')[1]
-      .slice(0, -2) || '',
-  );
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [priceRange, setPriceRange] = useState([minProductPrice, maxProductPrice]);
-  const [minMaxPrices, setMinMaxPrices] = useState<number[]>([]);
   const [opened, setOpened] = useState(false);
   const { category, subcategory } = useParams();
+  const { classes } = navbarCatalogStyles();
 
-  function setFilterQuery() {
+  const setFilterQuery = () => {
+    const hasPrevParams = searchParams.size !== 0;
     selectedBrands.length
       ? searchParams.set('brand', `"${selectedBrands.join('", "')}"`)
       : searchParams.delete('brand');
@@ -107,22 +94,18 @@ const NavbarCatalog = ({
       : searchParams.delete('color');
     if (minPrice || maxPrice)
       searchParams.set('price', `range(${Number(minPrice) * 100} to ${Number(maxPrice) * 100})`);
-    setSearchParams(searchParams);
-  }
+    setQuery(searchParams, hasPrevParams);
+  };
 
-  function clearFilterProducts() {
-    searchParams.delete('brand');
-    searchParams.delete('size');
-    searchParams.delete('color');
-    searchParams.delete('price');
-    setSearchParams(searchParams);
+  const clearFilterProducts = () => {
+    if (searchParams.size !== 0) setSearchParams('');
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedColors([]);
     setMinPrice('');
     setMaxPrice('');
     setPriceRange([minProductPrice, maxProductPrice]);
-  }
+  };
 
   const getParentCategories = () => {
     return categories.filter((category) => !category.parentID);
@@ -135,20 +118,32 @@ const NavbarCatalog = ({
   useEffect(() => {
     if (searchParams.size === 0) {
       clearFilterProducts();
+    } else {
+      setSelectedBrands(() => getSearchParams(searchParams, 'brand'));
+      setSelectedSizes(() => getSearchParams(searchParams, 'size'));
+      setSelectedColors(() => getSearchParams(searchParams, 'color'));
+      setMinPrice(
+        () =>
+          searchParams
+            .get('price')
+            ?.match(/\((.*?)\)/)?.[1]
+            .split(' to ')[0]
+            .slice(0, -2) || '',
+      );
+      setMaxPrice(
+        () =>
+          searchParams
+            .get('price')
+            ?.match(/\((.*?)\)/)?.[1]
+            .split(' to ')[1]
+            .slice(0, -2) || '',
+      );
+      setQuery(searchParams, searchParams.size !== 0);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, subcategory]);
+  }, [category, subcategory, searchParams]);
 
   useEffect(() => {
-    const getMinMaxPrices = async () => {
-      try {
-        const res = await storeService.getAllPrices();
-        if (res) setMinMaxPrices(res);
-      } catch (err) {
-        if (err instanceof Error) notificationError(err.message);
-      }
-    };
-    getMinMaxPrices();
+    setOpened(!!category);
   }, []);
 
   return (
@@ -159,25 +154,51 @@ const NavbarCatalog = ({
         </UnstyledButton>
         <Collapse in={opened} pl="sm">
           {getParentCategories().map((category) => (
-            <DropdownLinks name={category.name} key={category.id} links={getChildrenCategories(category.name)} />
+            <DropdownLinks
+              name={category.name}
+              key={category.id}
+              links={getChildrenCategories(category.name)}
+              setLimitProducts={setLimitProducts}
+            />
           ))}
         </Collapse>
       </div>
       <div>
         <DropdownItems
           name="Brand"
-          items={brands}
+          items={brands.sort((a, b) => {
+            const brandA = a.toUpperCase();
+            const brandB = b.toUpperCase();
+            if (brandA < brandB) {
+              return -1;
+            }
+            if (brandA > brandB) {
+              return 1;
+            }
+            return 0;
+          })}
           selectedItems={selectedBrands}
           setSelectedItems={setSelectedBrands}
         />
       </div>
       <div>
-        <DropdownItems name="Size" items={sizes} selectedItems={selectedSizes} setSelectedItems={setSelectedSizes} />
+        <DropdownItems
+          name="Size"
+          items={sizes.sort((a: string, b: string) => {
+            if (CLOTHING_SIZES[a] && CLOTHING_SIZES[b]) {
+              return CLOTHING_SIZES[a] - CLOTHING_SIZES[b];
+            } else if (Number(a) && Number(b)) {
+              return Number(a) - Number(b);
+            } else return 0;
+          })}
+          selectedItems={selectedSizes}
+          setSelectedItems={setSelectedSizes}
+        />
       </div>
       <div>
         <DropdownItems
           name="Color"
-          items={colors}
+          items={colors.sort()}
           selectedItems={selectedColors}
           setSelectedItems={setSelectedColors}
         />
@@ -192,7 +213,6 @@ const NavbarCatalog = ({
           setMinPrice={setMinPrice}
           maxPriceInput={maxPrice}
           setMaxPrice={setMaxPrice}
-          minMaxPrices={minMaxPrices}
         />
       </div>
       <div className={classes.buttons}>
@@ -201,6 +221,7 @@ const NavbarCatalog = ({
           onClick={() => {
             setFilterQuery();
             toggleScroll();
+            setLimitProducts(MIN_LIMIT_PRODUCTS);
           }}
         >
           Show
@@ -211,6 +232,7 @@ const NavbarCatalog = ({
           onClick={() => {
             clearFilterProducts();
             toggleScroll();
+            setLimitProducts(MIN_LIMIT_PRODUCTS);
           }}
         >
           Clear all

@@ -22,8 +22,8 @@ html::-webkit-scrollbar-thumb {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   padding: 0;
-  position: relative;
 
   @media (max-width: 945px) {
     &.lock {

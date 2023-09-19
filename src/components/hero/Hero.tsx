@@ -4,21 +4,22 @@ import HeroImage from '../../assets/img/hero_image.jpg';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    position: 'relative',
-    paddingTop: rem(430),
-    paddingBottom: rem(100),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    flexGrow: 1,
+    paddingBottom: rem(80),
     backgroundImage: `url(${HeroImage})`,
     backgroundSize: 'cover',
-    backgroundPosition: 'center bottom',
+    backgroundPosition: 'center center',
 
     [theme.fn.smallerThan('xs')]: {
-      paddingTop: rem(80),
-      paddingBottom: rem(50),
+      height: rem(600),
+      paddingTop: rem(300),
     },
   },
 
   inner: {
-    position: 'relative',
     width: '80%',
     maxWidth: rem(800),
     marginLeft: 'auto',
@@ -35,7 +36,7 @@ const useStyles = createStyles((theme) => ({
     textAlign: 'center',
     fontFamily: `Montserrat, ${theme.fontFamily}`,
 
-    [theme.fn.smallerThan('xs')]: {
+    [theme.fn.smallerThan('sm')]: {
       fontSize: rem(28),
     },
   },
@@ -49,8 +50,8 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 200,
     fontStyle: 'italic',
 
-    [theme.fn.smallerThan('xs')]: {
-      fontSize: theme.fontSizes.md,
+    [theme.fn.smallerThan('sm')]: {
+      fontSize: rem(24),
       textAlign: 'center',
     },
   },
@@ -85,7 +86,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function Hero() {
+export const Hero = () => {
   const { classes } = useStyles();
 
   return (
@@ -100,11 +101,11 @@ export function Hero() {
         </Container>
 
         <div className={classes.controls}>
-          <Button className={classes.control} variant="white" size="lg" component={Link} to="/catalog">
-            Shop
+          <Button className={classes.control} variant="white" size="lg" w={200} component={Link} to="/catalog">
+            SHOP
           </Button>
         </div>
       </div>
     </div>
   );
-}
+};

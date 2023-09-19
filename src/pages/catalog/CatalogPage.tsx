@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { createStyles, Center, Loader, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { storeService } from '../../services/StoreService/StoreService';
+import { MIN_LIMIT_PRODUCTS, SortVariant, storeService } from '../../services/StoreService/StoreService';
 import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
 import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
 import ProductCard from '../../components/catalog/product-card/ProductCard';
 import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 export const categoryCache = new CategoryCache();
 
@@ -28,8 +29,11 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'space-between',
   },
 
-  items: {
+  itemsbox: {
     flex: '1 1 auto',
+  },
+
+  items: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
@@ -84,14 +88,25 @@ const useStyles = createStyles((theme) => ({
 type CatalogPageProps = {
   isOpenNavbar: boolean;
   setIsOpenNavbar: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
+const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }: CatalogPageProps) => {
   const [resources, setResources] = useState<GetProductsReturnType>();
-  const [filters, setFilters] = useState<string[]>([]);
+  const [limitProducts, setLimitProducts] = useState<number>(MIN_LIMIT_PRODUCTS);
+  const [isCardLoading, setCardLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const { category, subcategory } = useParams();
   const { classes } = useStyles();
+  const navigate = useNavigate();
+
+  const setQuery = (searchParams: URLSearchParams, hasPrevParams: boolean) => {
+    let pathname = '/catalog';
+    if (category) pathname += `/${category}`;
+    if (subcategory) pathname += `/${subcategory}`;
+    navigate({ pathname, search: createSearchParams(searchParams).toString() }, { replace: hasPrevParams });
+  };
 
   const toggleScroll = () => {
     const wrapper = document.querySelector('.wrapper') as HTMLElement;
@@ -101,11 +116,19 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
   };
 
   useEffect(() => {
+    const infiniteObserver = new IntersectionObserver(([entry], observer) => {
+      if (entry.isIntersecting) {
+        setLimitProducts(limitProducts + 3);
+        observer.unobserve(entry.target);
+      }
+    }, {});
+
     const getProducts = async () => {
       try {
-        const queryParams: QueryArgs = {};
+        const queryParams: QueryArgs = { limit: limitProducts };
         const filterParams = [];
         await categoryCache.get();
+        setCardLoading(true);
 
         if (category) {
           filterParams.push(
@@ -129,17 +152,31 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
         const searchQuery = searchParams.get('search');
         if (searchQuery !== null) {
           queryParams['text.en-US'] = `${searchQuery}`;
-          queryParams.fuzzy = true;
         }
 
         const sortOrder = searchParams.get('sort');
         if (sortOrder) {
           queryParams.sort = sortOrder;
+        } else {
+          queryParams.sort = SortVariant.createdAtDesc;
         }
 
         const res = await storeService.getProducts(queryParams);
 
         if (!res) return;
+
+        const footer = document.querySelector('.footer');
+
+        if (footer && res.total) {
+          infiniteObserver.observe(footer);
+          setLimitProducts(limitProducts - (limitProducts % 3));
+
+          if (limitProducts >= res.total) {
+            setLimitProducts(res.total <= MIN_LIMIT_PRODUCTS ? MIN_LIMIT_PRODUCTS : res.total);
+            setCardLoading(false);
+            infiniteObserver.unobserve(footer);
+          }
+        }
 
         setResources(res);
       } catch (err) {
@@ -148,14 +185,14 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
     };
 
     getProducts();
-  }, [category, subcategory, searchParams, filters]);
+  }, [category, subcategory, searchParams, limitProducts]);
 
   const minProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[0]) / 100;
   const maxProductPrice = Number(resources?.prices.sort((a, b) => +a - +b)[resources.prices.length - 1]) / 100;
 
   return resources ? (
     <div className={classes.container}>
-      <HeaderCatalog allCategories={categoryCache.categories} />
+      <HeaderCatalog allCategories={categoryCache.categories} setQuery={setQuery} setLimitProducts={setLimitProducts} />
       <Button variant="outline" size="md" className={classes.button} onClick={toggleScroll}>
         Filters
       </Button>
@@ -168,17 +205,25 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar }: CatalogPageProps) => {
           colors={resources.colors}
           minProductPrice={minProductPrice || 0}
           maxProductPrice={maxProductPrice || 10000}
-          setFilters={setFilters}
           toggleScroll={toggleScroll}
+          setQuery={setQuery}
+          setLimitProducts={setLimitProducts}
         />
-        <div className={classes.items}>
-          {resources.products.length ? (
-            resources.products.map((product) => {
-              return <ProductCard key={product.id} product={product} />;
-            })
-          ) : (
-            <h2 className={classes.center}>Product not found</h2>
-          )}
+        <div className={classes.itemsbox}>
+          <div className={classes.items}>
+            {resources.products.length ? (
+              resources.products.map((product) => {
+                return (
+                  <ProductCard key={product.id} product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+                );
+              })
+            ) : (
+              <h2 className={classes.center}>Product not found</h2>
+            )}
+          </div>
+          {isCardLoading && resources.products.length ? (
+            <Loader className="card-loader" variant="dots" size="xl" display="flex" my="xl" mx="auto" />
+          ) : null}
         </div>
       </div>
     </div>

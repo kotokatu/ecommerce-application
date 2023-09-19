@@ -1,8 +1,9 @@
-import { createStyles, Image, Card, Text, Group, Button, getStylesRef, rem } from '@mantine/core';
+import { createStyles, Image, Card, Text, Group, getStylesRef, rem } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { ProductProjection } from '@commercetools/platform-sdk';
-import { Link } from 'react-router-dom';
-import parse from 'html-react-parser';
+import { NavLink } from 'react-router-dom';
+import { formatPrice } from '../../../utils/helpers/format-price';
+import Popup from '../popup/Popup';
 
 const useStyles = createStyles(() => ({
   card: {
@@ -48,7 +49,7 @@ const useStyles = createStyles(() => ({
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'space-between',
-    height: '170px',
+    height: '130px',
     gap: '16px',
   },
 
@@ -97,9 +98,11 @@ const useStyles = createStyles(() => ({
 
 type ProductCardProps = {
   product: ProductProjection;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, isLoading, setIsLoading }: ProductCardProps) => {
   const { classes } = useStyles();
 
   const slides = product.masterVariant.images?.map((image) => (
@@ -127,28 +130,28 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         <Group className={classes.cardinfo}>
           <Group className={classes.title} spacing={0}>
-            <Text ff="Montserrat" size="14px" mb="5px" lh={1} fw={400}>{`${product.masterVariant.attributes?.find(
+            <Text ff="Montserrat" size="14px" mb="15px" lh={1} fw={400}>{`${product.masterVariant.attributes?.find(
               (attribute) => attribute.name === 'brand',
             )?.value}`}</Text>
-            <Text ff="Montserrat" lh={1} fw={600}>{`${product.name['en-US']}`}</Text>
+            <NavLink to={`/catalog/product/${product.id}`}>
+              <Text ff="Montserrat" lh={1} fw={600}>{`${product.name['en-US']}`}</Text>
+            </NavLink>
           </Group>
-
-          <Text className={classes.brand} ff="Montserrat">
-            {product.description?.['en-US'] && parse(product.description['en-US'])}
-          </Text>
 
           <Group className={classes.footer}>
             <Group spacing="xs">
               {product.masterVariant.prices?.[0].discounted && (
-                <Text color="red">{`${product.masterVariant.prices[0].discounted.value.centAmount / 100} €`}</Text>
+                <Text color="red">{`${formatPrice(
+                  product.masterVariant.prices[0].discounted.value.centAmount / 100,
+                )} €`}</Text>
               )}
               <Text strikethrough={!!product.masterVariant.prices?.[0].discounted}>
                 {`${product.masterVariant.prices && product.masterVariant.prices[0].value.centAmount / 100} €`}
               </Text>
             </Group>
-            <Button className={classes.button} radius="md" component={Link} to={`/catalog/product/${product.id}`}>
-              View
-            </Button>
+            <Group spacing="xs">
+              <Popup product={product} isLoading={isLoading} setIsLoading={setIsLoading} />
+            </Group>
           </Group>
         </Group>
       </Card>
