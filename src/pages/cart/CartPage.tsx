@@ -12,6 +12,7 @@ import {
   Group,
   Container,
   Button,
+  Modal,
   TextInput,
   UnstyledButton,
   rem,
@@ -22,6 +23,7 @@ import { Link } from 'react-router-dom';
 import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError, notificationSuccess } from '../../components/ui/notification';
 import { formatPrice } from '../../utils/helpers/format-price';
+import { useDisclosure } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -68,6 +70,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   const { classes } = useStyles();
   const [code, setCode] = useState('');
   const [codeLoading, setCodeLoading] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
@@ -203,27 +206,42 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
                 className={classes.button}
                 variant="outline"
                 fullWidth
-                disabled={isLoading}
                 rightIcon={<RiDeleteBin6Line size="1.2rem" />}
                 ff="Montserrat"
                 display="block"
                 ml="auto"
-                onClick={async () => {
-                  if (!cart) return;
-                  try {
-                    setIsLoading(true);
-                    await storeService.deleteCart();
-                    notificationSuccess('Shopping cart cleared');
-                    setCart(null);
-                  } catch (err) {
-                    if (err instanceof Error) notificationError(err.message);
-                  } finally {
-                    setIsLoading(false);
-                  }
-                }}
+                onClick={open}
               >
                 Clear shopping cart
               </Button>
+              <Modal opened={opened} onClose={close} title="Are you sure you want to clear cart?" centered>
+                <Text ff="Montserrat" fw={400} mb={20}>
+                  This action will remove all items and promocodes from your cart.
+                </Text>
+                <Group>
+                  <Button
+                    loading={isLoading}
+                    onClick={async () => {
+                      if (!cart) return;
+                      try {
+                        setIsLoading(true);
+                        await storeService.deleteCart();
+                        notificationSuccess('Shopping cart cleared');
+                        setCart(null);
+                      } catch (err) {
+                        if (err instanceof Error) notificationError(err.message);
+                      } finally {
+                        setIsLoading(false);
+                      }
+                    }}
+                  >
+                    Clear cart
+                  </Button>
+                  <Button className={classes.button} variant="outline" onClick={close}>
+                    Cancel
+                  </Button>
+                </Group>
+              </Modal>
             </Stack>
           </Group>
         </Container>
