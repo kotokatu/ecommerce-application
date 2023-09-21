@@ -1,25 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
-
-import Layout from '../layout/Layout';
-import MainPage from '../pages/main/MainPage';
-import CatalogPage from '../pages/catalog/CatalogPage';
-import AboutPage from '../pages/about-us/AboutPage';
-import LoginPage from '../pages/login/LoginPage';
-import RegistrationPage from '../pages/registration/RegistrationPage';
-import CartPage from '../pages/cart/CartPage';
-import ProfilePage from '../pages/profile/ProfilePage';
-import NotFoundPage from '../pages/not-found/NotFoundPage';
-import ProtectedRoute from '../routes/ProtectedRoute';
-import AuthProvider from '../routes/AuthProvider';
-import DetailedProductPage from '../pages/detailed/DetailedProductPage';
 import { Cart } from '@commercetools/platform-sdk';
 import { storeService } from '../services/StoreService/StoreService';
 import { notificationError } from '../components/ui/notification';
 import { LOGIN_STORAGE_KEY } from '../services/api/TokenCache';
+
+import Layout from '../layout/Layout';
+import ProtectedRoute from '../routes/ProtectedRoute';
+import AuthProvider from '../routes/AuthProvider';
+
+const MainPage = lazy(() => import('../pages/main/MainPage'));
+const CatalogPage = lazy(() => import('../pages/catalog/CatalogPage'));
+const AboutPage = lazy(() => import('../pages/about-us/AboutPage'));
+const LoginPage = lazy(() => import('../pages/login/LoginPage'));
+const RegistrationPage = lazy(() => import('../pages/registration/RegistrationPage'));
+const CartPage = lazy(() => import('../pages/cart/CartPage'));
+const ProfilePage = lazy(() => import('../pages/profile/ProfilePage'));
+const NotFoundPage = lazy(() => import('../pages/not-found/NotFoundPage'));
+const DetailedProductPage = lazy(() => import('../pages/detailed/DetailedProductPage'));
+
 function App() {
   const loginState = localStorage.getItem(LOGIN_STORAGE_KEY);
   const [userLoggedIn, setUserLoggedIn] = useState<boolean>(() => (loginState ? JSON.parse(loginState) : false));

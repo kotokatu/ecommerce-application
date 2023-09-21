@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Container } from '@mantine/core';
 import { AppHeader } from '../components/header/Header';
 import Footer from '../components/footer/Footer';
+import { Suspense } from 'react';
 
 type LayoutProps = {
   isOpenBurger: boolean;
@@ -31,7 +32,9 @@ const Layout = ({ isOpenBurger, closeBurger, toggleBurger, isOpenNavbar, setIsOp
     <Container className="wrapper" onClick={(e) => closeBurgerDelay(e)}>
       <AppHeader isOpenBurger={isOpenBurger} toggleBurger={toggleBurger} />
       <main className="main">
-        <Outlet />
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
     </Container>
