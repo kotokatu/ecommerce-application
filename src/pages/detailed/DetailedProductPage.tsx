@@ -1,29 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Container,
-  Grid,
-  SimpleGrid,
-  Paper,
-  Title,
-  Group,
-  Text,
-  Loader,
-  Center,
-  rem,
-  getStylesRef,
-  createStyles,
-} from '@mantine/core';
+import { Container, Grid, SimpleGrid, Paper, Title, Group, Text, rem, getStylesRef, createStyles } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import { storeService } from '../../services/StoreService/StoreService';
 import { ErrorCodes, getErrorMessage } from '../../utils/helpers/error-handler';
 import { notificationError } from '../../components/ui/notification';
-import parse from 'html-react-parser';
 import { formatPrice } from '../../utils/helpers/format-price';
-import './detailed-product-page.scss';
+import parse from 'html-react-parser';
+import ModalCarousel from '../../components/modal-carousel/ModalCarousel';
 import CartSelector from '../../components/cart-selector/CartSelector';
+import CenterLoader from '../../components/loader/CenterLoader';
+import './detailed-product-page.scss';
 
 const carouselStyles = createStyles((theme) => ({
   root: {
@@ -157,9 +145,7 @@ const DetailedProductPage = ({ isLoading, setIsLoading }: DetailedProductPagePro
           ></ModalCarousel>
         </>
       ) : (
-        <Center h="100%">
-          <Loader variant="bars" size="xl" display="block" mx="auto" />
-        </Center>
+        <CenterLoader />
       )}
     </Container>
   );
