@@ -37,7 +37,6 @@ const CartSelector = ({ product, isLoading, setIsLoading }: CartSelectorProps) =
       <Select
         my="md"
         maw={350}
-        withinPortal
         data={getProductSizes(product)}
         onChange={setSelectedVariant}
         placeholder="Select size"
