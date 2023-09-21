@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { createStyles, Center, Loader, Button } from '@mantine/core';
+import { createStyles, Loader, Button } from '@mantine/core';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { MIN_LIMIT_PRODUCTS, SortVariant, storeService } from '../../services/StoreService/StoreService';
-import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
-import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
-import ProductCard from '../../components/catalog/product-card/ProductCard';
-import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
 import { CategoryCache } from '../../services/api/CategoryCache';
 import { FilterParams } from '../../services/StoreService/StoreService';
 import { createSearchParams, useNavigate } from 'react-router-dom';
+import type { GetProductsReturnType, QueryArgs } from '../../services/StoreService/StoreService';
+import HeaderCatalog from '../../components/catalog/header/HeaderCatalog';
+import NavbarCatalog from '../../components/catalog/navbar/NavbarCatalog';
+import ProductCard from '../../components/catalog/product-card/ProductCard';
+import CenterLoader from '../../components/loader/CenterLoader';
 
 export const categoryCache = new CategoryCache();
 
@@ -228,9 +229,7 @@ const CatalogPage = ({ isOpenNavbar, setIsOpenNavbar, isLoading, setIsLoading }:
       </div>
     </div>
   ) : (
-    <Center h="100%">
-      <Loader variant="bars" size="xl" display="block" mx="auto" />
-    </Center>
+    <CenterLoader />
   );
 };
 

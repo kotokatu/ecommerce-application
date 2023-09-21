@@ -8,7 +8,6 @@ import {
   Title,
   Stack,
   createStyles,
-  Loader,
   Group,
   Container,
   Button,
@@ -24,6 +23,7 @@ import { storeService } from '../../services/StoreService/StoreService';
 import { notificationError, notificationSuccess } from '../../components/ui/notification';
 import { formatPrice } from '../../utils/helpers/format-price';
 import { useDisclosure } from '@mantine/hooks';
+import CenterLoader from '../../components/loader/CenterLoader';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -75,9 +75,7 @@ const CartPage = ({ isLoading, setIsLoading }: CartPageProps) => {
   return (
     <>
       {!cart && isLoading ? (
-        <Center h="100%">
-          <Loader variant="bars" size="xl" display="block" mx="auto" />
-        </Center>
+        <CenterLoader />
       ) : cart?.lineItems.length ? (
         <Container maw="80rem" w="100%">
           <Title order={2} align="center" py={40} ff="Montserrat">
